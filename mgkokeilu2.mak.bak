@@ -11,8 +11,8 @@ SOURCE_FILES = \
   flex-callback-stubs.c \
   flex-callbacks.c \
   flex-events.c \
-  main.c \
   rail_config.c \
+  main.c \
   ../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/hardware/kit/common/bsp/bsp_bcc.c \
   ../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/hardware/kit/common/bsp/bsp_stk.c \
   ../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/hardware/kit/common/bsp/bsp_stk_leds.c \

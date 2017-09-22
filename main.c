@@ -36,7 +36,7 @@ void initRadio()
 
 int main(void)
 {
-  CHIP_Init();
+  enter_DefaultMode_from_RESET();
   initRadio();
 
   while (1) ;
