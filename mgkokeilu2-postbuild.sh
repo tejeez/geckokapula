@@ -1,0 +1,1 @@
+java -jar "/home/ubuntu/SimplicityStudio_v4/plugins/com.silabs.external.jython_2.7.0.201705012047-102/external_jython/2.7.0/jython-2.7.0.jar"  "/home/ubuntu/SimplicityStudio/v4_workspace/mgkokeilu2/./mgkokeilu2-postbuild.py" "$1" "$2" "" "/home/ubuntu/SimplicityStudio_v4/support/common/wine/usr/bin/wine cmd /C " "$3"
