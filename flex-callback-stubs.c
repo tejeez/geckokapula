@@ -226,24 +226,6 @@ void RAILCb_RssiAverageDone(int16_t avgRssi)
 
 
 /**
- * Callback that fires when the Rx Fifo exceeds the configured threshold value
- *
- * @param[in] bytesAvailable Number of bytes available in the Rx Fifo at the
- * time of the callback dispatch
- *
- * @return void
- * @warning You must implement a stub for this in your RAIL application.
- *
- * Callback that fires when the Rx Fifo exceeds the configured threshold value.
- * Provides the number of bytes available in the Rx Fifo at the time of the
- * callback dispatch.
- */
-void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable)
-{
-}
-
-
-/**
  * Callback that fires when the Tx Fifo falls under the configured threshold
  * value
  *

@@ -91,6 +91,7 @@ efr32~series[1]~device_configuration[3]=null,
 }
 {setupId:callbackConfiguration
 main:false
+RAILCb_RxFifoAlmostFull:false
 }
 {setupId:commandLineConfiguration
 off
