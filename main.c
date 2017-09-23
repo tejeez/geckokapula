@@ -27,30 +27,40 @@ void initRadio() {
     RADIO_CONFIG_XTAL_FREQUENCY,
     RAIL_CAL_ALL,
   };
-  halInit();
+  //halInit();
   RAIL_RfInit(&railInitParams);
+  USART_Tx(USART0, '1');
   RAIL_RfIdleExt(RAIL_IDLE, true);
+  USART_Tx(USART0, '2');
 
   RAIL_CalInit_t calInit = {
     RAIL_CAL_ALL,
     irCalConfig,
   };
   RAIL_CalInit(&calInit);
+  USART_Tx(USART0, '3');
 
   RAIL_PacketLengthConfigFrameType(frameTypeConfigList[0]);
+  USART_Tx(USART0, '4');
   if (RAIL_RadioConfig((void*)configList[0])) {
-    while (1) ;
+    //while (1) ;
+	  USART_Tx(USART0, 'f');
   }
+  USART_Tx(USART0, '5');
 
   RAIL_ChannelConfig(channelConfigs[0]);
+  USART_Tx(USART0, '6');
 
   RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, FIFO_MODE, FIFO_MODE };
   RAIL_DataConfig(&dataConfig);
+  USART_Tx(USART0, '7');
 }
 
 void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
+	uint8_t rxbuf[32];
 	USART_Tx(USART0, bytesAvailable);
 	GPIO_PortOutToggle(gpioPortF, 4);
+	RAIL_ReadRxFifo(rxbuf, 32);
 }
 
 
