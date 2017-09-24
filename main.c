@@ -77,7 +77,8 @@ int main(void) {
 	for(;;) {
 		display_loop();
 		volatile unsigned a;
-		for(a=0; a<10000; a++);
+		for(a=0; a<2000000; a++);
+		GPIO_PortOutClear(gpioPortF, 5);
 	}
 	return 0;
 }
