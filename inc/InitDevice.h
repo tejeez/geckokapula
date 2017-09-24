@@ -42,6 +42,12 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
+#define TFT_CS_PIN      (7)
+#define TFT_CS_PORT     (gpioPortC)
+
+#define TFT_DC_PIN      (9)
+#define TFT_DC_PORT     (gpioPortC)
+
 // [User-defined pin name abstraction]$
 
 #endif

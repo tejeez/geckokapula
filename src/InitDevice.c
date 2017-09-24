@@ -355,10 +355,10 @@ extern void USART1_enter_DefaultMode_from_RESET(void) {
 	// [USART_InitPrsTrigger]$
 
 	// $[USART_InitIO]
-	/* Disable CLK pin */
+	/* Set up CLK pin */
 	USART1->ROUTELOC0 = (USART1->ROUTELOC0 & (~_USART_ROUTELOC0_CLKLOC_MASK))
-			| USART_ROUTELOC0_CLKLOC_LOC0;
-	USART1->ROUTEPEN = USART1->ROUTEPEN & (~USART_ROUTEPEN_CLKPEN);
+			| USART_ROUTELOC0_CLKLOC_LOC11;
+	USART1->ROUTEPEN = USART1->ROUTEPEN | USART_ROUTEPEN_CLKPEN;
 
 	/* Disable CS pin */
 	USART1->ROUTELOC0 = (USART1->ROUTELOC0 & (~_USART_ROUTELOC0_CSLOC_MASK))
@@ -380,10 +380,10 @@ extern void USART1_enter_DefaultMode_from_RESET(void) {
 			| USART_ROUTELOC0_RXLOC_LOC0;
 	USART1->ROUTEPEN = USART1->ROUTEPEN & (~USART_ROUTEPEN_RXPEN);
 
-	/* Disable TX pin */
+	/* Set up TX pin */
 	USART1->ROUTELOC0 = (USART1->ROUTELOC0 & (~_USART_ROUTELOC0_TXLOC_MASK))
-			| USART_ROUTELOC0_TXLOC_LOC0;
-	USART1->ROUTEPEN = USART1->ROUTEPEN & (~USART_ROUTEPEN_TXPEN);
+			| USART_ROUTELOC0_TXLOC_LOC11;
+	USART1->ROUTEPEN = USART1->ROUTEPEN | USART_ROUTEPEN_TXPEN;
 
 	// [USART_InitIO]$
 
@@ -580,6 +580,18 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// [Port B Configuration]$
 
 	// $[Port C Configuration]
+
+	/* Pin PC6 is configured to Push-pull */
+	GPIO_PinModeSet(gpioPortC, 6, gpioModePushPull, 0);
+
+	/* Pin PC7 is configured to Push-pull */
+	GPIO_PinModeSet(gpioPortC, 7, gpioModePushPull, 1);
+
+	/* Pin PC8 is configured to Push-pull */
+	GPIO_PinModeSet(gpioPortC, 8, gpioModePushPull, 0);
+
+	/* Pin PC9 is configured to Push-pull */
+	GPIO_PinModeSet(gpioPortC, 9, gpioModePushPull, 0);
 	// [Port C Configuration]$
 
 	// $[Port D Configuration]

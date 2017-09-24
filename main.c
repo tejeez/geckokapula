@@ -58,21 +58,26 @@ void initRadio() {
 
 void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	uint8_t rxbuf[32];
-	USART_Tx(USART0, bytesAvailable);
+	//USART_Tx(USART0, bytesAvailable);
 	GPIO_PortOutToggle(gpioPortF, 4);
 	RAIL_ReadRxFifo(rxbuf, 32);
 }
 
+void display_loop();
 
 int main(void) {
-  enter_DefaultMode_from_RESET();
-  USART_Tx(USART0, 'a');
-  initRadio();
-  USART_Tx(USART0, 'b');
+	enter_DefaultMode_from_RESET();
+	USART_Tx(USART0, 'a');
+	initRadio();
+	USART_Tx(USART0, 'b');
 
-  startrx();
-  USART_Tx(USART0, 'c');
+	startrx();
+	USART_Tx(USART0, 'c');
 
-  while (1) ;
-  return 0;
+	for(;;) {
+		display_loop();
+		volatile unsigned a;
+		for(a=0; a<10000; a++);
+	}
+	return 0;
 }
