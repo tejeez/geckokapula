@@ -15,6 +15,10 @@
 
 #include "InitDevice.h"
 
+#include <stdint.h>
+#include "arm_math.h"
+#include "arm_const_structs.h"
+
 uint8_t nollaa[300] = {255,255,0};
 
 void startrx() {
@@ -84,7 +88,12 @@ void initRadio() {
   USART_Tx(USART0, '7');
 }
 
-#define RXBUFL 8
+#define FFTLEN 128
+const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len128;
+float fftbuf[2*FFTLEN];
+volatile int fftbufp = 0;
+
+#define RXBUFL 2
 typedef int16_t iqsample_t[2];
 iqsample_t rxbuf[RXBUFL];
 void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
@@ -110,12 +119,19 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 		fm += 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
 
 		psi = si; psq = sq;
+
+		int fp = fftbufp;
+		if(fp < 2*FFTLEN) {
+			fftbuf[fp]   = si;
+			fftbuf[fp+1] = sq;
+			fftbufp = fp+2;
+		}
 	}
 	fm = (fm / 0x100) + 100;
 	if(fm < 0) fm = 0;
 	if(fm > 200) fm = 200;
 	TIMER_CompareBufSet(TIMER0, 0, fm);
-	USART_Tx(USART0, 'r');
+	//USART_Tx(USART0, 'r');
 }
 
 void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
@@ -125,6 +141,8 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 }
 
 void display_loop();
+void display_fft_line(float *data);
+
 
 int main(void) {
 	enter_DefaultMode_from_RESET();
@@ -146,6 +164,13 @@ int main(void) {
 			RAIL_TxToneStop();
 			startrx();
 		}
+
+		if(fftbufp >= 2*FFTLEN) {
+			arm_cfft_f32(fftS, fftbuf, 0, 0);
+			display_fft_line(fftbuf);
+			fftbufp = 0;
+		}
+
 		//USART_Tx(USART0, 'y');
 		display_loop();
 		GPIO_PortOutSet(gpioPortF, 5);

@@ -71,6 +71,40 @@ void display_loop() {
 			writedata(x * ((ttt * 4321) & 0xFF00) >> 16);
 		}
 		aaa++;
-		if(aaa >= 160) { aaa = 0; ttt++; }
+		if(aaa >= 80) { aaa = 0; ttt++; }
 	}
+}
+
+int fftrow = 80;
+#define FFTLEN 128
+void display_fft_line(float *data) {
+	writecommand(0x2A); // column address set
+	writedata(0);
+	writedata(0);
+	writedata(0);
+	writedata(128);
+	writecommand(0x2B); // row address set
+	writedata(fftrow>>8);
+	writedata(fftrow);
+	writedata(0);
+	writedata(160);
+	writecommand(0x2C); // memory write
+	unsigned i;
+	float mag[FFTLEN], mag_avg = 0;
+	for(i=0;i<FFTLEN;i++) {
+		float fft_i = data[2*i], fft_q = data[2*i+1];
+		mag_avg +=
+		mag[i] = fft_i*fft_i + fft_q*fft_q;
+	}
+	mag_avg = (100.0f*FFTLEN) / mag_avg;
+	for(i=0;i<FFTLEN;i++) {
+		int mag_norm = mag[i] * mag_avg;
+		writedata(mag_norm < 255 ? mag_norm : 255);
+		mag_norm /= 4;
+		writedata(mag_norm < 255 ? mag_norm : 255);
+		mag_norm /= 4;
+		writedata(mag_norm < 255 ? mag_norm : 255);
+	}
+	fftrow++;
+	if(fftrow >= 160) fftrow = 80;
 }

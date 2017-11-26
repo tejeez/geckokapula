@@ -76,6 +76,8 @@
 								</option>
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.def.symbols.2086504900" name="Defined symbols (-D)" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="EFR32_SERIES1_CONFIG1_MICRO=1"/>
+									<listOptionValue builtIn="false" value="ARM_MATH_CM4"/>
+									<listOptionValue builtIn="false" value="__FPU_PRESENT=1"/>
 									<listOptionValue builtIn="false" value="CORTEXM3_EFM32_MICRO=1"/>
 									<listOptionValue builtIn="false" value="AESDRV_HWACCEL_DMA_ENABLED=false"/>
 									<listOptionValue builtIn="false" value="EMBER_AF_API_EMBER_TYPES=&quot;stack/include/ember-types.h&quot;"/>
@@ -212,5 +214,9 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="GNU ARM v4.9.3 - Default">
+			<resource resourceType="PROJECT" workspacePath="/mgkokeilu2"/>
+		</configuration>
+	</storageModule>
 </cproject>
