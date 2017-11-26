@@ -100,9 +100,9 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	unsigned nread, i;
 	static int psi=0, psq=0;
 	GPIO_PortOutToggle(gpioPortF, 4);
-	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 16);
+	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 4*RXBUFL);
 	nread /= 4;
-	int fm = 0;
+	int ssi=0, ssq=0, fm = 0;
 	for(i=0; i<nread; i++) {
 		int si=rxbuf[i][0], sq=rxbuf[i][1];
 		int fi, fq;
@@ -119,14 +119,17 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 		fm += 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
 
 		psi = si; psq = sq;
-
-		int fp = fftbufp;
-		if(fp < 2*FFTLEN) {
-			fftbuf[fp]   = si;
-			fftbuf[fp+1] = sq;
-			fftbufp = fp+2;
-		}
+		ssi += si; ssq += sq;
 	}
+
+	int fp = fftbufp;
+	if(fp < 2*FFTLEN) {
+		const float scaling = 1.0f / (RXBUFL*0x8000);
+		fftbuf[fp]   = scaling*ssi;
+		fftbuf[fp+1] = scaling*ssq;
+		fftbufp = fp+2;
+	}
+
 	fm = (fm / 0x100) + 100;
 	if(fm < 0) fm = 0;
 	if(fm > 200) fm = 200;
@@ -166,7 +169,7 @@ int main(void) {
 		}
 
 		if(fftbufp >= 2*FFTLEN) {
-			arm_cfft_f32(fftS, fftbuf, 0, 0);
+			arm_cfft_f32(fftS, fftbuf, 0, 1);
 			display_fft_line(fftbuf);
 			fftbufp = 0;
 		}

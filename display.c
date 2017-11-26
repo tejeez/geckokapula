@@ -91,20 +91,30 @@ void display_fft_line(float *data) {
 	writecommand(0x2C); // memory write
 	unsigned i;
 	float mag[FFTLEN], mag_avg = 0;
+#if 0
+	for(i=0;i<FFTLEN;i++) {
+		writedata(128 + 1000.0f*data[2*i]);
+		writedata(128 + 1000.0f*data[2*i+1]);
+		writedata(0);
+	}
+#else
 	for(i=0;i<FFTLEN;i++) {
 		float fft_i = data[2*i], fft_q = data[2*i+1];
 		mag_avg +=
-		mag[i] = fft_i*fft_i + fft_q*fft_q;
+		mag[i ^ (FFTLEN/2)] = fft_i*fft_i + fft_q*fft_q;
 	}
 	mag_avg = (100.0f*FFTLEN) / mag_avg;
 	for(i=0;i<FFTLEN;i++) {
 		int mag_norm = mag[i] * mag_avg;
-		writedata(mag_norm < 255 ? mag_norm : 255);
+		int color1, color2;
+		color1 = mag_norm >= 255 ? 255 : mag_norm;
 		mag_norm /= 4;
-		writedata(mag_norm < 255 ? mag_norm : 255);
-		mag_norm /= 4;
-		writedata(mag_norm < 255 ? mag_norm : 255);
+		color2 = mag_norm >= 255 ? 255 : mag_norm;
+		writedata(color2);
+		writedata(color2);
+		writedata(color1);
 	}
+#endif
 	fftrow++;
 	if(fftrow >= 160) fftrow = 80;
 }
