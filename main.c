@@ -84,11 +84,38 @@ void initRadio() {
   USART_Tx(USART0, '7');
 }
 
+#define RXBUFL 8
+typedef int16_t iqsample_t[2];
+iqsample_t rxbuf[RXBUFL];
 void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
-	uint8_t rxbuf[32];
-	//USART_Tx(USART0, bytesAvailable);
+	unsigned nread, i;
+	static int psi=0, psq=0;
 	GPIO_PortOutToggle(gpioPortF, 4);
-	RAIL_ReadRxFifo(rxbuf, 32);
+	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 16);
+	nread /= 4;
+	int fm = 0;
+	for(i=0; i<nread; i++) {
+		int si=rxbuf[i][0], sq=rxbuf[i][1];
+		int fi, fq;
+		// multiply by conjugate
+		fi = si * psi + sq * psq;
+		fq = sq * psi - si * psq;
+		/* Scale maximum absolute value to 0x7FFF.
+		 * This can be done because FM demod doesn't care about amplitude.
+		 */
+		if(fi > 0x7FFF || fi < -0x7FFF || fq > 0x7FFF || fq < -0x7FFF) {
+			fi /= 0x10000; fq /= 0x10000;
+		}
+		// very crude approximation...
+		fm += 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
+
+		psi = si; psq = sq;
+	}
+	fm = (fm / 0x100) + 100;
+	if(fm < 0) fm = 0;
+	if(fm > 200) fm = 200;
+	TIMER_CompareBufSet(TIMER0, 0, fm);
+	USART_Tx(USART0, 'r');
 }
 
 void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
@@ -105,23 +132,21 @@ int main(void) {
 	initRadio();
  	USART_Tx(USART0, 'b');
 
-	/*startrx();
-	USART_Tx(USART0, 'c');*/
- 	TIMER_TopSet(TIMER0, 100);
+ 	TIMER_TopSet(TIMER0, 200);
  	TIMER_CompareBufSet(TIMER0, 0, 33);
 
 	for(;;) {
-		/*USART_Tx(USART0, 'x');
-		RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
-		USART_Tx(USART0, 'y');
-		RAIL_TxToneStart(0);
-		USART_Tx(USART0, 'z');*/
-		if(RAIL_RfStateGet() != RAIL_RF_STATE_TX) {
+		unsigned keyed = !GPIO_PinInGet(PTT_PORT, PTT_PIN);
+		if(keyed && RAIL_RfStateGet() != RAIL_RF_STATE_TX) {
 			USART_Tx(USART0, 'x');
-			starttx();
-			//transmit_something();
+			RAIL_RfIdleExt(RAIL_IDLE_ABORT, false);
+			RAIL_TxToneStart(0);
 		}
-		USART_Tx(USART0, 'y');
+		if((!keyed) && RAIL_RfStateGet() != RAIL_RF_STATE_RX) {
+			RAIL_TxToneStop();
+			startrx();
+		}
+		//USART_Tx(USART0, 'y');
 		display_loop();
 		GPIO_PortOutSet(gpioPortF, 5);
 		GPIO_PortOutClear(gpioPortF, 5);

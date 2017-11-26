@@ -522,9 +522,9 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 	initCC0.mode = timerCCModePWM;
 	initCC0.eventCtrl = timerEventEveryEdge;
 	initCC0.filter = 0;
-	initCC0.cofoa = timerOutputActionSet;
+	initCC0.cofoa = timerOutputActionNone;
 	initCC0.cufoa = timerOutputActionNone;
-	initCC0.cmoa = timerOutputActionClear;
+	initCC0.cmoa = timerOutputActionNone;
 	initCC0.coist = 0;
 	initCC0.outInvert = 0;
 	TIMER_InitCC(TIMER0, 0, &initCC0);
@@ -720,6 +720,9 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	/* Pin PF5 is configured to Push-pull */
 	GPIO_PinModeSet(gpioPortF, 5, gpioModePushPull, 1);
+
+	/* Pin PF6 is configured to Input enabled with filter */
+	GPIO_PinModeSet(gpioPortF, 6, gpioModeInput, 1);
 	// [Port F Configuration]$
 
 }
