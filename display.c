@@ -16,13 +16,10 @@
 #include "em_usart.h"
 #include "em_gpio.h"
 #include "InitDevice.h"
+#include "rail.h"
 
-extern uint8_t displayinit[];
-extern const int displayinit_len;
-static int di_i = 0, di_numargs = 0, di_ms = 0;
-
+static int di_i = 0;
 static uint8_t aaa=0, ttt=0;
-
 
 #define GPIO_PortOutSet(g, p) GPIO->P[g].DOUT |= (1<<(p));
 #define GPIO_PortOutClear(g, p) GPIO->P[g].DOUT &= ~(1<<(p));
@@ -44,22 +41,6 @@ void writecommand(uint8_t d) {
 }
 
 void display_loop() {
-#if 0
-	if(di_i < displayinit_len) {
-		if(di_numargs <= 0) {
-			int na;
-			writecommand(displayinit[di_i++]);
-			na = displayinit[di_i++];
-			di_numargs = na & 0x7F;
-			di_ms = na & 0x80;
-		} else {
-			writedata(displayinit[di_i++]);
-			di_numargs--;
-			if(di_numargs == 0 && di_ms)
-				di_i++; // skip delay byte
-		}
-	} else {
-#endif
 	switch(di_i) {
 	case 0:
 		writecommand(0x01); di_i++; break;

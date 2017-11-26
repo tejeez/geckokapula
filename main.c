@@ -11,10 +11,11 @@
 #include "em_chip.h"
 #include "em_usart.h"
 #include "em_gpio.h"
+#include "em_timer.h"
 
 #include "InitDevice.h"
 
-uint8_t nollaa[200] = {255,255,0};
+uint8_t nollaa[300] = {255,255,0};
 
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);
@@ -27,8 +28,8 @@ void startrx() {
 void starttx() {
 	RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
 	RAIL_ResetFifo(true, false);
-	RAIL_SetTxFifoThreshold(50);
-	RAIL_WriteTxFifo(nollaa, 200);
+	RAIL_SetTxFifoThreshold(100);
+	RAIL_WriteTxFifo(nollaa, 300);
 	RAIL_TxStart(0, NULL, NULL);
 }
 
@@ -78,7 +79,7 @@ void initRadio() {
   RAIL_ChannelConfig(channelConfigs[0]);
   USART_Tx(USART0, '6');
 
-  RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, /*FIFO_MODE*/ PACKET_MODE, FIFO_MODE };
+  RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, FIFO_MODE /*PACKET_MODE*/, FIFO_MODE };
   RAIL_DataConfig(&dataConfig);
   USART_Tx(USART0, '7');
 }
@@ -93,6 +94,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 	GPIO_PortOutToggle(gpioPortF, 4);
 	RAIL_WriteTxFifo(nollaa, 100);
+	USART_Tx(USART0, 'e');
 }
 
 void display_loop();
@@ -105,6 +107,8 @@ int main(void) {
 
 	/*startrx();
 	USART_Tx(USART0, 'c');*/
+ 	TIMER_TopSet(TIMER0, 100);
+ 	TIMER_CompareBufSet(TIMER0, 0, 33);
 
 	for(;;) {
 		/*USART_Tx(USART0, 'x');
@@ -114,7 +118,8 @@ int main(void) {
 		USART_Tx(USART0, 'z');*/
 		if(RAIL_RfStateGet() != RAIL_RF_STATE_TX) {
 			USART_Tx(USART0, 'x');
-			transmit_something();
+			starttx();
+			//transmit_something();
 		}
 		USART_Tx(USART0, 'y');
 		display_loop();

@@ -42,6 +42,9 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
+#define PWM_PIN         (10)
+#define PWM_PORT        (gpioPortD)
+
 #define TFT_CS_PIN      (7)
 #define TFT_CS_PORT     (gpioPortC)
 

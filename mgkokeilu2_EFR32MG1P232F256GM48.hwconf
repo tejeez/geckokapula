@@ -22,6 +22,8 @@
     <property object="PC8" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC9" propertyId="ports.settings.custompinname" value="TFT_DC"/>
     <property object="PC9" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PD10" propertyId="ports.settings.custompinname" value="PWM"/>
+    <property object="PD10" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PF3" propertyId="ports.settings.dout" value="1"/>
     <property object="PF3" propertyId="ports.settings.filter" value="Enabled"/>
     <property object="PF3" propertyId="ports.settings.pulldirection" value="Pullup"/>
@@ -32,6 +34,7 @@
     <property object="PF5" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PF5" propertyId="ports.settings.pulldirection" value="Pullup"/>
     <property object="PF5" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer0.enable.cc0" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.timer0.location.timer0_cc0loc" value="18"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
@@ -39,6 +42,10 @@
     <property object="PORTIO" propertyId="portio.usart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart1.location.usart1_clkloc" value="11"/>
     <property object="PORTIO" propertyId="portio.usart1.location.usart1_txloc" value="11"/>
+    <property object="TIMER0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="TIMER0" propertyId="timer.capturecomparech0.ccmode" value="PWM"/>
+    <property object="TIMER0" propertyId="timer.capturecomparech0.countermatchoutputaction" value="Clear on event"/>
+    <property object="TIMER0" propertyId="timer.capturecomparech0.overflowoutputaction" value="Set on event"/>
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="1500000"/>
     <property object="USART1" propertyId="ABPeripheral.included" value="true"/>

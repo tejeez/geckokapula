@@ -20,6 +20,7 @@
 #include "em_chip.h"
 #include "em_assert.h"
 #include "em_gpio.h"
+#include "em_timer.h"
 #include "em_usart.h"
 // [Library includes]$
 
@@ -34,6 +35,7 @@ extern void enter_DefaultMode_from_RESET(void) {
 	CMU_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
 	USART1_enter_DefaultMode_from_RESET();
+	TIMER0_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
 	// [Config Calls]$
 
@@ -128,6 +130,9 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	// $[Peripheral Clock enables]
 	/* Enable clock for HF peripherals */
 	CMU_ClockEnable(cmuClock_HFPER, true);
+
+	/* Enable clock for TIMER0 */
+	CMU_ClockEnable(cmuClock_TIMER0, true);
 
 	/* Enable clock for USART0 */
 	CMU_ClockEnable(cmuClock_USART0, true);
@@ -463,21 +468,123 @@ extern void LDMA_enter_DefaultMode_from_RESET(void) {
 extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 
 	// $[TIMER0 I/O setup]
+	/* Set up CC0 */
+	TIMER0->ROUTELOC0 = (TIMER0->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC0LOC_MASK))
+			| TIMER_ROUTELOC0_CC0LOC_LOC18;
+	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN | TIMER_ROUTEPEN_CC0PEN;
+	/* Set up CC1 */
+	TIMER0->ROUTELOC0 = (TIMER0->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC1LOC_MASK))
+			| TIMER_ROUTELOC0_CC1LOC_LOC0;
+	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN & (~TIMER_ROUTEPEN_CC1PEN);
+	/* Set up CC2 */
+	TIMER0->ROUTELOC0 = (TIMER0->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC2LOC_MASK))
+			| TIMER_ROUTELOC0_CC2LOC_LOC0;
+	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN & (~TIMER_ROUTEPEN_CC2PEN);
+	/* Set up CDTI0 */
+	TIMER0->ROUTELOC2 = (TIMER0->ROUTELOC2 & (~_TIMER_ROUTELOC2_CDTI0LOC_MASK))
+			| TIMER_ROUTELOC2_CDTI0LOC_LOC0;
+	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN & (~TIMER_ROUTEPEN_CDTI0PEN);
+	/* Set up CDTI1 */
+	TIMER0->ROUTELOC2 = (TIMER0->ROUTELOC2 & (~_TIMER_ROUTELOC2_CDTI1LOC_MASK))
+			| TIMER_ROUTELOC2_CDTI1LOC_LOC0;
+	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN & (~TIMER_ROUTEPEN_CDTI1PEN);
+	/* Set up CDTI2 */
+	TIMER0->ROUTELOC2 = (TIMER0->ROUTELOC2 & (~_TIMER_ROUTELOC2_CDTI2LOC_MASK))
+			| TIMER_ROUTELOC2_CDTI2LOC_LOC0;
+	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN & (~TIMER_ROUTEPEN_CDTI2PEN);
 	// [TIMER0 I/O setup]$
 
 	// $[TIMER0 initialization]
+	TIMER_Init_TypeDef init = TIMER_INIT_DEFAULT;
+
+	init.enable = 1;
+	init.debugRun = 0;
+	init.dmaClrAct = 0;
+	init.sync = 0;
+	init.clkSel = timerClkSelHFPerClk;
+	init.prescale = timerPrescale1;
+	init.fallAction = timerInputActionNone;
+	init.riseAction = timerInputActionNone;
+	init.mode = timerModeUp;
+	init.quadModeX4 = 0;
+	init.oneShot = 0;
+	init.count2x = 0;
+	init.ati = 0;
+	TIMER_Init(TIMER0, &init);
 	// [TIMER0 initialization]$
 
 	// $[TIMER0 CC0 init]
+	TIMER_InitCC_TypeDef initCC0 = TIMER_INITCC_DEFAULT;
+
+	initCC0.prsInput = false;
+	initCC0.prsSel = timerPRSSELCh0;
+	initCC0.edge = timerEdgeRising;
+	initCC0.mode = timerCCModePWM;
+	initCC0.eventCtrl = timerEventEveryEdge;
+	initCC0.filter = 0;
+	initCC0.cofoa = timerOutputActionSet;
+	initCC0.cufoa = timerOutputActionNone;
+	initCC0.cmoa = timerOutputActionClear;
+	initCC0.coist = 0;
+	initCC0.outInvert = 0;
+	TIMER_InitCC(TIMER0, 0, &initCC0);
 	// [TIMER0 CC0 init]$
 
 	// $[TIMER0 CC1 init]
+	TIMER_InitCC_TypeDef initCC1 = TIMER_INITCC_DEFAULT;
+
+	initCC1.prsInput = false;
+	initCC1.prsSel = timerPRSSELCh0;
+	initCC1.edge = timerEdgeRising;
+	initCC1.mode = timerCCModeOff;
+	initCC1.eventCtrl = timerEventEveryEdge;
+	initCC1.filter = 0;
+	initCC1.cofoa = timerOutputActionNone;
+	initCC1.cufoa = timerOutputActionNone;
+	initCC1.cmoa = timerOutputActionNone;
+	initCC1.coist = 0;
+	initCC1.outInvert = 0;
+	TIMER_InitCC(TIMER0, 1, &initCC1);
 	// [TIMER0 CC1 init]$
 
 	// $[TIMER0 CC2 init]
+	TIMER_InitCC_TypeDef initCC2 = TIMER_INITCC_DEFAULT;
+
+	initCC2.prsInput = false;
+	initCC2.prsSel = timerPRSSELCh0;
+	initCC2.edge = timerEdgeRising;
+	initCC2.mode = timerCCModeOff;
+	initCC2.eventCtrl = timerEventEveryEdge;
+	initCC2.filter = 0;
+	initCC2.cofoa = timerOutputActionNone;
+	initCC2.cufoa = timerOutputActionNone;
+	initCC2.cmoa = timerOutputActionNone;
+	initCC2.coist = 0;
+	initCC2.outInvert = 0;
+	TIMER_InitCC(TIMER0, 2, &initCC2);
 	// [TIMER0 CC2 init]$
 
 	// $[TIMER0 DTI init]
+	TIMER_InitDTI_TypeDef initDTI = TIMER_INITDTI_DEFAULT;
+
+	initDTI.enable = 0;
+	initDTI.activeLowOut = 0;
+	initDTI.invertComplementaryOut = 0;
+	initDTI.autoRestart = 0;
+	initDTI.enablePrsSource = 0;
+	initDTI.prsSel = timerPRSSELCh0;
+	initDTI.prescale = timerPrescale1;
+	initDTI.riseTime = 1;
+	initDTI.fallTime = 1;
+	initDTI.enableFaultSourceCoreLockup = 1;
+	initDTI.enableFaultSourceDebugger = 1;
+	initDTI.faultSourcePrsSel0 = 0;
+	initDTI.faultSourcePrsSel0 = timerPRSSELCh0;
+	initDTI.faultSourcePrsSel1 = 0;
+	initDTI.faultSourcePrsSel1 = timerPRSSELCh0;
+	initDTI.faultAction = timerDtiFaultActionInactive;
+	initDTI.outputsEnableMask = 0 | TIMER_DTOGEN_DTOGCC0EN;
+	TIMER_InitDTI(TIMER0, &initDTI);
 	// [TIMER0 DTI init]$
 
 }
@@ -595,6 +702,9 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// [Port C Configuration]$
 
 	// $[Port D Configuration]
+
+	/* Pin PD10 is configured to Push-pull */
+	GPIO_PinModeSet(gpioPortD, 10, gpioModePushPull, 0);
 	// [Port D Configuration]$
 
 	// $[Port E Configuration]
