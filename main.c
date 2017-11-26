@@ -6,6 +6,7 @@
 #include "rail.h"
 #include "hal_common.h"
 #include "rail_config.h"
+#include "pa.h"
 
 #include "em_chip.h"
 #include "em_usart.h"
@@ -16,19 +17,27 @@
 uint8_t nollaa[200] = {255,255,0};
 
 void startrx() {
-  RAIL_RfIdleExt(RAIL_IDLE, true);
-  RAIL_ResetFifo(false, true);
-  RAIL_SetRxFifoThreshold(100); //FIFO size is 512B
-  RAIL_EnableRxFifoThreshold();
-  RAIL_RxStart(0);
+	RAIL_RfIdleExt(RAIL_IDLE, true);
+	RAIL_ResetFifo(false, true);
+	RAIL_SetRxFifoThreshold(100); //FIFO size is 512B
+	RAIL_EnableRxFifoThreshold();
+	RAIL_RxStart(0);
 }
 
 void starttx() {
-  RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
-  RAIL_ResetFifo(true, false);
-  RAIL_SetTxFifoThreshold(50);
-  RAIL_WriteTxFifo(nollaa, 200);
-  RAIL_TxStart(0, NULL, NULL);
+	RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
+	RAIL_ResetFifo(true, false);
+	RAIL_SetTxFifoThreshold(50);
+	RAIL_WriteTxFifo(nollaa, 200);
+	RAIL_TxStart(0, NULL, NULL);
+}
+
+void transmit_something() {
+	RAIL_TxData_t txstuff = { nollaa, 200 };
+	RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
+	RAIL_ResetFifo(true, false);
+	RAIL_TxDataLoad(&txstuff);
+	RAIL_TxStart(0, NULL, NULL);
 }
 
 void initRadio() {
@@ -37,6 +46,14 @@ void initRadio() {
     RADIO_CONFIG_XTAL_FREQUENCY,
     RAIL_CAL_ALL,
   };
+  RADIO_PA_Init(&(RADIO_PAInit_t){
+	    PA_SEL_2P4_HP,    /* Power Amplifier mode */
+	    PA_VOLTMODE_VBAT, /* Power Amplifier vPA Voltage mode */
+	    190,              /* Desired output power in dBm * 10 */
+	    0,                /* Output power offset in dBm * 10 */
+	    10,               /* Desired ramp time in us */
+  });
+
   //halInit();
   RAIL_RfInit(&railInitParams);
   USART_Tx(USART0, '1');
@@ -61,7 +78,7 @@ void initRadio() {
   RAIL_ChannelConfig(channelConfigs[0]);
   USART_Tx(USART0, '6');
 
-  RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, FIFO_MODE, FIFO_MODE };
+  RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, /*FIFO_MODE*/ PACKET_MODE, FIFO_MODE };
   RAIL_DataConfig(&dataConfig);
   USART_Tx(USART0, '7');
 }
@@ -90,15 +107,18 @@ int main(void) {
 	USART_Tx(USART0, 'c');*/
 
 	for(;;) {
-		USART_Tx(USART0, 'x');
+		/*USART_Tx(USART0, 'x');
 		RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
 		USART_Tx(USART0, 'y');
 		RAIL_TxToneStart(0);
-		USART_Tx(USART0, 'z');
+		USART_Tx(USART0, 'z');*/
+		if(RAIL_RfStateGet() != RAIL_RF_STATE_TX) {
+			USART_Tx(USART0, 'x');
+			transmit_something();
+		}
+		USART_Tx(USART0, 'y');
 		display_loop();
 		GPIO_PortOutSet(gpioPortF, 5);
-		volatile unsigned a;
-		//for(a=0; a<2000000; a++);
 		GPIO_PortOutClear(gpioPortF, 5);
 	}
 	return 0;
