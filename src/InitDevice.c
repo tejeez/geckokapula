@@ -330,7 +330,7 @@ extern void USART1_enter_DefaultMode_from_RESET(void) {
 	USART_InitSync_TypeDef initsync = USART_INITSYNC_DEFAULT;
 
 	initsync.enable = usartDisable;
-	initsync.baudrate = 1500000;
+	initsync.baudrate = 16000000;
 	initsync.databits = usartDatabits8;
 	initsync.master = 1;
 	initsync.msbf = 1;

@@ -225,26 +225,3 @@ void RAILCb_RssiAverageDone(int16_t avgRssi)
 }
 
 
-/**
- * Callback that fires when the Tx Fifo falls under the configured threshold
- * value
- *
- * @param[in] spaceAvailable Number of bytes open in the Tx Fifo at the time of
- * the callback dispatch
- *
- * @return void
- * @warning You must implement a stub for this in your RAIL application.
- *
- * Callback that fires when the Tx Fifo falls under the configured threshold
- * value. It only fires if a rising edge occurs across this threshold. This
- * callback will not fire on initailization nor after resetting the transmit
- * fifo with RAIL_ResetFifo().
- *
- * Provides the number of bytes open in the Tx Fifo at the time of the callback
- * dispatch.
- */
-void RAILCb_TxFifoAlmostEmpty(uint16_t spaceAvailable)
-{
-}
-
-

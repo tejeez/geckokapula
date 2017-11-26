@@ -2,3 +2,10 @@
 //
 //
 
+// Enclosing macro to prevent multiple inclusion
+#ifndef __FLEX_BOOKKEEPING_H__
+#define __FLEX_BOOKKEEPING_H__
+
+
+
+#endif // __FLEX_BOOKKEEPING_H__

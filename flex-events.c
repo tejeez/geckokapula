@@ -2,11 +2,6 @@
 //
 //
 
-// Enclosing macro to prevent multiple inclusion
-#ifndef __FLEX_EVENTS__
-#define __FLEX_EVENTS__
-
-
 // Generated events.
 #include PLATFORM_HEADER
 #include "stack/include/ember-types.h"
@@ -18,4 +13,3 @@
 const EmberEventData emAppEvents[] = {
   {NULL, NULL}
 };
-#endif // __FLEX_EVENTS__

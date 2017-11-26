@@ -3,7 +3,7 @@
 //
 
 
-API version: 2.6.0
+API version: 2.10.0
 
 - Informational data:
 Preamble Binary Pattern = 0101010101010101010101010101010101010101 

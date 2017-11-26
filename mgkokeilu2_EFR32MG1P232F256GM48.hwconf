@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="EFR32MG1P232F256GM48" partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48">
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="EFR32MG1P232F256GM48" partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" contextId="%DEFAULT%">
   <mode name="DefaultMode">
     <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
     <property object="CMU" propertyId="clocksettings.hfclocksettings.hfclocksource" value="HFXO"/>
@@ -43,7 +43,7 @@
     <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="1500000"/>
     <property object="USART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART1" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>
-    <property object="USART1" propertyId="usart.synchronoussettings.baudrate" value="1500000"/>
+    <property object="USART1" propertyId="usart.synchronoussettings.baudrate" value="16000000"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

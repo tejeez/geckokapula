@@ -21,7 +21,7 @@ extern uint8_t displayinit[];
 extern const int displayinit_len;
 static int di_i = 0, di_numargs = 0, di_ms = 0;
 
-static uint8_t aaa=0;
+static uint8_t aaa=0, ttt=0;
 
 
 #define GPIO_PortOutSet(g, p) GPIO->P[g].DOUT |= (1<<(p));
@@ -32,7 +32,7 @@ void writedata(uint8_t d) {
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
 	USART_SpiTransfer(USART1, d);
 	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
-	USART_Tx(USART0, 'd');
+	//USART_Tx(USART0, 'd');
 }
 
 void writecommand(uint8_t d) {
@@ -40,7 +40,7 @@ void writecommand(uint8_t d) {
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
 	USART_SpiTransfer(USART1, d);
 	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
-	USART_Tx(USART0, 'c');
+	//USART_Tx(USART0, 'c');
 }
 
 void display_loop() {
@@ -74,14 +74,22 @@ void display_loop() {
 		writedata(0);
 		writedata(128);
 		writecommand(0x2B); // row address set
-		writedata(0);
-		writedata(aaa & 127);
+		writedata(aaa>>8);
+		writedata(aaa);
 		writedata(0);
 		writedata(160);
 		writecommand(0x2C); // memory write
 		unsigned i;
-		for(i=0;i<300;i++)
-			writedata(i);
+		for(i=0;i<128;i++) {
+			/*writedata(aaa ^ i);
+			writedata(aaa * i / 16);
+			writedata(aaa - i);*/
+			unsigned x = (aaa ^ (i + ttt)) & 0xFF;
+			writedata(x * ((ttt * 1234) & 0xFF00) >> 16);
+			writedata(x * ((ttt * 2345) & 0xFF00) >> 16);
+			writedata(x * ((ttt * 4321) & 0xFF00) >> 16);
+		}
 		aaa++;
+		if(aaa >= 160) { aaa = 0; ttt++; }
 	}
 }

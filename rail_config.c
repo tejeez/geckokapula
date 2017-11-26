@@ -10,14 +10,21 @@
 // =============================================================================
 //
 //  WARNING: Auto-Generated Radio Config  -  DO NOT EDIT
-//  Radio Configurator Version: 2.6.0
-//  RAIL Adapter Version: 1.4.0
+//  Radio Configurator Version: 2.10.0
+//  RAIL Adapter Version: 2.0.4
+//  RAIL Compatibility: 1.x
 //
 // =============================================================================
 #include "em_common.h"
 #include "rail_config.h"
 
+const uint32_t generated_phyInfo[] = {
+  0UL,
+  0x0009C09C, // 9.75238095238
+};
+
 const uint32_t generated[] = {
+  0x01010FF0UL, (uint32_t) &generated_phyInfo,
   0x01010FF4UL, 0x00000000UL,
   0x01010FF8UL, 0x0003C002UL,
   0x01010FFCUL, 0x0003C002UL,
@@ -29,6 +36,8 @@ const uint32_t generated[] = {
   0x0001002CUL, 0x00000000UL,
   0x00010030UL, 0x00000000UL,
   0x00010034UL, 0x00000000UL,
+  0x00010038UL, 0x00000000UL,
+  0x0001003CUL, 0x00000000UL,
   0x00010040UL, 0x00000700UL,
   0x00010048UL, 0x00000000UL,
   0x00010054UL, 0x00000000UL,
@@ -105,12 +114,12 @@ const RAIL_ChannelConfig_t *channelConfigs[] = {
   &generated_channelConfig,
 };
 
-const RAIL_FrameType_t *frameTypeConfigList[] = {
-  NULL,
+RAIL_FrameType_t *frameTypeConfigList[] = {
+  NULL
 };
 
 const uint8_t irCalConfig[] = {
-  24, 0, 0, 6, 4, 16, 1, 0, 0, 1, 1, 6, 0, 16, 39, 0, 0, 5, 0, 1, 1, 0, 0, 0, 0
+  24, 63, 1, 6, 4, 16, 1, 0, 0, 1, 1, 6, 0, 16, 39, 0, 0, 5, 0, 1, 1, 0, 0, 0, 0
 };
 
 

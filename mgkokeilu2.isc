@@ -1,5 +1,5 @@
 #ISD afv6
-# ISD version: 4.19.0.201707141247-752
+# ISD version: 4.21.3.201711171601-1023
 
 # Application configuration
 stackId: com.silabs.sdk.stack.super
@@ -92,6 +92,7 @@ efr32~series[1]~device_configuration[3]=null,
 {setupId:callbackConfiguration
 main:false
 RAILCb_RxFifoAlmostFull:false
+RAILCb_TxFifoAlmostEmpty:false
 }
 {setupId:commandLineConfiguration
 off
@@ -108,11 +109,11 @@ AGC_SETTLING_DELAY=int:39
 AGC_SPEED=serializableObject:EnumDataItem:1
 ASYNCHRONOUS_RX_ENABLE=bool:false
 BANDWIDTH_HZ=int:15000
-BASE_FREQUENCY_HZ=long:2395000000
+BASE_FREQUENCY_HZ=long:2410000000
 BAUDRATE_TOL_PPM=int:0
 BITRATE=int:32000
 CHANNEL_SPACING_HZ=int:1000000
-CONFIGURATOR_VERSION=string:2.6.0
+CONFIGURATOR_VERSION=string:2.10.0
 CRC_BIT_ENDIAN=serializableObject:EnumDataItem:1
 CRC_BYTE_ENDIAN=serializableObject:EnumDataItem:0
 CRC_INPUT_ORDER=serializableObject:EnumDataItem:0
@@ -130,20 +131,28 @@ FIXED_LENGTH_SIZE=int:16
 FRAME_BITENDIAN=serializableObject:EnumDataItem:0
 FRAME_CODING=serializableObject:EnumDataItem:0
 FRAME_LENGTH_TYPE=serializableObject:EnumDataItem:0
+FRAME_TYPE_0_FILTER=bool:true
 FRAME_TYPE_0_LENGTH=int:0
 FRAME_TYPE_0_VALID=bool:false
+FRAME_TYPE_1_FILTER=bool:true
 FRAME_TYPE_1_LENGTH=int:0
 FRAME_TYPE_1_VALID=bool:false
+FRAME_TYPE_2_FILTER=bool:true
 FRAME_TYPE_2_LENGTH=int:0
 FRAME_TYPE_2_VALID=bool:false
+FRAME_TYPE_3_FILTER=bool:true
 FRAME_TYPE_3_LENGTH=int:0
 FRAME_TYPE_3_VALID=bool:false
+FRAME_TYPE_4_FILTER=bool:true
 FRAME_TYPE_4_LENGTH=int:0
 FRAME_TYPE_4_VALID=bool:false
+FRAME_TYPE_5_FILTER=bool:true
 FRAME_TYPE_5_LENGTH=int:0
 FRAME_TYPE_5_VALID=bool:false
+FRAME_TYPE_6_FILTER=bool:true
 FRAME_TYPE_6_LENGTH=int:0
 FRAME_TYPE_6_VALID=bool:false
+FRAME_TYPE_7_FILTER=bool:true
 FRAME_TYPE_7_LENGTH=int:0
 FRAME_TYPE_7_VALID=bool:false
 FRAME_TYPE_BITS=int:0
@@ -160,6 +169,7 @@ MODULATION_TYPE=serializableObject:EnumDataItem:0
 PAYLOAD_CRC_EN=bool:true
 PAYLOAD_WHITE_EN=bool:false
 PHY=serializableObject:Efr32RadioConfiguratorPhy:null:null:Custom_settings
+PLL_BANDWIDTH_MIRACLE_MODE=bool:false
 PREAMBLE_LENGTH=int:40
 PREAMBLE_PATTERN=int:1
 PREAMBLE_PATTERN_LEN=int:2
@@ -174,7 +184,6 @@ SYNCWORD_1=long:0
 SYNCWORD_LENGTH=int:16
 SYNCWORD_TX_SKIP=bool:false
 TEST_BER=bool:false
-TEST_PER=bool:false
 TIMING_DETECTION_THRESHOLD=int:20
 TIMING_SAMPLE_THRESHOLD=int:12
 TX_XTAL_ERROR_PPM=int:0
@@ -192,6 +201,10 @@ WHITE_SEED=int:0
 XTAL_FREQUENCY_HZ=int:38400000
 }
 {setupId:eventConfiguration
+}
+{setupId:hwConfig
+featureLevel=1
+active=true
 }
 {setupId:information
 \{key:description

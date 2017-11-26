@@ -152,7 +152,7 @@ logging.basicConfig(
     level=logging.DEBUG)
 
 # Creating a 32 bit s37 image
-if (not "EFR32MG1P" or ("EFR32MG1P" and not "EFR32MG1P".startswith("EM3"))):
+if (not "efr32mg1p" or ("efr32mg1p" and not "efr32mg1p".startswith("EM3"))):
     S37()
 
 # Creating ebl/gbl files
