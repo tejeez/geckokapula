@@ -148,7 +148,9 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 			break;
 		case MODE_DSB: {
 			int agc_1, agc_diff;
-			fi = si; // TODO: SSB filter
+			static int audio_lpf = 0;
+			audio_lpf += (si*128 - audio_lpf)/16;
+			fi = audio_lpf/128; // TODO: SSB filter
 
 			// AGC
 			agc_1 = (fi>=0?fi:-fi) * 0x100; // rectify

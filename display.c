@@ -19,7 +19,7 @@
 #include "rail.h"
 
 static int di_i = 0;
-static uint8_t aaa=0, ttt=0;
+//static uint8_t aaa=0, ttt=0;
 
 #define GPIO_PortOutSet(g, p) GPIO->P[g].DOUT |= (1<<(p));
 #define GPIO_PortOutClear(g, p) GPIO->P[g].DOUT &= ~(1<<(p));
@@ -59,6 +59,7 @@ void display_loop() {
 	case 2:
 		writecommand(0x29); di_i++; break;
 	default:
+#if 0
 		writecommand(0x2A); // column address set
 		writedata(0);
 		writedata(0);
@@ -83,6 +84,8 @@ void display_loop() {
 		}
 		aaa++;
 		if(aaa >= 80) { aaa = 0; ttt++; }
+#endif
+		break;
 	}
 }
 
@@ -125,5 +128,5 @@ void display_fft_line(float *data) {
 	}
 #endif
 	fftrow++;
-	if(fftrow >= 160) fftrow = 80;
+	if(fftrow >= 160) fftrow = 0;
 }
