@@ -21,12 +21,19 @@
 
 uint8_t nollaa[300] = {255,255,0};
 
+// parameters
+struct {
+	int channel;
+	int channel_changed;
+	enum { MODE_FM, MODE_DSB } mode;
+} p = {0,0,1};
+
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);
 	RAIL_ResetFifo(false, true);
 	RAIL_SetRxFifoThreshold(100); //FIFO size is 512B
 	RAIL_EnableRxFifoThreshold();
-	RAIL_RxStart(0);
+	RAIL_RxStart(p.channel);
 }
 
 void starttx() {
@@ -34,7 +41,7 @@ void starttx() {
 	RAIL_ResetFifo(true, false);
 	RAIL_SetTxFifoThreshold(100);
 	RAIL_WriteTxFifo(nollaa, 300);
-	RAIL_TxStart(0, NULL, NULL);
+	RAIL_TxStart(p.channel, NULL, NULL);
 }
 
 void transmit_something() {
@@ -42,7 +49,7 @@ void transmit_something() {
 	RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
 	RAIL_ResetFifo(true, false);
 	RAIL_TxDataLoad(&txstuff);
-	RAIL_TxStart(0, NULL, NULL);
+	RAIL_TxStart(p.channel, NULL, NULL);
 }
 
 void initRadio() {
@@ -88,6 +95,24 @@ void initRadio() {
   USART_Tx(USART0, '7');
 }
 
+static inline void read_encoder() {
+	const int enc_map[4] = { 0, 1, 3, 2 };
+	int enc, enc_diff, channel;
+	static int enc_prev=0;
+	enc = enc_map[
+			GPIO_PinInGet(ENC1_PORT, ENC1_PIN) + 2*
+			GPIO_PinInGet(ENC2_PORT, ENC2_PIN)];
+	enc_diff = (enc - enc_prev) & 3;
+	channel = p.channel;
+	if(enc_diff == 1) channel++;
+	if(enc_diff == 3) channel--;
+	if(channel != p.channel) {
+		p.channel = channel;
+		p.channel_changed = 1;
+	}
+	enc_prev = enc;
+}
+
 #define FFTLEN 128
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len128;
 float fftbuf[2*FFTLEN];
@@ -99,6 +124,7 @@ iqsample_t rxbuf[RXBUFL];
 void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	unsigned nread, i;
 	static int psi=0, psq=0;
+	static int agc_level=0;
 	GPIO_PortOutToggle(gpioPortF, 4);
 	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 4*RXBUFL);
 	nread /= 4;
@@ -106,17 +132,36 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	for(i=0; i<nread; i++) {
 		int si=rxbuf[i][0], sq=rxbuf[i][1];
 		int fi, fq;
-		// multiply by conjugate
-		fi = si * psi + sq * psq;
-		fq = sq * psi - si * psq;
-		/* Scale maximum absolute value to 0x7FFF.
-		 * This can be done because FM demod doesn't care about amplitude.
-		 */
-		if(fi > 0x7FFF || fi < -0x7FFF || fq > 0x7FFF || fq < -0x7FFF) {
-			fi /= 0x10000; fq /= 0x10000;
+		switch(p.mode) {
+		case MODE_FM:
+			// multiply by conjugate
+			fi = si * psi + sq * psq;
+			fq = sq * psi - si * psq;
+			/* Scale maximum absolute value to 0x7FFF.
+			 * This can be done because FM demod doesn't care about amplitude.
+			 */
+			while(fi > 0x7FFF || fi < -0x7FFF || fq > 0x7FFF || fq < -0x7FFF) {
+				fi /= 0x100; fq /= 0x100;
+			}
+			// very crude approximation...
+			fm += 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
+			break;
+		case MODE_DSB: {
+			int agc_1, agc_diff;
+			fi = si; // TODO: SSB filter
+
+			// AGC
+			agc_1 = (fi>=0?fi:-fi) * 0x100; // rectify
+			agc_diff = agc_1 - agc_level;
+			if(agc_diff > 0)
+				agc_level += agc_diff/64;
+			else
+				agc_level += agc_diff/256;
+
+			fm += 0x1000 * fi / (agc_level/0x100);
+
+			} break;
 		}
-		// very crude approximation...
-		fm += 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
 
 		psi = si; psq = sq;
 		ssi += si; ssq += sq;
@@ -135,6 +180,8 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	if(fm > 200) fm = 200;
 	TIMER_CompareBufSet(TIMER0, 0, fm);
 	//USART_Tx(USART0, 'r');
+
+	read_encoder();
 }
 
 void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
@@ -158,12 +205,13 @@ int main(void) {
 
 	for(;;) {
 		unsigned keyed = !GPIO_PinInGet(PTT_PORT, PTT_PIN);
-		if(keyed && RAIL_RfStateGet() != RAIL_RF_STATE_TX) {
-			USART_Tx(USART0, 'x');
+		if(keyed && (RAIL_RfStateGet() != RAIL_RF_STATE_TX || p.channel_changed)) {
+			p.channel_changed = 0;
 			RAIL_RfIdleExt(RAIL_IDLE_ABORT, false);
-			RAIL_TxToneStart(0);
+			RAIL_TxToneStart(p.channel);
 		}
-		if((!keyed) && RAIL_RfStateGet() != RAIL_RF_STATE_RX) {
+		if((!keyed) && (RAIL_RfStateGet() != RAIL_RF_STATE_RX || p.channel_changed)) {
+			p.channel_changed = 0;
 			RAIL_TxToneStop();
 			startrx();
 		}

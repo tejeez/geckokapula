@@ -32,6 +32,16 @@ void writedata(uint8_t d) {
 	//USART_Tx(USART0, 'd');
 }
 
+void write3(uint8_t r, uint8_t g, uint8_t b) {
+	GPIO_PortOutSet(TFT_DC_PORT, TFT_DC_PIN);
+	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
+	USART_SpiTransfer(USART1, r);
+	USART_SpiTransfer(USART1, g);
+	USART_SpiTransfer(USART1, b);
+	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
+	//USART_Tx(USART0, 'd');
+}
+
 void writecommand(uint8_t d) {
 	GPIO_PortOutClear(TFT_DC_PORT, TFT_DC_PIN);
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
@@ -66,9 +76,10 @@ void display_loop() {
 			writedata(aaa * i / 16);
 			writedata(aaa - i);*/
 			unsigned x = (aaa ^ (i + ttt)) & 0xFF;
-			writedata(x * ((ttt * 1234) & 0xFF00) >> 16);
-			writedata(x * ((ttt * 2345) & 0xFF00) >> 16);
-			writedata(x * ((ttt * 4321) & 0xFF00) >> 16);
+			write3(
+				(x * ((ttt * 1234) & 0xFF00) >> 16),
+				(x * ((ttt * 2345) & 0xFF00) >> 16),
+				(x * ((ttt * 4321) & 0xFF00) >> 16));
 		}
 		aaa++;
 		if(aaa >= 80) { aaa = 0; ttt++; }
@@ -110,9 +121,7 @@ void display_fft_line(float *data) {
 		color1 = mag_norm >= 255 ? 255 : mag_norm;
 		mag_norm /= 4;
 		color2 = mag_norm >= 255 ? 255 : mag_norm;
-		writedata(color2);
-		writedata(color2);
-		writedata(color1);
+		write3(color2, color2, color1);
 	}
 #endif
 	fftrow++;

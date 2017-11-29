@@ -42,6 +42,15 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
+#define ENC1_PIN        (11)
+#define ENC1_PORT       (gpioPortD)
+
+#define ENC2_PIN        (12)
+#define ENC2_PORT       (gpioPortD)
+
+#define ENCP_PIN        (13)
+#define ENCP_PORT       (gpioPortD)
+
 #define PTT_PIN         (6)
 #define PTT_PORT        (gpioPortF)
 

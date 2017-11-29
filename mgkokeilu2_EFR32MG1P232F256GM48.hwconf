@@ -24,6 +24,24 @@
     <property object="PC9" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PD10" propertyId="ports.settings.custompinname" value="PWM"/>
     <property object="PD10" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PD11" propertyId="ports.settings.custompinname" value="ENC1"/>
+    <property object="PD11" propertyId="ports.settings.dout" value="1"/>
+    <property object="PD11" propertyId="ports.settings.filter" value="Enabled"/>
+    <property object="PD11" propertyId="ports.settings.pinmode" value="Input pull"/>
+    <property object="PD11" propertyId="ports.settings.pulldirection" value="Pullup"/>
+    <property object="PD11" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PD12" propertyId="ports.settings.custompinname" value="ENC2"/>
+    <property object="PD12" propertyId="ports.settings.dout" value="1"/>
+    <property object="PD12" propertyId="ports.settings.filter" value="Enabled"/>
+    <property object="PD12" propertyId="ports.settings.pinmode" value="Input pull"/>
+    <property object="PD12" propertyId="ports.settings.pulldirection" value="Pullup"/>
+    <property object="PD12" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PD13" propertyId="ports.settings.custompinname" value="ENCP"/>
+    <property object="PD13" propertyId="ports.settings.dout" value="1"/>
+    <property object="PD13" propertyId="ports.settings.filter" value="Enabled"/>
+    <property object="PD13" propertyId="ports.settings.pinmode" value="Input pull"/>
+    <property object="PD13" propertyId="ports.settings.pulldirection" value="Pullup"/>
+    <property object="PD13" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PF3" propertyId="ports.settings.dout" value="1"/>
     <property object="PF3" propertyId="ports.settings.filter" value="Enabled"/>
     <property object="PF3" propertyId="ports.settings.pulldirection" value="Pullup"/>
@@ -37,7 +55,7 @@
     <property object="PF6" propertyId="ports.settings.custompinname" value="PTT"/>
     <property object="PF6" propertyId="ports.settings.dout" value="1"/>
     <property object="PF6" propertyId="ports.settings.filter" value="Enabled"/>
-    <property object="PF6" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PF6" propertyId="ports.settings.pinmode" value="Input pull"/>
     <property object="PF6" propertyId="ports.settings.pulldirection" value="Pullup"/>
     <property object="PF6" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.adc0.enable.adctestn" value="Enabled"/>

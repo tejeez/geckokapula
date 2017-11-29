@@ -705,6 +705,15 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	/* Pin PD10 is configured to Push-pull */
 	GPIO_PinModeSet(gpioPortD, 10, gpioModePushPull, 0);
+
+	/* Pin PD11 is configured to Input enabled with pull-up */
+	GPIO_PinModeSet(gpioPortD, 11, gpioModeInputPull, 1);
+
+	/* Pin PD12 is configured to Input enabled with pull-up */
+	GPIO_PinModeSet(gpioPortD, 12, gpioModeInputPull, 1);
+
+	/* Pin PD13 is configured to Input enabled with pull-up */
+	GPIO_PinModeSet(gpioPortD, 13, gpioModeInputPull, 1);
 	// [Port D Configuration]$
 
 	// $[Port E Configuration]
@@ -721,8 +730,8 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	/* Pin PF5 is configured to Push-pull */
 	GPIO_PinModeSet(gpioPortF, 5, gpioModePushPull, 1);
 
-	/* Pin PF6 is configured to Input enabled with filter */
-	GPIO_PinModeSet(gpioPortF, 6, gpioModeInput, 1);
+	/* Pin PF6 is configured to Input enabled with pull-up */
+	GPIO_PinModeSet(gpioPortF, 6, gpioModeInputPull, 1);
 	// [Port F Configuration]$
 
 }

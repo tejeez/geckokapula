@@ -36,67 +36,66 @@
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.misc.dialect.907536580" name="C Language Dialect" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.misc.dialect" value="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.misc.dialect.gnu99" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.optimization.level.394281347" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" value="gnu.c.optimization.level.size" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.514752183" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emlib/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/bsp&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/CMSIS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/drivers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32/board&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/gpiointerrupt/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/protocol/ieee802154&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs/EFR32MG1P/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/config&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common/cortex&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/phy&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/config&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal/efr32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs-Restricted/EFR32MG1P/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/EFR32MG1_BRD4151A/config&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/sleep/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs-Restricted/EFR32MG1P/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs/EFR32MG1P/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32/board&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/sleep/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/gpiointerrupt/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/common/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}//inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emlib/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/drivers&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal/efr32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common/cortex&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/protocol/ieee802154&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/phy&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/EFR32MG1_BRD4151A/config&quot;"/>
 								</option>
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.def.symbols.2086504900" name="Defined symbols (-D)" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.def.symbols" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="EFR32_SERIES1_CONFIG1_MICRO=1"/>
-									<listOptionValue builtIn="false" value="ARM_MATH_CM4"/>
 									<listOptionValue builtIn="false" value="__FPU_PRESENT=1"/>
-									<listOptionValue builtIn="false" value="CORTEXM3_EFM32_MICRO=1"/>
-									<listOptionValue builtIn="false" value="AESDRV_HWACCEL_DMA_ENABLED=false"/>
-									<listOptionValue builtIn="false" value="EMBER_AF_API_EMBER_TYPES=&quot;stack/include/ember-types.h&quot;"/>
-									<listOptionValue builtIn="false" value="CORTEXM3_EFR32=1"/>
-									<listOptionValue builtIn="false" value="CMU_CTRL_HFRADIOCLK=1"/>
-									<listOptionValue builtIn="false" value="CORTEXM3=1"/>
-									<listOptionValue builtIn="false" value="PHY_EFR32=1"/>
-									<listOptionValue builtIn="false" value="BOARD_BRD4151A=1"/>
+									<listOptionValue builtIn="false" value="ARM_MATH_CM4=1"/>
 									<listOptionValue builtIn="false" value="EFR32MG1P232F256GM48=1"/>
-									<listOptionValue builtIn="false" value="CORTEXM3_EFR32_MICRO=1"/>
-									<listOptionValue builtIn="false" value="BOARD_HEADER=&quot;brd4151a.h&quot;"/>
-									<listOptionValue builtIn="false" value="EMBER_STACK_CONNECT=1"/>
-									<listOptionValue builtIn="false" value="HAL_CONFIG=&quot;connect/hal-config/flex-config.h&quot;"/>
-									<listOptionValue builtIn="false" value="DEBUG_EFR=1"/>
-									<listOptionValue builtIn="false" value="DEBUG_LEVEL=NO_DEBUG"/>
 									<listOptionValue builtIn="false" value="NULL_BTL=1"/>
 									<listOptionValue builtIn="false" value="PLATFORM_HEADER=&quot;micro/cortexm3/compiler/gcc.h&quot;"/>
-									<listOptionValue builtIn="false" value="EMBER_SERIAL0_DEBUG=1"/>
+									<listOptionValue builtIn="false" value="EMBER_AF_API_EMBER_TYPES=&quot;stack/include/ember-types.h&quot;"/>
+									<listOptionValue builtIn="false" value="EMBER_STACK_CONNECT=1"/>
+									<listOptionValue builtIn="false" value="EFR32_SERIES1_CONFIG1_MICRO=1"/>
 									<listOptionValue builtIn="false" value="HAL_MICRO=1"/>
+									<listOptionValue builtIn="false" value="CORTEXM3=1"/>
+									<listOptionValue builtIn="false" value="CORTEXM3_EFM32_MICRO=1"/>
+									<listOptionValue builtIn="false" value="HAL_CONFIG=&quot;connect/hal-config/flex-config.h&quot;"/>
+									<listOptionValue builtIn="false" value="CORTEXM3_EFR32=1"/>
+									<listOptionValue builtIn="false" value="PHY_EFR32=1"/>
+									<listOptionValue builtIn="false" value="CORTEXM3_EFR32_MICRO=1"/>
+									<listOptionValue builtIn="false" value="DEBUG_EFR=1"/>
+									<listOptionValue builtIn="false" value="AESDRV_HWACCEL_DMA_ENABLED=false"/>
+									<listOptionValue builtIn="false" value="EMBER_SERIAL0_DEBUG=1"/>
+									<listOptionValue builtIn="false" value="CMU_CTRL_HFRADIOCLK=1"/>
+									<listOptionValue builtIn="false" value="DEBUG_LEVEL=NO_DEBUG"/>
+									<listOptionValue builtIn="false" value="BOARD_BRD4151A=1"/>
+									<listOptionValue builtIn="false" value="BOARD_HEADER=&quot;brd4151a.h&quot;"/>
 									<listOptionValue builtIn="false" value="CONFIGURATION_HEADER=&quot;flex-configuration.h&quot;"/>
 								</option>
 								<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.1734150726" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -104,65 +103,64 @@
 							<tool id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.cpp.compiler.base.1304662754" name="GNU ARM C++ Compiler" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.cpp.compiler.base"/>
 							<tool id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.base.1653640516" name="GNU ARM Assembler" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.base">
 								<option id="gnu.both.asm.option.include.paths.1677380394" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emlib/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/bsp&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/CMSIS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/drivers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32/board&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/gpiointerrupt/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/protocol/ieee802154&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs/EFR32MG1P/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/config&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common/cortex&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/phy&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/config&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal/efr32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs-Restricted/EFR32MG1P/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/EFR32MG1_BRD4151A/config&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/sleep/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs-Restricted/EFR32MG1P/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/Device/SiliconLabs/EFR32MG1P/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2/connect/plugins/stack/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32/board&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/hal/micro/cortexm3/efm32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/rtcdrv/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/sleep/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/ustimer/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/gpiointerrupt/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emdrv/common/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}//inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/emlib/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/common/drivers&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal/efr32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/hal&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/protocol/flex_1.2&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/chip/efr32/rf/common/cortex&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/radio/rail_lib/protocol/ieee802154&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/platform/base/phy&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${StudioSdkPath}/hardware/kit/EFR32MG1_BRD4151A/config&quot;"/>
 								</option>
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.as.def.symbols.805769987" name="Defined symbols (-D)" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.as.def.symbols" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="EFR32_SERIES1_CONFIG1_MICRO=1"/>
-									<listOptionValue builtIn="false" value="CORTEXM3_EFM32_MICRO=1"/>
-									<listOptionValue builtIn="false" value="AESDRV_HWACCEL_DMA_ENABLED=false"/>
-									<listOptionValue builtIn="false" value="EMBER_AF_API_EMBER_TYPES=&quot;stack/include/ember-types.h&quot;"/>
-									<listOptionValue builtIn="false" value="CORTEXM3_EFR32=1"/>
-									<listOptionValue builtIn="false" value="CMU_CTRL_HFRADIOCLK=1"/>
-									<listOptionValue builtIn="false" value="CORTEXM3=1"/>
-									<listOptionValue builtIn="false" value="PHY_EFR32=1"/>
-									<listOptionValue builtIn="false" value="BOARD_BRD4151A=1"/>
 									<listOptionValue builtIn="false" value="EFR32MG1P232F256GM48=1"/>
-									<listOptionValue builtIn="false" value="CORTEXM3_EFR32_MICRO=1"/>
-									<listOptionValue builtIn="false" value="BOARD_HEADER=&quot;brd4151a.h&quot;"/>
-									<listOptionValue builtIn="false" value="EMBER_STACK_CONNECT=1"/>
-									<listOptionValue builtIn="false" value="HAL_CONFIG=&quot;connect/hal-config/flex-config.h&quot;"/>
-									<listOptionValue builtIn="false" value="DEBUG_EFR=1"/>
-									<listOptionValue builtIn="false" value="DEBUG_LEVEL=NO_DEBUG"/>
 									<listOptionValue builtIn="false" value="NULL_BTL=1"/>
 									<listOptionValue builtIn="false" value="PLATFORM_HEADER=&quot;micro/cortexm3/compiler/gcc.h&quot;"/>
-									<listOptionValue builtIn="false" value="EMBER_SERIAL0_DEBUG=1"/>
+									<listOptionValue builtIn="false" value="EMBER_AF_API_EMBER_TYPES=&quot;stack/include/ember-types.h&quot;"/>
+									<listOptionValue builtIn="false" value="EMBER_STACK_CONNECT=1"/>
+									<listOptionValue builtIn="false" value="EFR32_SERIES1_CONFIG1_MICRO=1"/>
 									<listOptionValue builtIn="false" value="HAL_MICRO=1"/>
+									<listOptionValue builtIn="false" value="CORTEXM3=1"/>
+									<listOptionValue builtIn="false" value="CORTEXM3_EFM32_MICRO=1"/>
+									<listOptionValue builtIn="false" value="HAL_CONFIG=&quot;connect/hal-config/flex-config.h&quot;"/>
+									<listOptionValue builtIn="false" value="CORTEXM3_EFR32=1"/>
+									<listOptionValue builtIn="false" value="PHY_EFR32=1"/>
+									<listOptionValue builtIn="false" value="CORTEXM3_EFR32_MICRO=1"/>
+									<listOptionValue builtIn="false" value="DEBUG_EFR=1"/>
+									<listOptionValue builtIn="false" value="AESDRV_HWACCEL_DMA_ENABLED=false"/>
+									<listOptionValue builtIn="false" value="EMBER_SERIAL0_DEBUG=1"/>
+									<listOptionValue builtIn="false" value="CMU_CTRL_HFRADIOCLK=1"/>
+									<listOptionValue builtIn="false" value="DEBUG_LEVEL=NO_DEBUG"/>
+									<listOptionValue builtIn="false" value="BOARD_BRD4151A=1"/>
+									<listOptionValue builtIn="false" value="BOARD_HEADER=&quot;brd4151a.h&quot;"/>
 									<listOptionValue builtIn="false" value="CONFIGURATION_HEADER=&quot;flex-configuration.h&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2141231901" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
@@ -203,7 +201,7 @@
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
 	</storageModule>
-	<storageModule generalProj.esf.protocolIds="com.silabs.sdk.stack.super:1.1.1._2016992864.com.silabs.sdk.stack.flex:1.2.1.0_-1047550623" generalProj.esf.protocolNames="flex" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="45" projectCommon.boardIds="com.silabs.board.none:0.0.0" projectCommon.importModeId="LINK_LIBRARIES" projectCommon.partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" projectCommon.sdkId="com.silabs.sdk.stack.super:1.1.1._2016992864"/>
+	<storageModule generalProj.esf.protocolIds="com.silabs.sdk.stack.super:1.1.1._2016992864.com.silabs.sdk.stack.flex:1.2.1.0_-1047550623" generalProj.esf.protocolNames="flex" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="1" projectCommon.boardIds="com.silabs.board.none:0.0.0" projectCommon.importModeId="LINK_LIBRARIES" projectCommon.partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" projectCommon.sdkId="com.silabs.sdk.stack.super:1.1.1._2016992864"/>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="mgkokeilu2.com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType.965204551" name="SLS CDT Project" projectType="com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType"/>
 	</storageModule>

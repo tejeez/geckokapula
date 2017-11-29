@@ -102,7 +102,7 @@ const char *configNames[] = {
 };
 
 RAIL_ChannelConfigEntry_t generated_channels[] = {
-  { 0, 20, 1000000, 2395000000 },
+  { 0, 20, 1000, 2395000000 },
 };
 
 const RAIL_ChannelConfig_t generated_channelConfig = {

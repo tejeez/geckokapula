@@ -11,7 +11,7 @@ an FM demodulator and a CW transmitter. There's no user interface yet.
 # Construction
 BRD4151A radio board (with EFR32MG1P232F256GM48) is connected to a display and a speaker.
 
-The display is something like this: https://www.ebay.com/itm/332335811976
+The display is something like this: https://www.ebay.com/itm/232327157750
 
 Speaker is driven from a PWM output through a series capacitor and a resistor.
 
@@ -25,8 +25,10 @@ Speaker is driven from a PWM output through a series capacitor and a resistor.
 |   P7      |   PC9     | Display AO   |
 |   P9      |   PA0     | Debug UART TX (to RXD on USB-UART ) |
 |   P11     |   PA1     | Debug UART RX (to TXD on USB-UART ) |
-|   P34     |   PF6     | PTT or CW key (resistor to VCC, key to GND) |
+|   P34     |   PF6     | PTT or CW key (switch to GND) |
 |   P4      |   PD10    | PWM Audio out |
+|   P6      |   PD11    | Encoder A (switch to GND) |
+|   P8      |   PD12    | Encoder B (switch to GND) |
 |   P24     |   PF0     | J-link SWCLK |
 |   P26     |   PF1     | J-link SWDIO |
 
