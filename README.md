@@ -29,6 +29,7 @@ Speaker is driven from a PWM output through a series capacitor and a resistor.
 |   P4      |   PD10    | PWM Audio out |
 |   P6      |   PD11    | Encoder A (switch to GND) |
 |   P8      |   PD12    | Encoder B (switch to GND) |
+|   P31     |   PD13    | Encoder push button (switch to GND) |
 |   P24     |   PF0     | J-link SWCLK |
 |   P26     |   PF1     | J-link SWDIO |
 

@@ -37,7 +37,8 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 }
 
 #define TEXT_LEN 20
-char textline[TEXT_LEN] = "3699 LSB    59+70 dB";
+char textline[TEXT_LEN] = "geckokapula         ";
+int text_hilight = 6;
 
 void ui_loop() {
 	unsigned i;
@@ -57,7 +58,7 @@ void ui_loop() {
 	aaa++;
 	if(aaa >= 160) { aaa = 0; ttt++; }
 #endif
-	ui_character(aaa*8, 96, textline[aaa], aaa == (31&ttt>>4));
+	ui_character(aaa*8, 96, textline[aaa], aaa == text_hilight);
 	aaa++;
 	if(aaa >= TEXT_LEN) { aaa = 0; ttt++; }
 }
