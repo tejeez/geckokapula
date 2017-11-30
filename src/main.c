@@ -19,6 +19,9 @@
 #include "arm_math.h"
 #include "arm_const_structs.h"
 
+#include "display.h"
+#include "ui.h"
+
 uint8_t nollaa[300] = {255,255,0};
 
 // parameters
@@ -192,10 +195,6 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 	USART_Tx(USART0, 'e');
 }
 
-void display_loop();
-void display_fft_line(float *data);
-
-
 int main(void) {
 	enter_DefaultMode_from_RESET();
 	USART_Tx(USART0, 'a');
@@ -220,12 +219,12 @@ int main(void) {
 
 		if(fftbufp >= 2*FFTLEN) {
 			arm_cfft_f32(fftS, fftbuf, 0, 1);
-			display_fft_line(fftbuf);
+			ui_fft_line(fftbuf);
 			fftbufp = 0;
 		}
 
 		//USART_Tx(USART0, 'y');
-		display_loop();
+		ui_loop();
 		GPIO_PortOutSet(gpioPortF, 5);
 		GPIO_PortOutClear(gpioPortF, 5);
 	}
