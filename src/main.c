@@ -32,7 +32,7 @@ struct {
 	enum { MODE_FM, MODE_DSB } mode;
 	uint32_t frequency;
 	uint32_t step;
-} p = {0,1,1, 2395000000, 7 };
+} p = {0,1,1, 2395000000, 6 };
 
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);
@@ -64,6 +64,8 @@ RAIL_ChannelConfigEntry_t channelconfigs[] = {{ 0, 20, 1000, 2395000000 }};
 const RAIL_ChannelConfig_t channelConfig = { channelconfigs, 1 };
 void config_channel() {
 	snprintf(textline, 20, "%10u Hz", p.frequency);
+
+	RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
 
 	channelconfigs[0].baseFrequency = p.frequency;
 	RAIL_ChannelConfig(&channelConfig);
@@ -240,6 +242,7 @@ int main(void) {
 
 	for(;;) {
 		unsigned keyed = !GPIO_PinInGet(PTT_PORT, PTT_PIN);
+		read_encoder();
 		if(p.channel_changed) {
 			config_channel();
 		}
@@ -260,7 +263,6 @@ int main(void) {
 			fftbufp = 0;
 		}
 
-		//USART_Tx(USART0, 'y');
 		ui_loop();
 		GPIO_PortOutSet(gpioPortF, 5);
 		GPIO_PortOutClear(gpioPortF, 5);

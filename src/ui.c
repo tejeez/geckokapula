@@ -12,7 +12,7 @@ static uint8_t aaa=0, ttt=0;
 
 void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 	int x, y;
-	uint8_t color_r, color_g, color_b;
+	uint8_t bgb = ttt % 64;
 	if(!display_ready()) return;
 
 	display_area(y1, x1, y1+7, x1+7);
@@ -22,14 +22,14 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 		for(y=7; y>=0; y--) {
 			if(font[y] & (1<<x)) {
 				if(highlighted)
-					display_pixel(255,0,0);
+					display_pixel(0,0,0);
 				else
 					display_pixel(128,255,128);
 			} else {
 				if(highlighted)
 					display_pixel(255,255,255);
 				else
-					display_pixel(0,0,0);
+					display_pixel(0,0,bgb);
 			}
 		}
 	}
@@ -58,20 +58,20 @@ void ui_loop() {
 	aaa++;
 	if(aaa >= 160) { aaa = 0; ttt++; }
 #endif
-	ui_character(aaa*8, 96, textline[aaa], aaa == text_hilight);
+	ui_character(aaa*8, 128-8, textline[aaa], aaa == text_hilight);
 	aaa++;
 	if(aaa >= TEXT_LEN) { aaa = 0; ttt++; }
 }
 
 int fftrow = 80;
 #define FFTLEN 128
-#define FFT_BIN1 16
-#define FFT_BIN2 112
+#define FFT_BIN1 4
+#define FFT_BIN2 124
 void ui_fft_line(float *data) {
 	unsigned i;
 	float mag[FFTLEN], mag_avg = 0;
 
-	display_area(0,fftrow, FFT_BIN2-FFT_BIN1, fftrow+1);
+	display_area(0,fftrow, FFT_BIN2-FFT_BIN1, fftrow);
 	display_start();
 
 #if 0

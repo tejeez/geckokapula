@@ -73,12 +73,12 @@ int display_ready() {
 }
 
 // minimum delay between display init commands (us)
-#define DISPLAY_INIT_DELAY_US 10000
+#define DISPLAY_INIT_DELAY_US 100000
 void display_init_loop() {
 	static int di_i = 0;
 	static uint32_t next_time = 0;
 	const char display_init_commands[] = {
-			0x01, 0x11, 0x29
+			0x01, 0x01, 0x11, 0x11, 0x29, 0x29
 	};
 
 	uint32_t time = RAIL_GetTime();
