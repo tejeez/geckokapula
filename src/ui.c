@@ -6,14 +6,47 @@
  */
 
 #include "display.h"
+#include "font8x8_basic.h"
 
 static uint8_t aaa=0, ttt=0;
+
+void ui_character(int x1, int y1, unsigned char c, int highlighted) {
+	int x, y;
+	uint8_t color_r, color_g, color_b;
+	if(!display_ready()) return;
+
+	display_area(y1, x1, y1+7, x1+7);
+	display_start();
+	char *font = font8x8_basic[c];
+	for(x=0; x<8; x++) {
+		for(y=7; y>=0; y--) {
+			if(font[y] & (1<<x)) {
+				if(highlighted)
+					display_pixel(255,0,0);
+				else
+					display_pixel(128,255,128);
+			} else {
+				if(highlighted)
+					display_pixel(255,255,255);
+				else
+					display_pixel(0,0,0);
+			}
+		}
+	}
+	display_end();
+}
+
+#define TEXT_LEN 20
+char textline[TEXT_LEN] = "3699 LSB    59+70 dB";
+
 void ui_loop() {
 	unsigned i;
 	display_init_loop();
-	if(display_area(0, aaa, 128, aaa+1)) return;
+	if(!display_ready()) return;
+#if 0
+	display_area(96, aaa, 128, aaa+1);
 	display_start();
-	for(i=0;i<128;i++) {
+	for(i=0;i<32;i++) {
 		unsigned x = (aaa ^ (i + ttt)) & 0xFF;
 		display_pixel(
 			(x * ((ttt * 1234) & 0xFF00) >> 16),
@@ -22,16 +55,22 @@ void ui_loop() {
 	}
 	display_end();
 	aaa++;
-	if(aaa >= 20) { aaa = 0; ttt++; }
+	if(aaa >= 160) { aaa = 0; ttt++; }
+#endif
+	ui_character(aaa*8, 96, textline[aaa], aaa == (31&ttt>>4));
+	aaa++;
+	if(aaa >= TEXT_LEN) { aaa = 0; ttt++; }
 }
 
 int fftrow = 80;
 #define FFTLEN 128
+#define FFT_BIN1 16
+#define FFT_BIN2 112
 void ui_fft_line(float *data) {
 	unsigned i;
 	float mag[FFTLEN], mag_avg = 0;
 
-	if(display_area(0,fftrow, 128,fftrow+1)) return;
+	display_area(0,fftrow, FFT_BIN2-FFT_BIN1, fftrow+1);
 	display_start();
 
 #if 0
@@ -50,7 +89,7 @@ void ui_fft_line(float *data) {
 	}
 	mag_avg = (100.0f*FFTLEN) / mag_avg;
 
-	for(i=0;i<FFTLEN;i++) {
+	for(i=FFT_BIN1;i<FFT_BIN2;i++) {
 		int mag_norm = mag[i] * mag_avg;
 		int color1, color2;
 		color1 = mag_norm >= 255 ? 255 : mag_norm;
@@ -62,5 +101,5 @@ void ui_fft_line(float *data) {
 
 	display_end();
 	fftrow++;
-	if(fftrow >= 160) fftrow = 20;
+	if(fftrow >= 160) fftrow = 0;
 }

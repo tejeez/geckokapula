@@ -37,7 +37,10 @@ VCC, RESET and LED pins on display are connected to +3.3 V.
 # Files in the project
 The project should be opened in Simplicity Studio.
 
-The interesting code is in main.c and display.c.
+The interesting code is in main.c, display.c and ui.c.
 Everything else is mostly silabs libraries and generated stuff.
 The isc and hwconf files have the hardware parameters
 that can be edited in Simplicity Studio GUI.
+
+
+Font is from https://github.com/dhepper/font8x8/

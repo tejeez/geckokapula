@@ -11,8 +11,9 @@
 #include <stdint.h>
 
 void display_init_loop();
+int display_ready();
 
-int display_area(int x1,int y1,int x2,int y2);
+void display_area(int x1,int y1,int x2,int y2);
 void display_start();
 void display_end();
 void display_pixel(uint8_t r, uint8_t g, uint8_t b);

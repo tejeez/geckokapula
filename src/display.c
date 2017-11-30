@@ -53,8 +53,7 @@ void display_pixel(uint8_t r, uint8_t g, uint8_t b) {
 	USART_Tx(USART1, b);
 }
 
-int display_area(int x1,int y1,int x2,int y2) {
-	if(!display_initialized) return -1;
+void display_area(int x1,int y1,int x2,int y2) {
 	writecommand(0x2A); // column address set
 	writedata(0);
 	writedata(x1);
@@ -67,6 +66,10 @@ int display_area(int x1,int y1,int x2,int y2) {
 	writedata(y2);
 	writecommand(0x2C); // memory write
 	return 0;
+}
+
+int display_ready() {
+	return display_initialized;
 }
 
 // minimum delay between display init commands (us)
