@@ -201,7 +201,7 @@
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
 	</storageModule>
-	<storageModule generalProj.esf.protocolIds="com.silabs.sdk.stack.super:1.1.1._2016992864.com.silabs.sdk.stack.flex:1.2.1.0_-1047550623" generalProj.esf.protocolNames="flex" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="85" projectCommon.boardIds="com.silabs.board.none:0.0.0" projectCommon.importModeId="LINK_LIBRARIES" projectCommon.partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" projectCommon.sdkId="com.silabs.sdk.stack.super:1.1.1._2016992864"/>
+	<storageModule generalProj.esf.protocolIds="com.silabs.sdk.stack.super:1.1.1._2016992864.com.silabs.sdk.stack.flex:1.2.1.0_-1047550623" generalProj.esf.protocolNames="flex" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="98" projectCommon.boardIds="com.silabs.board.none:0.0.0" projectCommon.importModeId="LINK_LIBRARIES" projectCommon.partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" projectCommon.sdkId="com.silabs.sdk.stack.super:1.1.1._2016992864"/>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="mgkokeilu2.com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType.965204551" name="SLS CDT Project" projectType="com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType"/>
 	</storageModule>

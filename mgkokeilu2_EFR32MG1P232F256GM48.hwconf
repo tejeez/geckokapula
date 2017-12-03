@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="ASCII"?>
 <device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="EFR32MG1P232F256GM48" partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" contextId="%DEFAULT%">
   <mode name="DefaultMode">
+    <property object="ADC0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="ADC0" propertyId="adc.adcsettings.adcfrequencyhz" value="1000000"/>
+    <property object="ADC0" propertyId="adc.adcsettings.conversiontailgating" value="Enabled"/>
+    <property object="ADC0" propertyId="adc.adcsettings.oversampling" value="16x"/>
+    <property object="ADC0" propertyId="adc.adcsettings.warmupmode" value="Keep ADC and scan reference warm"/>
+    <property object="ADC0" propertyId="singlesamplemode.singlesamplemodesettings.input" value="APORT3XCH6 (PD14)"/>
+    <property object="ADC0" propertyId="singlesamplemode.singlesamplemodesettings.positiveinputconfiguration" value="(PD14) from ADC0_P"/>
+    <property object="ADC0" propertyId="singlesamplemode.singlesamplemodesettings.resolution" value="Oversampling"/>
+    <property object="ADC0" propertyId="singlesamplemode.singlesamplemodesettings.singlesamplemode" value="Enabled"/>
     <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
     <property object="CMU" propertyId="clocksettings.hfclocksettings.hfclocksource" value="HFXO"/>
     <property object="CMU" propertyId="clocksettings.lfclocksettings.lfrcorequired" value="Yes"/>
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="EMU" propertyId="ABPeripheral.included" value="true"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
+    <property object="LDMA" propertyId="ABPeripheral.included" value="true"/>
     <property object="PA0" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PA1" propertyId="ports.settings.dout" value="1"/>
     <property object="PA1" propertyId="ports.settings.filter" value="Enabled"/>
@@ -60,6 +70,7 @@
     <property object="PF6" propertyId="ports.settings.pulldirection" value="Pullup"/>
     <property object="PF6" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.adc0.enable.adctestn" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.aport.enable.cp_4" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.timer0.enable.cc0" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.timer0.location.timer0_cc0loc" value="18"/>
     <property object="PORTIO" propertyId="portio.timer1.enable.cc0" value="Enabled"/>
@@ -87,6 +98,7 @@
     <property object="USART1" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>
     <property object="USART1" propertyId="usart.synchronoussettings.baudrate" value="16000000"/>
     <property object="WDOG0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="WDOG0" propertyId="wdog.initialization.blockswfromdisablinglfxolfrco" value="Block oscillator disable"/>
     <property object="WDOG0" propertyId="wdog.initialization.clockselect" value="LFRCO"/>
     <property object="WDOG0" propertyId="wdog.initialization.enablewatchdog" value="Disabled"/>
   </mode>

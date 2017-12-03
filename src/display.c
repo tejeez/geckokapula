@@ -15,16 +15,19 @@
 #include <stdint.h>
 #include "em_usart.h"
 #include "em_gpio.h"
+#include "em_ldma.h"
 #include "InitDevice.h"
 #include "rail.h"
 
-static int display_initialized = 0;
+#define DISPLAY_DMA_CH 0
+static int display_initialized = 0, display_doing_dma = 0;
 
 #define GPIO_PortOutSet(g, p) GPIO->P[g].DOUT |= (1<<(p));
 #define GPIO_PortOutClear(g, p) GPIO->P[g].DOUT &= ~(1<<(p));
 
 void display_start() {
 	while (!(USART1->STATUS & USART_STATUS_TXC));
+	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
 	GPIO_PortOutSet(TFT_DC_PORT, TFT_DC_PIN);
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
 }
@@ -41,6 +44,7 @@ void writedata(uint8_t d) {
 }
 
 void writecommand(uint8_t d) {
+	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
 	GPIO_PortOutClear(TFT_DC_PORT, TFT_DC_PIN);
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
 	USART_SpiTransfer(USART1, d);
@@ -51,6 +55,15 @@ void display_pixel(uint8_t r, uint8_t g, uint8_t b) {
 	USART_Tx(USART1, r);
 	USART_Tx(USART1, g);
 	USART_Tx(USART1, b);
+}
+
+void display_transfer(uint8_t *dmadata, int dmalen) {
+	LDMA_TransferCfg_t tr =
+			LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART1_TXBL);
+	LDMA_Descriptor_t desc =
+			LDMA_DESCRIPTOR_SINGLE_M2P_BYTE(dmadata, &USART1->TXDATA, dmalen);
+	LDMA_StartTransfer(DISPLAY_DMA_CH, &tr, &desc);
+	display_doing_dma = 1;
 }
 
 void display_area(int x1,int y1,int x2,int y2) {
@@ -68,6 +81,11 @@ void display_area(int x1,int y1,int x2,int y2) {
 }
 
 int display_ready() {
+	if(display_doing_dma) {
+		if(LDMA_TransferDone(DISPLAY_DMA_CH))
+			display_doing_dma = 0;
+		else return 0;
+	}
 	return display_initialized;
 }
 

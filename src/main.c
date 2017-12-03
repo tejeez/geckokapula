@@ -111,12 +111,6 @@ void initRadio() {
   USART_Tx(USART0, '7');
 }
 
-static inline uint32_t saturating_add_u32(uint32_t a, uint32_t b) {
-	uint32_t c = a+b;
-	if(c < a || c < b) return 0xFFFFFFFFUL;
-	else return c;
-}
-
 #define FFTLEN 128
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len128;
 float fftbuf[2*FFTLEN];
@@ -133,7 +127,8 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 4*RXBUFL);
 	nread /= 4;
 	int ssi=0, ssq=0, audioout = 0;
-	static uint32_t smeter_acc = 0, smeter_count = 0;
+	static unsigned smeter_count = 0;
+	static uint64_t smeter_acc = 0;
 	static int audio_lpf = 0;
  	for(i=0; i<nread; i++) {
 		int si=rxbuf[i][0], sq=rxbuf[i][1];
@@ -176,7 +171,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 		psi = si; psq = sq;
 		ssi += si; ssq += sq;
 
-		smeter_acc = saturating_add_u32(smeter_acc, si*si + sq*sq);
+		smeter_acc += si*si + sq*sq;
 	}
 
 	int fp = fftbufp;
@@ -194,8 +189,8 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	//USART_Tx(USART0, 'r');
 
 	smeter_count += nread;
-	if(smeter_count >= 10000) {
-		p.smeter = smeter_acc;
+	if(smeter_count >= 0x4000) {
+		p.smeter = smeter_acc / 0x4000;
 		smeter_acc = 0;
 		smeter_count = 0;
 	}
