@@ -3,6 +3,7 @@
   <mode name="DefaultMode">
     <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
     <property object="CMU" propertyId="clocksettings.hfclocksettings.hfclocksource" value="HFXO"/>
+    <property object="CMU" propertyId="clocksettings.lfclocksettings.lfrcorequired" value="Yes"/>
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="EMU" propertyId="ABPeripheral.included" value="true"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
@@ -85,6 +86,9 @@
     <property object="USART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART1" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>
     <property object="USART1" propertyId="usart.synchronoussettings.baudrate" value="16000000"/>
+    <property object="WDOG0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="WDOG0" propertyId="wdog.initialization.clockselect" value="LFRCO"/>
+    <property object="WDOG0" propertyId="wdog.initialization.enablewatchdog" value="Disabled"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

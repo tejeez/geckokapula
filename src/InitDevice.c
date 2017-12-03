@@ -22,6 +22,7 @@
 #include "em_gpio.h"
 #include "em_timer.h"
 #include "em_usart.h"
+#include "em_wdog.h"
 // [Library includes]$
 
 //==============================================================================
@@ -35,6 +36,7 @@ extern void enter_DefaultMode_from_RESET(void) {
 	CMU_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
 	USART1_enter_DefaultMode_from_RESET();
+	//WDOG0_enter_DefaultMode_from_RESET(); // doesn't work
 	TIMER0_enter_DefaultMode_from_RESET();
 	TIMER1_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
@@ -117,6 +119,9 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	// [High Frequency Clock Setup]$
 
 	// $[LE clocks enable]
+	/* Enable LFRCO oscillator, and wait for it to be stable */
+	CMU_OscillatorEnable(cmuOsc_LFRCO, true, true);
+
 	// [LE clocks enable]$
 
 	// $[LFACLK Setup]
@@ -435,6 +440,22 @@ extern void LEUART0_enter_DefaultMode_from_RESET(void) {
 extern void WDOG0_enter_DefaultMode_from_RESET(void) {
 
 	// $[WDOG Initialization]
+	WDOG_Init_TypeDef wdogInit = WDOG_INIT_DEFAULT;
+
+	wdogInit.enable = 0;
+	wdogInit.debugRun = 0;
+	wdogInit.em2Run = 0;
+	wdogInit.em3Run = 0;
+	wdogInit.em4Block = 0;
+	wdogInit.swoscBlock = 0;
+	wdogInit.lock = 0;
+	wdogInit.clkSel = wdogClkSelLFRCO;
+	wdogInit.perSel = wdogPeriod_256k;
+	wdogInit.warnSel = wdogWarnDisable;
+	wdogInit.winSel = wdogIllegalWindowDisable;
+	wdogInit.resetDisable = false;
+
+	WDOGn_Init(WDOG0, &wdogInit);
 	// [WDOG Initialization]$
 
 }

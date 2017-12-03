@@ -14,7 +14,7 @@ typedef struct {
 	int channel_changed;
 	enum { MODE_FM, MODE_DSB } mode;
 	uint32_t frequency;
-	uint32_t step;
+	uint32_t smeter;
 } rig_parameters_t;
 extern rig_parameters_t p;
 

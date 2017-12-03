@@ -76,6 +76,11 @@
 			<locationURI>STUDIO_SDK_LOC/hardware/kit/common/drivers/dmactrl.c</locationURI>
 		</link>
 		<link>
+			<name>hal-efr32/em_adc.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_adc.c</locationURI>
+		</link>
+		<link>
 			<name>hal-efr32/em_assert.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_assert.c</locationURI>
@@ -149,6 +154,11 @@
 			<name>hal-efr32/em_usart.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_usart.c</locationURI>
+		</link>
+		<link>
+			<name>hal-efr32/em_wdog.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_wdog.c</locationURI>
 		</link>
 		<link>
 			<name>hal-efr32/gpiointerrupt.c</name>

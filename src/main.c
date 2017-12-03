@@ -12,6 +12,7 @@
 #include "em_usart.h"
 #include "em_gpio.h"
 #include "em_timer.h"
+#include "em_wdog.h"
 
 #include "InitDevice.h"
 
@@ -24,7 +25,7 @@
 #include "ui.h"
 #include "rig.h"
 
-rig_parameters_t p = {0,1,1, 2395000000, 6 };
+rig_parameters_t p = {0,1,1, 2395000000, 0 };
 
 
 uint8_t nollaa[300] = {255,255,0};
@@ -110,6 +111,11 @@ void initRadio() {
   USART_Tx(USART0, '7');
 }
 
+static inline uint32_t saturating_add_u32(uint32_t a, uint32_t b) {
+	uint32_t c = a+b;
+	if(c < a || c < b) return 0xFFFFFFFFUL;
+	else return c;
+}
 
 #define FFTLEN 128
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len128;
@@ -126,12 +132,15 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	GPIO_PortOutToggle(gpioPortF, 4);
 	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 4*RXBUFL);
 	nread /= 4;
-	int ssi=0, ssq=0, fm = 0;
-	for(i=0; i<nread; i++) {
+	int ssi=0, ssq=0, audioout = 0;
+	static uint32_t smeter_acc = 0, smeter_count = 0;
+	static int audio_lpf = 0;
+ 	for(i=0; i<nread; i++) {
 		int si=rxbuf[i][0], sq=rxbuf[i][1];
 		int fi, fq;
 		switch(p.mode) {
-		case MODE_FM:
+		case MODE_FM: {
+			int fm;
 			// multiply by conjugate
 			fi = si * psi + sq * psq;
 			fq = sq * psi - si * psq;
@@ -142,11 +151,12 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 				fi /= 0x100; fq /= 0x100;
 			}
 			// very crude approximation...
-			fm += 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
-			break;
+			fm = 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
+			audio_lpf += (fm*128 - audio_lpf)/16;
+			audioout = audio_lpf/128;
+			break; }
 		case MODE_DSB: {
 			int agc_1, agc_diff;
-			static int audio_lpf = 0;
 			audio_lpf += (si*128 - audio_lpf)/16;
 			fi = audio_lpf/128; // TODO: SSB filter
 
@@ -158,13 +168,15 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 			else
 				agc_level += agc_diff/256;
 
-			fm += 0x1000 * fi / (agc_level/0x100);
+			audioout += 0x1000 * fi / (agc_level/0x100);
 
-			} break;
+			break; }
 		}
 
 		psi = si; psq = sq;
 		ssi += si; ssq += sq;
+
+		smeter_acc = saturating_add_u32(smeter_acc, si*si + sq*sq);
 	}
 
 	int fp = fftbufp;
@@ -175,11 +187,18 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 		fftbufp = fp+2;
 	}
 
-	fm = (fm / 0x100) + 100;
-	if(fm < 0) fm = 0;
-	if(fm > 200) fm = 200;
-	TIMER_CompareBufSet(TIMER0, 0, fm);
+	audioout = (audioout / 0x100) + 100;
+	if(audioout < 0) audioout = 0;
+	if(audioout > 200) audioout = 200;
+	TIMER_CompareBufSet(TIMER0, 0, audioout);
 	//USART_Tx(USART0, 'r');
+
+	smeter_count += nread;
+	if(smeter_count >= 10000) {
+		p.smeter = smeter_acc;
+		smeter_acc = 0;
+		smeter_count = 0;
+	}
 
 }
 
@@ -192,6 +211,7 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 int main(void) {
 	enter_DefaultMode_from_RESET();
 	USART_Tx(USART0, 'a');
+	WDOG_Feed();
 	initRadio();
  	USART_Tx(USART0, 'b');
 
@@ -200,9 +220,11 @@ int main(void) {
 
 	for(;;) {
 		unsigned keyed = !GPIO_PinInGet(PTT_PORT, PTT_PIN);
+		WDOG_Feed();
 		if(p.channel_changed) {
 			config_channel();
 		}
+		WDOG_Feed();
 		if(keyed && (RAIL_RfStateGet() != RAIL_RF_STATE_TX || p.channel_changed)) {
 			p.channel_changed = 0;
 			RAIL_RfIdleExt(RAIL_IDLE_ABORT, false);
@@ -214,12 +236,14 @@ int main(void) {
 			startrx();
 		}
 
+		WDOG_Feed();
 		if(fftbufp >= 2*FFTLEN) {
 			arm_cfft_f32(fftS, fftbuf, 0, 1);
 			ui_fft_line(fftbuf);
 			fftbufp = 0;
 		}
 
+		WDOG_Feed();
 		ui_loop();
 		GPIO_PortOutSet(gpioPortF, 5);
 		GPIO_PortOutClear(gpioPortF, 5);

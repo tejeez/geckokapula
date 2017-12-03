@@ -10,6 +10,7 @@
 #include "rig.h"
 #include "ui_hw.h"
 #include <stdio.h>
+#include <math.h>
 
 static uint8_t aaa=0, ttt=0;
 
@@ -40,14 +41,27 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 }
 
 #define TEXT_LEN 20
-char textline[TEXT_LEN] = "geckokapula         ";
+char textline[TEXT_LEN+1] = "geckokapula";
 int text_hilight = 0;
 
+int ui_cursor = 6;
+
+const char *p_mode_names[] = { " FM", "DSB" };
+
 void ui_update_text() {
-	snprintf(textline, 20, "%10u Hz ", (unsigned)p.frequency);
-	text_hilight = p.step;
+	int i;
+	int s_dB = 10.0*log10(p.smeter);
+	i = snprintf(textline, TEXT_LEN+1, "%10u %s %3d",
+			(unsigned)p.frequency, p_mode_names[p.mode], s_dB);
+	for(; i<TEXT_LEN; i++) textline[i] = ' ';
+	text_hilight = ui_cursor;
 }
 
+static int wrap(int a, int b) {
+	while(a < 0) a += b;
+	while(a >= b) a -= b;
+	return a;
+}
 
 // count only every 4th position
 #define ENCODER_DIVIDER 4
@@ -58,17 +72,21 @@ void ui_check_buttons() {
 	int pos_now, pos_diff;
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
 	pos_diff = pos_now - pos_prev;
-	if(pos_diff >= 0x8000 / ENCODER_DIVIDER)
-		pos_diff -= 0x10000 / ENCODER_DIVIDER;
-	else if(pos_diff < -0x8000 / ENCODER_DIVIDER)
-		pos_diff += 0x10000 / ENCODER_DIVIDER;
+	if(pos_diff) {
+		if(pos_diff >= 0x8000 / ENCODER_DIVIDER)
+			pos_diff -= 0x10000 / ENCODER_DIVIDER;
+		else if(pos_diff < -0x8000 / ENCODER_DIVIDER)
+			pos_diff += 0x10000 / ENCODER_DIVIDER;
 
-	if(get_encoder_button()) {
-		p.step = (p.step + pos_diff) % 10;
-	} else {
-		if(pos_diff) {
-			p.frequency += pos_diff * steps[p.step];
-			p.channel_changed = 1;
+		if(get_encoder_button()) {
+			ui_cursor = wrap(ui_cursor + pos_diff, TEXT_LEN);
+		} else {
+			if(ui_cursor <= 9) {
+				p.frequency += pos_diff * steps[ui_cursor];
+				p.channel_changed = 1;
+			} else if(ui_cursor >= 11 && ui_cursor <= 13) {
+				p.mode = wrap(p.mode + pos_diff, 2);
+			}
 		}
 	}
 
