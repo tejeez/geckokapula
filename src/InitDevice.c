@@ -36,6 +36,7 @@ extern void enter_DefaultMode_from_RESET(void) {
 	USART0_enter_DefaultMode_from_RESET();
 	USART1_enter_DefaultMode_from_RESET();
 	TIMER0_enter_DefaultMode_from_RESET();
+	TIMER1_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
 	// [Config Calls]$
 
@@ -133,6 +134,9 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 
 	/* Enable clock for TIMER0 */
 	CMU_ClockEnable(cmuClock_TIMER0, true);
+
+	/* Enable clock for TIMER1 */
+	CMU_ClockEnable(cmuClock_TIMER1, true);
 
 	/* Enable clock for USART0 */
 	CMU_ClockEnable(cmuClock_USART0, true);
@@ -595,21 +599,109 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 extern void TIMER1_enter_DefaultMode_from_RESET(void) {
 
 	// $[TIMER1 I/O setup]
+	/* Set up CC0 */
+	TIMER1->ROUTELOC0 = (TIMER1->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC0LOC_MASK))
+			| TIMER_ROUTELOC0_CC0LOC_LOC19;
+	TIMER1->ROUTEPEN = TIMER1->ROUTEPEN | TIMER_ROUTEPEN_CC0PEN;
+	/* Set up CC1 */
+	TIMER1->ROUTELOC0 = (TIMER1->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC1LOC_MASK))
+			| TIMER_ROUTELOC0_CC1LOC_LOC19;
+	TIMER1->ROUTEPEN = TIMER1->ROUTEPEN | TIMER_ROUTEPEN_CC1PEN;
+	/* Set up CC2 */
+	TIMER1->ROUTELOC0 = (TIMER1->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC2LOC_MASK))
+			| TIMER_ROUTELOC0_CC2LOC_LOC0;
+	TIMER1->ROUTEPEN = TIMER1->ROUTEPEN & (~TIMER_ROUTEPEN_CC2PEN);
+	/* Set up CC3 */
+	TIMER1->ROUTELOC0 = (TIMER1->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC3LOC_MASK))
+			| TIMER_ROUTELOC0_CC3LOC_LOC0;
+	TIMER1->ROUTEPEN = TIMER1->ROUTEPEN & (~TIMER_ROUTEPEN_CC3PEN);
 	// [TIMER1 I/O setup]$
 
 	// $[TIMER1 initialization]
+	TIMER_Init_TypeDef init = TIMER_INIT_DEFAULT;
+
+	init.enable = 1;
+	init.debugRun = 0;
+	init.dmaClrAct = 0;
+	init.sync = 0;
+	init.clkSel = timerClkSelHFPerClk;
+	init.prescale = timerPrescale1;
+	init.fallAction = timerInputActionNone;
+	init.riseAction = timerInputActionNone;
+	init.mode = timerModeQDec;
+	init.quadModeX4 = 1;
+	init.oneShot = 0;
+	init.count2x = 0;
+	init.ati = 0;
+	TIMER_Init(TIMER1, &init);
 	// [TIMER1 initialization]$
 
 	// $[TIMER1 CC0 init]
+	TIMER_InitCC_TypeDef initCC0 = TIMER_INITCC_DEFAULT;
+
+	initCC0.prsInput = false;
+	initCC0.prsSel = timerPRSSELCh0;
+	initCC0.edge = timerEdgeRising;
+	initCC0.mode = timerCCModeCapture;
+	initCC0.eventCtrl = timerEventEveryEdge;
+	initCC0.filter = 1;
+	initCC0.cofoa = timerOutputActionNone;
+	initCC0.cufoa = timerOutputActionNone;
+	initCC0.cmoa = timerOutputActionNone;
+	initCC0.coist = 0;
+	initCC0.outInvert = 0;
+	TIMER_InitCC(TIMER1, 0, &initCC0);
 	// [TIMER1 CC0 init]$
 
 	// $[TIMER1 CC1 init]
+	TIMER_InitCC_TypeDef initCC1 = TIMER_INITCC_DEFAULT;
+
+	initCC1.prsInput = false;
+	initCC1.prsSel = timerPRSSELCh0;
+	initCC1.edge = timerEdgeRising;
+	initCC1.mode = timerCCModeCapture;
+	initCC1.eventCtrl = timerEventEveryEdge;
+	initCC1.filter = 1;
+	initCC1.cofoa = timerOutputActionNone;
+	initCC1.cufoa = timerOutputActionNone;
+	initCC1.cmoa = timerOutputActionNone;
+	initCC1.coist = 0;
+	initCC1.outInvert = 0;
+	TIMER_InitCC(TIMER1, 1, &initCC1);
 	// [TIMER1 CC1 init]$
 
 	// $[TIMER1 CC2 init]
+	TIMER_InitCC_TypeDef initCC2 = TIMER_INITCC_DEFAULT;
+
+	initCC2.prsInput = false;
+	initCC2.prsSel = timerPRSSELCh0;
+	initCC2.edge = timerEdgeRising;
+	initCC2.mode = timerCCModeOff;
+	initCC2.eventCtrl = timerEventEveryEdge;
+	initCC2.filter = 0;
+	initCC2.cofoa = timerOutputActionNone;
+	initCC2.cufoa = timerOutputActionNone;
+	initCC2.cmoa = timerOutputActionNone;
+	initCC2.coist = 0;
+	initCC2.outInvert = 0;
+	TIMER_InitCC(TIMER1, 2, &initCC2);
 	// [TIMER1 CC2 init]$
 
 	// $[TIMER1 CC3 init]
+	TIMER_InitCC_TypeDef initCC3 = TIMER_INITCC_DEFAULT;
+
+	initCC3.prsInput = false;
+	initCC3.prsSel = timerPRSSELCh0;
+	initCC3.edge = timerEdgeRising;
+	initCC3.mode = timerCCModeOff;
+	initCC3.eventCtrl = timerEventEveryEdge;
+	initCC3.filter = 0;
+	initCC3.cofoa = timerOutputActionNone;
+	initCC3.cufoa = timerOutputActionNone;
+	initCC3.cmoa = timerOutputActionNone;
+	initCC3.coist = 0;
+	initCC3.outInvert = 0;
+	TIMER_InitCC(TIMER1, 3, &initCC3);
 	// [TIMER1 CC3 init]$
 
 }

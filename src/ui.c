@@ -7,6 +7,9 @@
 
 #include "display.h"
 #include "font8x8_basic.h"
+#include "rig.h"
+#include "ui_hw.h"
+#include <stdio.h>
 
 static uint8_t aaa=0, ttt=0;
 
@@ -38,13 +41,47 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 
 #define TEXT_LEN 20
 char textline[TEXT_LEN] = "geckokapula         ";
-int text_hilight = 6;
+int text_hilight = 0;
+
+void ui_update_text() {
+	snprintf(textline, 20, "%10u Hz ", (unsigned)p.frequency);
+	text_hilight = p.step;
+}
+
+
+// count only every 4th position
+#define ENCODER_DIVIDER 4
+
+void ui_check_buttons() {
+	const int steps[] = { 1e9, 1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1 };
+	static unsigned pos_prev;
+	int pos_now, pos_diff;
+	pos_now = get_encoder_position() / ENCODER_DIVIDER;
+	pos_diff = pos_now - pos_prev;
+	if(pos_diff >= 0x8000 / ENCODER_DIVIDER)
+		pos_diff -= 0x10000 / ENCODER_DIVIDER;
+	else if(pos_diff < -0x8000 / ENCODER_DIVIDER)
+		pos_diff += 0x10000 / ENCODER_DIVIDER;
+
+	if(get_encoder_button()) {
+		p.step = (p.step + pos_diff) % 10;
+	} else {
+		if(pos_diff) {
+			p.frequency += pos_diff * steps[p.step];
+			p.channel_changed = 1;
+		}
+	}
+
+	pos_prev = pos_now;
+}
+
 
 void ui_loop() {
-	unsigned i;
+	ui_check_buttons();
 	display_init_loop();
 	if(!display_ready()) return;
 #if 0
+	unsigned i;
 	display_area(96, aaa, 128, aaa+1);
 	display_start();
 	for(i=0;i<32;i++) {
@@ -60,7 +97,10 @@ void ui_loop() {
 #endif
 	ui_character(aaa*8, 128-8, textline[aaa], aaa == text_hilight);
 	aaa++;
-	if(aaa >= TEXT_LEN) { aaa = 0; ttt++; }
+	if(aaa >= TEXT_LEN) {
+		ui_update_text();
+		aaa = 0; ttt++;
+	}
 }
 
 int fftrow = 80;

@@ -22,17 +22,12 @@
 
 #include "display.h"
 #include "ui.h"
+#include "rig.h"
+
+rig_parameters_t p = {0,1,1, 2395000000, 6 };
+
 
 uint8_t nollaa[300] = {255,255,0};
-
-// parameters
-struct {
-	int channel;
-	int channel_changed;
-	enum { MODE_FM, MODE_DSB } mode;
-	uint32_t frequency;
-	uint32_t step;
-} p = {0,1,1, 2395000000, 6 };
 
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);
@@ -58,12 +53,9 @@ void transmit_something() {
 	RAIL_TxStart(p.channel, NULL, NULL);
 }
 
-extern char textline[];
-extern int text_hilight;
 RAIL_ChannelConfigEntry_t channelconfigs[] = {{ 0, 20, 1000, 2395000000 }};
 const RAIL_ChannelConfig_t channelConfig = { channelconfigs, 1 };
 void config_channel() {
-	snprintf(textline, 20, "%10u Hz", p.frequency);
 
 	RAIL_RfIdleExt(RAIL_IDLE_ABORT, true);
 
@@ -118,39 +110,6 @@ void initRadio() {
   USART_Tx(USART0, '7');
 }
 
-static inline void read_encoder() {
-	const int enc_map[4] = { 0, 1, 3, 2 };
-	const int steps[] = { 1e9, 1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1 };
-	int enc, enc_diff, encp;
-	uint32_t channel;
-	static int enc_prev=0;
-	enc = enc_map[
-			GPIO_PinInGet(ENC1_PORT, ENC1_PIN) + 2*
-			GPIO_PinInGet(ENC2_PORT, ENC2_PIN)];
-	encp = GPIO_PinInGet(ENCP_PORT, ENCP_PIN) == 0;
-	enc_diff = (enc - enc_prev) & 3;
-	/*channel = p.channel;
-	if(enc_diff == 1) channel++;
-	if(enc_diff == 3) channel--;
-	if(channel != p.channel) {
-		p.channel = channel;
-		p.channel_changed = 1;
-	}*/
-	channel = p.frequency;
-	if(encp) {
-		if(enc_diff == 1) p.step = (p.step+1) % 10;
-		if(enc_diff == 3) p.step = (p.step-1) % 10;
-		text_hilight = p.step;
-	} else {
-		if(enc_diff == 1) channel+=steps[p.step];
-		if(enc_diff == 3) channel-=steps[p.step];
-	}
-	if(channel != p.frequency) {
-		p.frequency = channel;
-		p.channel_changed = 1;
-	}
-	enc_prev = enc;
-}
 
 #define FFTLEN 128
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len128;
@@ -222,7 +181,6 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	TIMER_CompareBufSet(TIMER0, 0, fm);
 	//USART_Tx(USART0, 'r');
 
-	read_encoder();
 }
 
 void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
@@ -242,7 +200,6 @@ int main(void) {
 
 	for(;;) {
 		unsigned keyed = !GPIO_PinInGet(PTT_PORT, PTT_PIN);
-		read_encoder();
 		if(p.channel_changed) {
 			config_channel();
 		}

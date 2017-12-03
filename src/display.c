@@ -65,7 +65,6 @@ void display_area(int x1,int y1,int x2,int y2) {
 	writedata(0);
 	writedata(y2);
 	writecommand(0x2C); // memory write
-	return 0;
 }
 
 int display_ready() {
