@@ -52,7 +52,7 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 	display_transfer(displaybuf, 3*8*8);
 }
 
-#define TEXT_LEN 20
+#define TEXT_LEN 40
 char textline[TEXT_LEN+1] = "geckokapula";
 int text_hilight = 0;
 
@@ -60,12 +60,14 @@ int ui_cursor = 6;
 
 const char *p_mode_names[] = { " FM", "DSB" };
 
+extern int testnumber;
 void ui_update_text() {
 	int i;
 	int s_dB = 10.0*log10(p.smeter);
-	i = snprintf(textline, TEXT_LEN+1, "%10u %s %3d",
+	for(i=0; i<TEXT_LEN; i++) textline[i] = ' ';
+	snprintf(textline, 21, "%10u %s %2d",
 			(unsigned)p.frequency, p_mode_names[p.mode], s_dB);
-	for(; i<TEXT_LEN; i++) textline[i] = ' ';
+	snprintf(textline+20, 21, "%6d   geckokapula", testnumber);
 	text_hilight = ui_cursor;
 }
 
@@ -110,7 +112,10 @@ void ui_loop() {
 	ui_check_buttons();
 	display_init_loop();
 	if(!display_ready()) return;
-	ui_character(aaa*8, 128-8, textline[aaa], aaa == text_hilight);
+	if(aaa < 20) // first line
+		ui_character(aaa*8, 128-8, textline[aaa], aaa == text_hilight);
+	else // second line
+		ui_character((aaa-20)*8, 128-16, textline[aaa], aaa == text_hilight);
 	aaa++;
 	if(aaa >= TEXT_LEN) {
 		ui_update_text();
@@ -120,8 +125,8 @@ void ui_loop() {
 
 int fftrow = 0;
 #define FFTLEN 128
-#define FFT_BIN1 4
-#define FFT_BIN2 124
+#define FFT_BIN1 8
+#define FFT_BIN2 120
 #if DISPLAYBUF_SIZE < 3*(FFT_BIN2-FFT_BIN1)
 #error "Too small display buffer for FFT"
 #endif

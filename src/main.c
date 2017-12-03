@@ -13,6 +13,7 @@
 #include "em_gpio.h"
 #include "em_timer.h"
 #include "em_wdog.h"
+#include "em_adc.h"
 
 #include "InitDevice.h"
 
@@ -203,6 +204,7 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 	USART_Tx(USART0, 'e');
 }
 
+int testnumber=73;
 int main(void) {
 	enter_DefaultMode_from_RESET();
 	USART_Tx(USART0, 'a');
@@ -212,6 +214,8 @@ int main(void) {
 
  	TIMER_TopSet(TIMER0, 200);
  	TIMER_CompareBufSet(TIMER0, 0, 33);
+
+ 	ADC_Start(ADC0, adcStartSingle);
 
 	for(;;) {
 		unsigned keyed = !GPIO_PinInGet(PTT_PORT, PTT_PIN);
@@ -239,6 +243,7 @@ int main(void) {
 		}
 
 		WDOG_Feed();
+		testnumber = ADC_DataSingleGet(ADC0);
 		ui_loop();
 		GPIO_PortOutSet(gpioPortF, 5);
 		GPIO_PortOutClear(gpioPortF, 5);
