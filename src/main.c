@@ -22,6 +22,10 @@
 #include "arm_math.h"
 #include "arm_const_structs.h"
 
+// FreeRTOS
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "display.h"
 #include "ui.h"
 #include "rig.h"
@@ -205,18 +209,8 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 }
 
 int testnumber=73;
-int main(void) {
-	enter_DefaultMode_from_RESET();
-	USART_Tx(USART0, 'a');
-	WDOG_Feed();
-	initRadio();
- 	USART_Tx(USART0, 'b');
 
- 	TIMER_TopSet(TIMER0, 200);
- 	TIMER_CompareBufSet(TIMER0, 0, 33);
-
- 	ADC_Start(ADC0, adcStartSingle);
-
+void task1() {
 	for(;;) {
 		unsigned keyed = !GPIO_PinInGet(PTT_PORT, PTT_PIN);
 		WDOG_Feed();
@@ -243,10 +237,36 @@ int main(void) {
 		}
 
 		WDOG_Feed();
-		testnumber = ADC_DataSingleGet(ADC0);
+		//testnumber = ADC_DataSingleGet(ADC0);
 		ui_loop();
 		GPIO_PortOutSet(gpioPortF, 5);
 		GPIO_PortOutClear(gpioPortF, 5);
 	}
+}
+
+void task2() {
+	for(;;) {
+		testnumber++;
+		taskYIELD();
+	}
+}
+
+TaskHandle_t task1h, task2h;
+
+int main(void) {
+	enter_DefaultMode_from_RESET();
+	USART_Tx(USART0, 'a');
+	WDOG_Feed();
+	initRadio();
+ 	USART_Tx(USART0, 'b');
+
+ 	TIMER_TopSet(TIMER0, 200);
+ 	TIMER_CompareBufSet(TIMER0, 0, 33);
+
+ 	ADC_Start(ADC0, adcStartSingle);
+
+ 	xTaskCreate(task1, "task1", 512, NULL, 1, &task1h);
+ 	xTaskCreate(task2, "task2", 128,  NULL, 1, &task2h);
+ 	vTaskStartScheduler();
 	return 0;
 }
