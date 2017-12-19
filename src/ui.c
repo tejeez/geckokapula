@@ -10,7 +10,12 @@
 #include "rig.h"
 #include "ui_hw.h"
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
+
+// FreeRTOS
+#include "FreeRTOS.h"
+#include "task.h"
 
 static uint8_t aaa=0, ttt=0;
 
@@ -109,10 +114,20 @@ void ui_check_buttons() {
 }
 
 
+static float fftline_data[2*FFTLEN];
+static char fftline_ready=0;
+static void ui_draw_fft_line(float *data);
+
 void ui_loop() {
 	ui_check_buttons();
 	display_init_loop();
 	if(!display_ready()) return;
+
+	if(fftline_ready) {
+		ui_draw_fft_line(fftline_data);
+		fftline_ready = 0;
+	}
+
 	if(aaa < 20) // first line
 		ui_character(aaa*8, 128-8, textline[aaa], aaa == text_hilight);
 	else // second line
@@ -133,6 +148,16 @@ int fftrow = 0;
 #endif
 
 void ui_fft_line(float *data) {
+	/* This is called from another task.
+	 * Copy data to an intermediate buffer so that only the display task
+	 * writes to the display DMA buffer and controls the display.
+	 */
+	if(fftline_ready) return;
+	memcpy(fftline_data, data, 2*FFTLEN*sizeof(float));
+	fftline_ready = 1;
+}
+
+static void ui_draw_fft_line(float *data) {
 	unsigned i;
 	float mag[FFTLEN], mag_avg = 0;
 
@@ -162,4 +187,17 @@ void ui_fft_line(float *data) {
 
 	fftrow++;
 	if(fftrow >= 160) fftrow = 0;
+}
+
+
+void ui_task() {
+	/* TODO: Put display control and button check in different tasks?
+	 * Have to ensure that they are thread safe first.
+	 * Could also start using semaphores or timers instead of just yielding
+	 * for more efficient CPU use and the possibility to have different
+	 * task priorities. */
+	for(;;) {
+		ui_loop();
+		taskYIELD();
+	}
 }
