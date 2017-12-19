@@ -84,6 +84,7 @@ void ui_check_buttons() {
 	const int steps[] = { 1e9, 1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1 };
 	static unsigned pos_prev;
 	int pos_now, pos_diff;
+	p.keyed = get_ptt();
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
 	pos_diff = pos_now - pos_prev;
 	if(pos_diff) {
@@ -124,7 +125,7 @@ void ui_loop() {
 }
 
 int fftrow = 0;
-#define FFTLEN 128
+//#define FFTLEN 128
 #define FFT_BIN1 8
 #define FFT_BIN2 120
 #if DISPLAYBUF_SIZE < 3*(FFT_BIN2-FFT_BIN1)

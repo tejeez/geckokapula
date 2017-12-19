@@ -11,11 +11,13 @@
 // parameters
 typedef struct {
 	int channel;
-	int channel_changed;
+	char channel_changed, keyed;
 	enum { MODE_FM, MODE_DSB } mode;
 	uint32_t frequency;
 	uint32_t smeter;
 } rig_parameters_t;
 extern rig_parameters_t p;
+
+#define FFTLEN 128
 
 #endif /* INC_RIG_H_ */
