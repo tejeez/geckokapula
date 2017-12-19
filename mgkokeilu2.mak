@@ -98,6 +98,7 @@ ASMDEFS = -DNULL_BTL \
 
 CINC = -I. \
 -I$(ARM_IAR7_DIR)/ARM/INC \
+  -Ifreertos \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/protocol/flex_1.2/connect/plugins \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/protocol/flex_1.2/connect/plugins/stack \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/protocol/flex_1.2/connect/plugins/stack/include \
@@ -130,7 +131,6 @@ CINC = -I. \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/platform/radio/rail_lib/common \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/platform/radio/rail_lib/protocol/ieee802154 \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/platform/base/phy \
-  -Ifreertos \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/hardware/kit/EFR32MG1_BRD4151A/config \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/hardware/kit/common/bsp \
   -I../../../SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v1.1/hardware/kit/EFR32MG1_BRD4151A/config \

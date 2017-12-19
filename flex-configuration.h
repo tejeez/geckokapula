@@ -70,6 +70,16 @@
 #endif
 #define EMBER_SERIAL1_BLOCKING
 
+#ifdef ARM_MATH_CM4
+#undef ARM_MATH_CM4
+#endif
+#define ARM_MATH_CM4 1
+
+#ifdef __FPU_PRESENT
+#undef __FPU_PRESENT
+#endif
+#define __FPU_PRESENT 1
+
 #ifdef EMBER_AF_RADIO
 #undef EMBER_AF_RADIO
 #endif

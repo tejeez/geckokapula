@@ -215,6 +215,8 @@ NOTE: Due to the higher current consumption of the continuous radio usage (espec
 \}
 }
 {setupId:macros
+ARM_MATH_CM4=1
+__FPU_PRESENT=1
 }
 {setupId:phyOptions
 }
