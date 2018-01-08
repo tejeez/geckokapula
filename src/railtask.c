@@ -193,10 +193,12 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 }
 
 
+extern int testnumber;
 void rail_task() {
 	initRadio();
-	unsigned keyed = p.keyed;
+	unsigned char modulation_test=0;
 	for(;;) {
+		unsigned keyed = p.keyed;
 		if(p.channel_changed) {
 			config_channel();
 		}
@@ -204,12 +206,18 @@ void rail_task() {
 			p.channel_changed = 0;
 			RAIL_RfIdleExt(RAIL_IDLE_ABORT, false);
 			RAIL_TxToneStart(p.channel);
+			RAIL_DebugModeSet(1);
+		}
+		if(keyed) {
+			RAIL_DebugFrequencyOverride(p.frequency + 100*modulation_test);
+			modulation_test++;
 		}
 		if((!keyed) && (RAIL_RfStateGet() != RAIL_RF_STATE_RX || p.channel_changed)) {
 			p.channel_changed = 0;
 			RAIL_TxToneStop();
 			startrx();
 		}
+		testnumber++; // to see if RAIL has stuck in some function
 		taskYIELD();
 	}
 }

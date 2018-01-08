@@ -26,6 +26,11 @@ uint8_t displaybuf[DISPLAYBUF_SIZE];
 #error "Too small display buffer for text"
 #endif
 
+static int wrap(int a, int b) {
+	while(a < 0) a += b;
+	while(a >= b) a -= b;
+	return a;
+}
 #define display_buf_pixel(r,g,b) do{ *bufp++ = r; *bufp++ = g; *bufp++ = b; }while(0)
 
 void ui_character(int x1, int y1, unsigned char c, int highlighted) {
@@ -62,34 +67,42 @@ char textline[TEXT_LEN+1] = "geckokapula";
 int text_hilight = 0;
 
 int ui_cursor = 6;
+static char ui_keyed = 0;
 
 const char *p_mode_names[] = { " FM", "DSB" };
+const char *p_keyed_text[] = { "rx", "tx" };
 
 extern int testnumber;
 void ui_update_text() {
 	int i;
 	int s_dB = 10.0*log10(p.smeter);
 	for(i=0; i<TEXT_LEN; i++) textline[i] = ' ';
-	snprintf(textline, 21, "%10u %s %2d",
-			(unsigned)p.frequency, p_mode_names[p.mode], s_dB);
-	snprintf(textline+20, 21, "%6d   geckokapula", testnumber);
+	snprintf(textline, 21, "%10u %s %s",
+			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed]);
+	snprintf(textline+20, 21, "%6d   %2d", testnumber, s_dB);
 	text_hilight = ui_cursor;
 }
 
-static int wrap(int a, int b) {
-	while(a < 0) a += b;
-	while(a >= b) a -= b;
-	return a;
+
+static void ui_knob_turned(int cursor, int diff) {
+	if(cursor >= 0 && cursor <= 9) { // frequency
+		const int steps[] = { 1e9, 1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1 };
+		p.frequency += diff * steps[ui_cursor];
+		p.channel_changed = 1;
+	} else if(cursor >= 11 && cursor <= 13) { // mode
+		p.mode = wrap(p.mode + diff, 2);
+	} else if(cursor >= 15 && cursor <= 16) {
+		ui_keyed = wrap(ui_keyed + diff, 2);
+	}
 }
 
 // count only every 4th position
 #define ENCODER_DIVIDER 4
 
 void ui_check_buttons() {
-	const int steps[] = { 1e9, 1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1 };
 	static unsigned pos_prev;
 	int pos_now, pos_diff;
-	p.keyed = get_ptt();
+	p.keyed = ui_keyed ? 1 : get_ptt();
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
 	pos_diff = pos_now - pos_prev;
 	if(pos_diff) {
@@ -99,14 +112,9 @@ void ui_check_buttons() {
 			pos_diff += 0x10000 / ENCODER_DIVIDER;
 
 		if(get_encoder_button()) {
-			ui_cursor = wrap(ui_cursor + pos_diff, TEXT_LEN);
+			ui_cursor = wrap(ui_cursor + pos_diff, /*TEXT_LEN*/20);
 		} else {
-			if(ui_cursor <= 9) {
-				p.frequency += pos_diff * steps[ui_cursor];
-				p.channel_changed = 1;
-			} else if(ui_cursor >= 11 && ui_cursor <= 13) {
-				p.mode = wrap(p.mode + pos_diff, 2);
-			}
+			ui_knob_turned(ui_cursor, pos_diff);
 		}
 	}
 
