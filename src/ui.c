@@ -17,8 +17,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-static uint8_t aaa=0, ttt=0;
-
 #define DISPLAYBUF_SIZE 384
 uint8_t displaybuf[DISPLAYBUF_SIZE];
 
@@ -37,9 +35,6 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 	int x, y;
 	if(!display_ready()) return;
 
-	uint8_t bgb = (x1 + ttt) & 0x7F;
-	if(bgb > 0x40) bgb = 0x80 - bgb;
-
 	display_area(y1, x1, y1+7, x1+7);
 	display_start();
 	char *font = font8x8_basic[c];
@@ -55,7 +50,7 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 				if(highlighted)
 					display_buf_pixel(255,255,255);
 				else
-					display_buf_pixel(0,0,bgb);
+					display_buf_pixel(0,0,128);
 			}
 		}
 	}
@@ -64,10 +59,9 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 
 #define TEXT_LEN 40
 char textline[TEXT_LEN+1] = "geckokapula";
-int text_hilight = 0;
+char textprev[TEXT_LEN+1] = "";
 
-int ui_cursor = 6;
-static char ui_keyed = 0;
+static unsigned char aaa = 0, ui_cursor = 6, ui_keyed = 0;
 
 const char *p_mode_names[] = { " FM", "DSB" };
 const char *p_keyed_text[] = { "rx", "tx" };
@@ -80,14 +74,18 @@ void ui_update_text() {
 	snprintf(textline, 21, "%10u %s %s",
 			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed]);
 	snprintf(textline+20, 21, "%6d   %2d", testnumber, s_dB);
-	text_hilight = ui_cursor;
+	//text_hilight = ui_cursor;
+	// highest bit for hilight
+	int p = ui_cursor;
+	if(p >= 0 && p < TEXT_LEN)
+		textline[p] |= 0x80;
 }
 
 
 static void ui_knob_turned(int cursor, int diff) {
 	if(cursor >= 0 && cursor <= 9) { // frequency
 		const int steps[] = { 1e9, 1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1 };
-		p.frequency += diff * steps[ui_cursor];
+		p.frequency += diff * steps[(int)ui_cursor];
 		p.channel_changed = 1;
 	} else if(cursor >= 11 && cursor <= 13) { // mode
 		p.mode = wrap(p.mode + diff, 2);
@@ -112,7 +110,7 @@ void ui_check_buttons() {
 			pos_diff += 0x10000 / ENCODER_DIVIDER;
 
 		if(get_encoder_button()) {
-			ui_cursor = wrap(ui_cursor + pos_diff, /*TEXT_LEN*/20);
+			ui_cursor = wrap(ui_cursor - pos_diff, /*TEXT_LEN*/20);
 		} else {
 			ui_knob_turned(ui_cursor, pos_diff);
 		}
@@ -134,17 +132,30 @@ void ui_loop() {
 	if(fftline_ready) {
 		ui_draw_fft_line(fftline_data);
 		fftline_ready = 0;
+		return;
 	}
 
-	if(aaa < 20) // first line
-		ui_character(aaa*8, 128-8, textline[aaa], aaa == text_hilight);
-	else // second line
-		ui_character((aaa-20)*8, 128-16, textline[aaa], aaa == text_hilight);
-	aaa++;
-	if(aaa >= TEXT_LEN) {
+	/* Update text when starting to draw next line of text.
+	 * Find the next character to be drawn
+	 * and draw one character per call.
+	 */
+	if(aaa == 0)
 		ui_update_text();
-		aaa = 0; ttt++;
+
+	while(textline[aaa] == textprev[aaa] && aaa < TEXT_LEN)
+		aaa++;
+
+	if(aaa < TEXT_LEN/* && textline[aaa] != textprev[aaa]*/) {
+		char c = textline[aaa];
+		if(aaa < 20) // first line
+			ui_character(aaa*8, 128-8, c&0x7F, (c&0x80) != 0);
+		else // second line
+			ui_character((aaa-20)*8, 128-16, c&0x7F, (c&0x80) != 0);
+		textprev[aaa] = c;
 	}
+
+	if(aaa >= TEXT_LEN)
+		aaa = 0;
 }
 
 int fftrow = 0;
@@ -201,11 +212,9 @@ static void ui_draw_fft_line(float *data) {
 void ui_task() {
 	/* TODO: Put display control and button check in different tasks?
 	 * Have to ensure that they are thread safe first.
-	 * Could also start using semaphores or timers instead of just yielding
-	 * for more efficient CPU use and the possibility to have different
-	 * task priorities. */
+	 */
 	for(;;) {
 		ui_loop();
-		taskYIELD();
+		vTaskDelay(1);
 	}
 }

@@ -149,9 +149,9 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 			agc_1 = (fi>=0?fi:-fi) * 0x100; // rectify
 			agc_diff = agc_1 - agc_level;
 			if(agc_diff > 0)
-				agc_level += agc_diff/64;
-			else
 				agc_level += agc_diff/256;
+			else
+				agc_level += agc_diff/2048;
 
 			audioout += 0x1000 * fi / (agc_level/0x100);
 

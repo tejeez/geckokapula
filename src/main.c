@@ -74,10 +74,10 @@ int main(void) {
 
  	ADC_Start(ADC0, adcStartSingle);
 
-	xTaskCreate(ui_task, "ui_task", 0x200, NULL, 1, &ui_task_h);
-	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 1, &rail_task_h);
-	xTaskCreate(task1, "task1", 0x200, NULL, 1, &task1h);
-	xTaskCreate(task2, "task2", 0x40, NULL, 1, &task2h);
+	xTaskCreate(ui_task, "ui_task", 0x200, NULL, 3, &ui_task_h);
+	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &rail_task_h);
+	xTaskCreate(task1, "task1", 0x200, NULL, 3, &task1h);
+	//xTaskCreate(task2, "task2", 0x40, NULL, 3, &task2h);
  	vTaskStartScheduler();
 	return 0;
 }
