@@ -1,9 +1,9 @@
-// Copyright 2017 Silicon Laboratories, Inc.
+// Copyright 2018 Silicon Laboratories, Inc.
 //
 //
 
 
-API version: 2.10.0
+API version: 2.11.0
 
 - Informational data:
 Preamble Binary Pattern = 0101010101010101010101010101010101010101 
@@ -11,6 +11,8 @@ Sync Word Binary Pattern = 1111011010001101
 Actual Bandwidth = 15029 
 Desired baudrate = 32000 
 Actual sample frequency = 57142.0 
+Antenna diversity mode = 0 
+Disable repeated measurement of first antenna when Select-Best algorithm is used = 0 
 
 - Calculated and corrected values:
 Timing Detection Threshold = 20 
@@ -37,5 +39,8 @@ RX Baudrate offset = 0 Hz
 AGC Speed = 1 
 Frequency Compensation Mode = 0 
 OOK slicer level = 3 
+Antenna diversity mode = 0 
+Diversity Select-Best repeat = 0 
+Common RX/TX circuit = 0 
 Preamble on the air: 0101010101010101010101010101010101010101
 Syncword 0 on the air: 1111011010001101

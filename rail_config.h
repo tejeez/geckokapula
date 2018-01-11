@@ -1,4 +1,4 @@
-// Copyright 2017 Silicon Laboratories, Inc.
+// Copyright 2018 Silicon Laboratories, Inc.
 //
 //
 
@@ -10,7 +10,7 @@
 // =============================================================================
 //
 //  WARNING: Auto-Generated Radio Config Header  -  DO NOT EDIT
-//  Radio Configurator Version: 2.10.0
+//  Radio Configurator Version: 2.11.0
 //  RAIL Adapter Version: 2.0.4
 //  RAIL Compatibility: 1.x
 //

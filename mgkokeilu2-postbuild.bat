@@ -9,4 +9,10 @@ for %%i in (%params%) do (
   set param[!count!]=%%i
 )
 
-start /unix "/home/ubuntu/SimplicityStudio_v4/jre/bin/java" -jar "/home/ubuntu/SimplicityStudio_v4/plugins/com.silabs.external.jython_2.7.0.201705012047-102/external_jython/2.7.0/jython-2.7.0.jar"  "/home/ubuntu/SimplicityStudio/v4_workspace/mgkokeilu2/./mgkokeilu2-postbuild.py" %param[1]%  %param[2]%  "wine start /unix " "wine cmd /C" %param[3]% 
+set "studioInstallationDir=/home/ubuntu/SimplicityStudio_v4"
+set "projDir=%~dp0"
+set "projDir=%projDir:"=%"
+
+set "projDir=%projDir:\=/%"
+set "projDir=%projDir:Z:=%"
+start /unix "%studioInstallationDir%/jre/bin/java" -jar "/home/ubuntu/SimplicityStudio_v4/plugins/com.silabs.external.jython_2.7.0.201705012047-102/external_jython/2.7.0/jython-2.7.0.jar"  "%projDir%/mgkokeilu2-postbuild.py" %param[1]%  %param[2]%  "wine start /unix " "wine cmd /C" %param[3]% 
