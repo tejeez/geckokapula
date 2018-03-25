@@ -35,12 +35,15 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 	int x, y;
 	if(!display_ready()) return;
 
-	display_area(y1, x1, y1+7, x1+7);
+	//display_area(y1, x1, y1+7, x1+7);
+	display_area(x1, y1, x1+7, y1+7);
 	display_start();
 	char *font = font8x8_basic[c];
 	uint8_t *bufp = displaybuf;
-	for(x=0; x<8; x++) {
-		for(y=7; y>=0; y--) {
+	/*for(x=0; x<8; x++) {
+		for(y=7; y>=0; y--) {*/
+	for(y=0; y<8; y++) {
+		for(x=0; x<8; x++) {
 			if(font[y] & (1<<x)) {
 				if(highlighted)
 					display_buf_pixel(0,0,0);
@@ -157,10 +160,10 @@ void ui_loop() {
 
 	if(aaa < TEXT_LEN/* && textline[aaa] != textprev[aaa]*/) {
 		char c = textline[aaa];
-		if(aaa < 20) // first line
-			ui_character(aaa*8, 128-8, c&0x7F, (c&0x80) != 0);
+		if(aaa < 16) // first line
+			ui_character(aaa*8, /*128-8*/0, c&0x7F, (c&0x80) != 0);
 		else // second line
-			ui_character((aaa-20)*8, 128-16, c&0x7F, (c&0x80) != 0);
+			ui_character((aaa-16)*8, /*128-16*/8, c&0x7F, (c&0x80) != 0);
 		textprev[aaa] = c;
 	}
 
@@ -168,10 +171,12 @@ void ui_loop() {
 		aaa = 0;
 }
 
-int fftrow = 0;
+int fftrow = 16;
 //#define FFTLEN 128
-#define FFT_BIN1 8
-#define FFT_BIN2 120
+/*#define FFT_BIN1 8
+#define FFT_BIN2 120*/
+#define FFT_BIN1 64
+#define FFT_BIN2 192
 #if DISPLAYBUF_SIZE < 3*(FFT_BIN2-FFT_BIN1)
 #error "Too small display buffer for FFT"
 #endif
@@ -191,6 +196,7 @@ static void ui_draw_fft_line(float *data) {
 	float mag[FFTLEN], mag_avg = 0;
 
 	if(!display_ready()) return;
+	display_scroll(fftrow);
 	display_area(0,fftrow, FFT_BIN2-FFT_BIN1, fftrow);
 	display_start();
 
@@ -215,7 +221,7 @@ static void ui_draw_fft_line(float *data) {
 	display_transfer(displaybuf, 3*(FFT_BIN2-FFT_BIN1));
 
 	fftrow++;
-	if(fftrow >= 160) fftrow = 0;
+	if(fftrow >= 160) fftrow = 16;
 }
 
 

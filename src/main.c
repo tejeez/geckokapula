@@ -31,7 +31,8 @@ TaskHandle_t rail_task_h=NULL, ui_task_h=NULL, task1h=NULL, task2h=NULL;
 
 int testnumber=73;
 
-const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len128;
+//const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len128;
+const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
 float fftbuf[2*FFTLEN];
 volatile int fftbufp = 0;
 

@@ -19,6 +19,6 @@ typedef struct {
 } rig_parameters_t;
 extern rig_parameters_t p;
 
-#define FFTLEN 128
+#define FFTLEN 256
 
 #endif /* INC_RIG_H_ */
