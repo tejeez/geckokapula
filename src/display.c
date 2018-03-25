@@ -19,6 +19,11 @@
 #include "InitDevice.h"
 #include "rail.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+
 #define DISPLAY_DMA_CH 0
 static int display_initialized = 0, display_doing_dma = 0;
 
@@ -38,9 +43,10 @@ void display_end() {
 }
 
 static void writedata(uint8_t d) {
-	display_start();
+	//display_start();
+	GPIO_PortOutSet(TFT_DC_PORT, TFT_DC_PIN);
 	USART_SpiTransfer(USART1, d);
-	display_end();
+	//display_end();
 }
 
 static void writecommand(uint8_t d) {
@@ -48,7 +54,7 @@ static void writecommand(uint8_t d) {
 	GPIO_PortOutClear(TFT_DC_PORT, TFT_DC_PIN);
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
 	USART_SpiTransfer(USART1, d);
-	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
+	//GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
 }
 
 void display_pixel(uint8_t r, uint8_t g, uint8_t b) {
@@ -58,8 +64,32 @@ void display_pixel(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 extern int testnumber;
+static TaskHandle_t myhandle;
+
 void LDMA_IRQHandler() {
-	testnumber++;
+	//testnumber++;
+	uint32_t pending = LDMA_IntGetEnabled();
+	if(pending & (1<<DISPLAY_DMA_CH)) {
+		LDMA->IFC = 1<<DISPLAY_DMA_CH;
+
+		BaseType_t xHigherPriorityTaskWoken;
+		/* xHigherPriorityTaskWoken must be initialised to pdFALSE.  If calling
+		vTaskNotifyGiveFromISR() unblocks the handling task, and the priority of
+		the handling task is higher than the priority of the currently running task,
+		then xHigherPriorityTaskWoken will automatically get set to pdTRUE. */
+		xHigherPriorityTaskWoken = pdFALSE;
+
+		/* Unblock the handling task so the task can perform any processing necessitated
+		by the interrupt.  xHandlingTask is the task's handle, which was obtained
+		when the task was created. */
+		vTaskNotifyGiveFromISR(myhandle, &xHigherPriorityTaskWoken);
+		//xSemaphoreGiveFromISR(dma_semaphore, &xHigherPriorityTaskWoken);
+
+		/* Force a context switch if xHigherPriorityTaskWoken is now set to pdTRUE.
+		The macro used to do this is dependent on the port and may be called
+		portEND_SWITCHING_ISR. */
+		portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+	}
 }
 
 void display_transfer(uint8_t *dmadata, int dmalen) {
@@ -67,9 +97,12 @@ void display_transfer(uint8_t *dmadata, int dmalen) {
 			LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART1_TXBL);
 	LDMA_Descriptor_t desc =
 			LDMA_DESCRIPTOR_SINGLE_M2P_BYTE(dmadata, &USART1->TXDATA, dmalen);
-	LDMA_IntEnable(1<<DISPLAY_DMA_CH);
+	//LDMA_IntEnable(1<<DISPLAY_DMA_CH);
 	display_doing_dma = 1;
+	myhandle = xTaskGetCurrentTaskHandle();
 	LDMA_StartTransfer(DISPLAY_DMA_CH, &tr, &desc);
+	//xSemaphoreTake(dma_semaphore, 10);
+	ulTaskNotifyTake(pdFALSE, 100);
 }
 
 void display_area(int x1,int y1,int x2,int y2) {
@@ -103,15 +136,6 @@ void display_init_loop() {
 	static uint32_t next_time = 0;
 	const uint16_t display_init_commands[] = {
 			CMD(0x01), CMD(0x01), CMD(0x11), CMD(0x11), CMD(0x29), CMD(0x29),
-			/*CMD(0x61), 0x03, 0x03,  // VLE (enable vertical scroll)
-			CMD(0x80), 0, 3,
-			CMD(0x81), 0, 4, 0, 10,
-			CMD(0x83), 0, 70,
-			CMD(0x84), 0, 4, 0, 10,
-			CMD(0x03), (1<<(12-8)), (1<<3),
-			CMD(0x31), 0, 20,
-			CMD(0x32), 0, 1,
-			CMD(0x33), 3, 4*/
 			CMD(0x33), 0, 16, 0, 160-16, 0, 0 // vertical scrolling definition
 	};
 
@@ -134,3 +158,7 @@ void display_scroll(unsigned y) {
 	writedata(y>>8);
 	writedata(y);
 }
+
+/*void display_preinit() {
+	dma_semaphore = xSemaphoreCreateBinary();
+}*/
