@@ -1,5 +1,5 @@
 #ISD afv6
-# Simplicity Studio version: 4.25.0.201712211347-1078
+# Simplicity Studio version: 4.27.0.201802161248-1185
 
 # Application configuration
 stackId: com.silabs.sdk.stack.super
@@ -114,7 +114,7 @@ BASE_FREQUENCY_HZ=long:2395000000
 BAUDRATE_TOL_PPM=int:0
 BITRATE=int:32000
 CHANNEL_SPACING_HZ=int:1000
-CONFIGURATOR_VERSION=string:2.11.0
+CONFIGURATOR_VERSION=string:2.12.8
 CRC_BIT_ENDIAN=serializableObject:EnumDataItem:1
 CRC_BYTE_ENDIAN=serializableObject:EnumDataItem:0
 CRC_INPUT_ORDER=serializableObject:EnumDataItem:0

@@ -10,8 +10,8 @@
 // =============================================================================
 //
 //  WARNING: Auto-Generated Radio Config  -  DO NOT EDIT
-//  Radio Configurator Version: 2.11.0
-//  RAIL Adapter Version: 2.0.4
+//  Radio Configurator Version: 2.12.8
+//  RAIL Adapter Version: 2.0.7
 //  RAIL Compatibility: 1.x
 //
 // =============================================================================
@@ -20,7 +20,7 @@
 
 const uint32_t generated_phyInfo[] = {
   0UL,
-  0x0009C09C, // 9.75238095238
+  0x0009C09CUL, // 9.75238095238
 };
 
 const uint32_t generated[] = {

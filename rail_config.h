@@ -10,8 +10,8 @@
 // =============================================================================
 //
 //  WARNING: Auto-Generated Radio Config Header  -  DO NOT EDIT
-//  Radio Configurator Version: 2.11.0
-//  RAIL Adapter Version: 2.0.4
+//  Radio Configurator Version: 2.12.8
+//  RAIL Adapter Version: 2.0.7
 //  RAIL Compatibility: 1.x
 //
 // =============================================================================
