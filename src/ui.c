@@ -63,22 +63,30 @@ char textprev[TEXT_LEN+1] = "";
 
 static unsigned char aaa = 0, ui_cursor = 6, ui_keyed = 0;
 
-const char *p_mode_names[] = { " FM", "DSB" };
+const char *p_mode_names[] = { " FM", "DSB","---" };
 const char *p_keyed_text[] = { "rx", "tx" };
 
 extern int testnumber;
 void ui_update_text() {
-	int i;
+	int i, n;
 	int s_dB = 10.0*log10(p.smeter);
-	for(i=0; i<TEXT_LEN; i++) textline[i] = ' ';
-	snprintf(textline, 21, "%10u %s %s",
-			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed]);
-	snprintf(textline+20, 21, "%6d   %2d", testnumber, s_dB);
+	n = snprintf(textline, TEXT_LEN+1, "%10u %3s %2s %2d%2d %6d                ",
+			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed],
+			p.volume,
+			s_dB, testnumber);
+	for(i=n; i<TEXT_LEN; i++) textline[i] = ' ';
 	//text_hilight = ui_cursor;
 	// highest bit for hilight
-	int p = ui_cursor;
-	if(p >= 0 && p < TEXT_LEN)
+	int p = ui_cursor, h;
+	if(p >= 0 && p < TEXT_LEN) {
 		textline[p] |= 0x80;
+		if(p >= 11 && p <= 13)
+				for(h=11; h<=13; h++) textline[h] |= 0x80;
+		if(p >= 15 && p <= 16)
+				for(h=15; h<=16; h++) textline[h] |= 0x80;
+		if(p >= 18 && p <= 19)
+				for(h=18; h<=19; h++) textline[h] |= 0x80;
+	}
 }
 
 
@@ -88,9 +96,11 @@ static void ui_knob_turned(int cursor, int diff) {
 		p.frequency += diff * steps[(int)ui_cursor];
 		p.channel_changed = 1;
 	} else if(cursor >= 11 && cursor <= 13) { // mode
-		p.mode = wrap(p.mode + diff, 2);
+		p.mode = wrap(p.mode + diff, 3);
 	} else if(cursor >= 15 && cursor <= 16) {
 		ui_keyed = wrap(ui_keyed + diff, 2);
+	} else if(cursor >= 18 && cursor <= 19) {
+		p.volume = wrap(p.volume + diff, 12);
 	}
 }
 
@@ -215,6 +225,6 @@ void ui_task() {
 	 */
 	for(;;) {
 		ui_loop();
-		vTaskDelay(1);
+		vTaskDelay(2);
 	}
 }

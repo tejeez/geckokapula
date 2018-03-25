@@ -15,6 +15,7 @@ typedef struct {
 	enum { MODE_FM, MODE_DSB } mode;
 	uint32_t frequency;
 	uint32_t smeter;
+	uint8_t volume;
 } rig_parameters_t;
 extern rig_parameters_t p;
 

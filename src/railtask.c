@@ -17,7 +17,7 @@
 #include "task.h"
 
 
-rig_parameters_t p = {0,1,0, 1, 2395000000, 0 };
+rig_parameters_t p = {0,1,0, 1, 2395000000, 0, 3 };
 
 
 uint8_t nollaa[300] = {255,255,0};
@@ -120,6 +120,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	static unsigned smeter_count = 0;
 	static uint64_t smeter_acc = 0;
 	static int audio_lpf = 0;
+	int vola = p.volume;
  	for(i=0; i<nread; i++) {
 		int si=rxbuf[i][0], sq=rxbuf[i][1];
 		int fi, fq;
@@ -156,6 +157,10 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 			audioout += 0x1000 * fi / (agc_level/0x100);
 
 			break; }
+		default: {
+			audioout = 0;
+			break;
+		}
 		}
 
 		psi = si; psq = sq;
@@ -172,7 +177,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 		fftbufp = fp+2;
 	}
 
-	audioout = (audioout / 0x100) + 100;
+	audioout = (vola * audioout / 0x400) + 100;
 	if(audioout < 0) audioout = 0;
 	if(audioout > 200) audioout = 200;
 	TIMER_CompareBufSet(TIMER0, 0, audioout);
