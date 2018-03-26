@@ -44,22 +44,42 @@ static inline void restart_rail_task() {
 	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &taskhandles[1]);
 }
 
+void dump_memory(uint8_t *mem, int len, char last) {
+	int m;
+	char o[4];
+	for(m=0; m<len; m++) {
+		int n, i;
+		n = snprintf(o, 4, "%02x ", mem[m]);
+		for(i=0; i<n; i++)
+			debugputc(o[i]);
+	}
+	debugputc(last);
+}
+
 void monitor_task() {
-	char o[20];
 	for(;;) {
 		//testnumber++;
 		int ti;
 		for(ti=0; ti<NTASKS; ti++) {
-			int v, n ,i;
+			char o[20];
+			int v, n, i;
 			v = uxTaskGetStackHighWaterMark(taskhandles[ti]);
 			n = snprintf(o, 18, "%d:%4d | ", ti, v);
 			if(ti == NTASKS-1) o[n++] = '\n';
 			for(i=0; i<n; i++)
 				debugputc(o[i]);
-			if(++rail_watchdog >= 2)
+			if(++rail_watchdog >= 3)
 				restart_rail_task();
 			vTaskDelay(100);
 		}
+#if 0
+		// print some registers which might be related to the radio
+		dump_memory((void*)0x40080000, 1024, '/');
+		//dump_memory((void*)0x40081000, 1024, '/');
+		//dump_memory((void*)0x40082000, 1024, '/');
+		dump_memory((void*)0x40083000, 1024, '/');
+		dump_memory((void*)0x40084000, 1024, '\n');
+#endif
 	}
 }
 
@@ -85,10 +105,10 @@ int main(void) {
 
  	ADC_Start(ADC0, adcStartSingle);
 
-	xTaskCreate(monitor_task, "task2", 0x80, NULL, 3, &taskhandles[3]);
-	xTaskCreate(ui_task, "ui_task", 0x280, NULL, 3, &taskhandles[0]);
-	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &taskhandles[1]);
-	xTaskCreate(dsp_task, "task1", 0x200, NULL, 3, &taskhandles[2]);
+	xTaskCreate(monitor_task, "task2", 0x100, NULL, 3, &taskhandles[3]);
+	xTaskCreate(ui_task, "ui_task", 0x300, NULL, 3, &taskhandles[0]);
+	xTaskCreate(rail_task, "rail_task", 0x280, NULL, /*2*/ 3, &taskhandles[1]);
+	xTaskCreate(dsp_task, "task1", 0x280, NULL, 3, &taskhandles[2]);
 	debugputc('\n');
  	vTaskStartScheduler();
 	return 0;

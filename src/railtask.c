@@ -16,7 +16,7 @@
 // rig
 #include "rig.h"
 
-rig_parameters_t p = {0,1,0, 1, 2395000000, 3 };
+rig_parameters_t p = {0,1,0, 0, 2400000000, 3 };
 rig_status_t rs = {0};
 
 void startrx() {
@@ -27,7 +27,7 @@ void startrx() {
 	RAIL_RxStart(p.channel);
 }
 
-RAIL_ChannelConfigEntry_t channelconfigs[] = {{ 0, 20, 1000, 2395000000 }};
+RAIL_ChannelConfigEntry_t channelconfigs[] = {{ 0, 20, 2000, 2395000000 }};
 const RAIL_ChannelConfig_t channelConfig = { channelconfigs, 1 };
 void config_channel() {
 
@@ -80,7 +80,7 @@ extern int testnumber;
 char rail_watchdog = 0;
 void rail_task() {
 	initRadio();
-	unsigned char modulation_test=0;
+	uint32_t modulation_test=0;
 	for(;;) {
 		unsigned keyed = p.keyed;
 		rail_watchdog = 0;
@@ -91,11 +91,25 @@ void rail_task() {
 			p.channel_changed = 0;
 			RAIL_RfIdleExt(RAIL_IDLE_ABORT, false);
 			RAIL_TxToneStart(p.channel);
-			RAIL_DebugModeSet(1);
+			//RAIL_DebugModeSet(1);
 		}
-		if(keyed) {
-			RAIL_DebugFrequencyOverride(p.frequency + 100*modulation_test);
+		if(/*1 || */keyed) {
+			//RAIL_DebugFrequencyOverride(p.frequency + 100*modulation_test);
+			//*(uint32_t*)((void*)0x4008302c) = modulation_test;
+			//*(uint32_t*)((void*)0x40083030) = modulation_test;
+			/**(uint32_t*)((void*)0x4008303c) = modulation_test;
+			*(uint32_t*)((void*)0x40083050) = modulation_test;
+			modulation_test += 12345;*/
+
+			//*(uint8_t*)(0x40083000 + 44) = modulation_test; // this transmits 2.2 GHz?
+
 			modulation_test++;
+			/*extern void SYNTH_ChannelSet(int, int);
+			SYNTH_ChannelSet(modulation_test&15, modulation_test&15);*/
+
+			// there registers are set by SYNTH_ChannelSet
+			*(uint32_t*)(uint8_t*)(0x40083000 + 56) = modulation_test;
+			//*(uint32_t*)(uint8_t*)(0x40084008) = 128;
 		}
 		if((!keyed) && (RAIL_RfStateGet() != RAIL_RF_STATE_RX || p.channel_changed)) {
 			p.channel_changed = 0;
@@ -103,6 +117,6 @@ void rail_task() {
 			startrx();
 		}
 		testnumber++; // to see if RAIL has stuck in some function
-		taskYIELD();
+		vTaskDelay(2);
 	}
 }
