@@ -12,7 +12,7 @@
 typedef struct {
 	int channel;
 	char channel_changed, keyed;
-	enum { MODE_FM, MODE_DSB } mode;
+	enum { MODE_FM, MODE_AM, MODE_DSB, MODE_NONE } mode;
 	uint32_t frequency;
 	uint8_t volume;
 } rig_parameters_t;

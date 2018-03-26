@@ -67,7 +67,7 @@ char textprev[TEXT_LEN+1] = "";
 
 static unsigned char aaa = 0, ui_cursor = 6, ui_keyed = 0;
 
-const char *p_mode_names[] = { " FM", "DSB","---" };
+const char *p_mode_names[] = { " FM", " AM", "DSB", "---" };
 const char *p_keyed_text[] = { "rx", "tx" };
 
 typedef struct {
@@ -114,7 +114,7 @@ static void ui_knob_turned(int cursor, int diff) {
 		p.frequency += diff * steps[(int)ui_cursor];
 		p.channel_changed = 1;
 	} else if(cursor == 10) { // mode
-		p.mode = wrap(p.mode + diff, 3);
+		p.mode = wrap(p.mode + diff, sizeof(p_mode_names) / sizeof(p_mode_names[0]));
 	} else if(cursor == 11) { // keyed
 		ui_keyed = wrap(ui_keyed + diff, 2);
 	} else if(cursor == 12) { // volume
@@ -138,7 +138,7 @@ void ui_check_buttons() {
 			pos_diff += 0x10000 / ENCODER_DIVIDER;
 
 		if(get_encoder_button()) {
-			ui_cursor = wrap(ui_cursor - pos_diff, N_UI_FIELDS);
+			ui_cursor = wrap(ui_cursor + pos_diff, N_UI_FIELDS);
 		} else {
 			ui_knob_turned(ui_cursor, pos_diff);
 		}

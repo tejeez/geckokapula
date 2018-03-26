@@ -43,7 +43,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	int ssi=0, ssq=0, audioout = 0;
 	static unsigned smeter_count = 0;
 	static uint64_t smeter_acc = 0;
-	static int audio_lpf = 0;
+	static int audio_lpf = 0, audio_hpf = 0;
 	int vola = p.volume;
  	for(i=0; i<nread; i++) {
 		int si=rxbuf[i][0], sq=rxbuf[i][1];
@@ -65,10 +65,17 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 			audio_lpf += (fm*128 - audio_lpf)/16;
 			audioout = audio_lpf/128;
 			break; }
+		case MODE_AM:
 		case MODE_DSB: {
 			int agc_1, agc_diff;
-			audio_lpf += (si*128 - audio_lpf)/16;
-			fi = audio_lpf/128; // TODO: SSB filter
+			int raw_audio;
+			if(p.mode == MODE_AM)
+				raw_audio = abs(si) + abs(sq);
+			else
+				raw_audio = si*2;
+			audio_lpf += (raw_audio*64 - audio_lpf)/16;
+			audio_hpf += (audio_lpf - audio_hpf) / 512; // DC block
+			fi = (audio_lpf-audio_hpf)/128; // TODO: SSB filter
 
 			// AGC
 			agc_1 = (fi>=0?fi:-fi) * 0x100; // rectify
