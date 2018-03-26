@@ -16,12 +16,13 @@
 // rig
 #include "rig.h"
 
-rig_parameters_t p = {0,1,0, 1, 2395000000, 0, 3 };
+rig_parameters_t p = {0,1,0, 1, 2395000000, 3 };
+rig_status_t rs = {0};
 
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);
 	RAIL_ResetFifo(false, true);
-	RAIL_SetRxFifoThreshold(100); //FIFO size is 512B
+	RAIL_SetRxFifoThreshold(10); //FIFO size is 512B
 	RAIL_EnableRxFifoThreshold();
 	RAIL_RxStart(p.channel);
 }
@@ -76,11 +77,13 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 }
 
 extern int testnumber;
+char rail_watchdog = 0;
 void rail_task() {
 	initRadio();
 	unsigned char modulation_test=0;
 	for(;;) {
 		unsigned keyed = p.keyed;
+		rail_watchdog = 0;
 		if(p.channel_changed) {
 			config_channel();
 		}

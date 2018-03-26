@@ -35,6 +35,15 @@ int testnumber=73;
 
 static void debugputc(char c) {USART_Tx(USART0, c); }
 
+void rail_task();
+void dsp_task();
+extern char rail_watchdog;
+
+static inline void restart_rail_task() {
+	vTaskDelete(taskhandles[1]);
+	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &taskhandles[1]);
+}
+
 void monitor_task() {
 	char o[20];
 	for(;;) {
@@ -47,13 +56,12 @@ void monitor_task() {
 			if(ti == NTASKS-1) o[n++] = '\n';
 			for(i=0; i<n; i++)
 				debugputc(o[i]);
+			if(++rail_watchdog >= 2)
+				restart_rail_task();
 			vTaskDelay(100);
 		}
 	}
 }
-
-void rail_task();
-void dsp_task();
 
 void vApplicationStackOverflowHook() {
 	// beep
@@ -77,7 +85,7 @@ int main(void) {
 
  	ADC_Start(ADC0, adcStartSingle);
 
-	xTaskCreate(monitor_task, "task2", 0x80, NULL, 4, &taskhandles[3]);
+	xTaskCreate(monitor_task, "task2", 0x80, NULL, 3, &taskhandles[3]);
 	xTaskCreate(ui_task, "ui_task", 0x280, NULL, 3, &taskhandles[0]);
 	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &taskhandles[1]);
 	xTaskCreate(dsp_task, "task1", 0x200, NULL, 3, &taskhandles[2]);

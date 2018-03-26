@@ -9,6 +9,7 @@
 #include "font8x8_basic.h"
 #include "rig.h"
 #include "ui_hw.h"
+#include "ui_parameters.h"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -69,27 +70,41 @@ static unsigned char aaa = 0, ui_cursor = 6, ui_keyed = 0;
 const char *p_mode_names[] = { " FM", "DSB","---" };
 const char *p_keyed_text[] = { "rx", "tx" };
 
+typedef struct {
+	char pos1, pos2, color;
+} ui_field_t;
+#define N_UI_FIELDS 13
+const ui_field_t ui_fields[N_UI_FIELDS] = {
+	{ 0, 0, 0 },
+	{ 1, 1, 0 },
+	{ 2, 2, 0 },
+	{ 3, 3, 0 },
+	{ 4, 4, 0 },
+	{ 5, 5, 0 },
+	{ 6, 6, 0 },
+	{ 7, 7, 0 },
+	{ 8, 8, 0 },
+	{ 9, 9, 0 },
+	{11,13, 1 },
+	{14,15, 2 },
+	{16,17, 1 }
+};
+
 extern int testnumber;
 void ui_update_text() {
-	int i, n;
-	int s_dB = 10.0*log10(p.smeter);
-	n = snprintf(textline, TEXT_LEN+1, "%10u %3s %2s %2d%2d %6d                ",
+	int i;
+	int pos1, pos2;
+	int s_dB = 10.0*log10(rs.smeter);
+
+	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d %2d %6d                ",
 			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed],
 			p.volume,
 			s_dB, testnumber);
-	for(i=n; i<TEXT_LEN; i++) textline[i] = ' ';
-	//text_hilight = ui_cursor;
-	// highest bit for hilight
-	int p = ui_cursor, h;
-	if(p >= 0 && p < TEXT_LEN) {
-		textline[p] |= 0x80;
-		if(p >= 11 && p <= 13)
-				for(h=11; h<=13; h++) textline[h] |= 0x80;
-		if(p >= 15 && p <= 16)
-				for(h=15; h<=16; h++) textline[h] |= 0x80;
-		if(p >= 18 && p <= 19)
-				for(h=18; h<=19; h++) textline[h] |= 0x80;
-	}
+	for(; i<TEXT_LEN; i++) textline[i] = ' ';
+
+	pos1 = ui_fields[ui_cursor].pos1;
+	pos2 = ui_fields[ui_cursor].pos2;
+	for(i=pos1; i<=pos2; i++) textline[i] |= 0x80;
 }
 
 
@@ -98,11 +113,11 @@ static void ui_knob_turned(int cursor, int diff) {
 		const int steps[] = { 1e9, 1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1 };
 		p.frequency += diff * steps[(int)ui_cursor];
 		p.channel_changed = 1;
-	} else if(cursor >= 11 && cursor <= 13) { // mode
+	} else if(cursor == 10) { // mode
 		p.mode = wrap(p.mode + diff, 3);
-	} else if(cursor >= 15 && cursor <= 16) {
+	} else if(cursor == 11) { // keyed
 		ui_keyed = wrap(ui_keyed + diff, 2);
-	} else if(cursor >= 18 && cursor <= 19) {
+	} else if(cursor == 12) { // volume
 		p.volume = wrap(p.volume + diff, 12);
 	}
 }
@@ -123,7 +138,7 @@ void ui_check_buttons() {
 			pos_diff += 0x10000 / ENCODER_DIVIDER;
 
 		if(get_encoder_button()) {
-			ui_cursor = wrap(ui_cursor - pos_diff, /*TEXT_LEN*/20);
+			ui_cursor = wrap(ui_cursor - pos_diff, N_UI_FIELDS);
 		} else {
 			ui_knob_turned(ui_cursor, pos_diff);
 		}
@@ -171,10 +186,7 @@ void ui_loop() {
 		aaa = 0;
 }
 
-int fftrow = 16;
-//#define FFTLEN 128
-/*#define FFT_BIN1 8
-#define FFT_BIN2 120*/
+int fftrow = FFT_ROW2;
 #define FFT_BIN1 64
 #define FFT_BIN2 192
 #if DISPLAYBUF_SIZE < 3*(FFT_BIN2-FFT_BIN1)
@@ -220,8 +232,8 @@ static void ui_draw_fft_line(float *data) {
 
 	display_transfer(displaybuf, 3*(FFT_BIN2-FFT_BIN1));
 
-	fftrow++;
-	if(fftrow >= 160) fftrow = 16;
+	fftrow--;
+	if(fftrow < FFT_ROW1) fftrow = FFT_ROW2;
 }
 
 

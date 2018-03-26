@@ -19,10 +19,14 @@
 #include "InitDevice.h"
 #include "rail.h"
 
+// FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+
+// rig
+#include "ui_parameters.h"
 
 #define DISPLAY_DMA_CH 0
 static int display_initialized = 0, display_doing_dma = 0;
@@ -136,7 +140,8 @@ void display_init_loop() {
 	static uint32_t next_time = 0;
 	const uint16_t display_init_commands[] = {
 			CMD(0x01), CMD(0x01), CMD(0x11), CMD(0x11), CMD(0x29), CMD(0x29),
-			CMD(0x33), 0, 16, 0, 160-16, 0, 0 // vertical scrolling definition
+			CMD(0x33), // vertical scrolling definition
+			  0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 0
 	};
 
 	uint32_t time = RAIL_GetTime();

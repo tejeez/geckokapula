@@ -109,7 +109,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 
 	smeter_count += nread;
 	if(smeter_count >= 0x4000) {
-		p.smeter = smeter_acc / 0x4000;
+		rs.smeter = smeter_acc / 0x4000;
 		smeter_acc = 0;
 		smeter_count = 0;
 	}
