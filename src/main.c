@@ -11,7 +11,6 @@
 #include "em_gpio.h"
 #include "em_timer.h"
 #include "em_wdog.h"
-#include "em_adc.h"
 #include "em_ldma.h"
 
 #include "InitDevice.h"
@@ -103,8 +102,6 @@ int main(void) {
  	TIMER_TopSet(TIMER0, 200);
  	TIMER_CompareBufSet(TIMER0, 0, 33);
  	TIMER_CompareBufSet(TIMER0, 1, 20);
-
- 	ADC_Start(ADC0, adcStartSingle);
 
 	xTaskCreate(monitor_task, "task2", 0x100, NULL, 3, &taskhandles[3]);
 	xTaskCreate(ui_task, "ui_task", 0x300, NULL, 3, &taskhandles[0]);

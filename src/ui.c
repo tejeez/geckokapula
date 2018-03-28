@@ -19,6 +19,7 @@
 #include "task.h"
 
 #define BACKLIGHT_ON_TIME 2000
+#define BACKLIGHT_DIM_LEVEL 50
 int backlight_timer = 0;
 
 #define DISPLAYBUF_SIZE 384
@@ -164,7 +165,7 @@ void ui_loop() {
 	display_init_loop();
 	if(!display_ready()) return;
 	if(backlight_timer <= BACKLIGHT_ON_TIME) {
-		display_backlight(BACKLIGHT_ON_TIME - backlight_timer);
+		display_backlight(BACKLIGHT_DIM_LEVEL + BACKLIGHT_ON_TIME - backlight_timer);
 		backlight_timer++;
 	}
 

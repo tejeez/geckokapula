@@ -5,6 +5,8 @@
  *      Author: Tatu
  */
 
+#include <stdlib.h>
+
 // CMSIS
 #include "arm_math.h"
 #include "arm_const_structs.h"
@@ -12,6 +14,7 @@
 // emlib
 #include "rail.h"
 #include "em_timer.h"
+#include "em_adc.h"
 
 // FreeRTOS
 #include "FreeRTOS.h"
@@ -78,7 +81,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 			fi = (audio_lpf-audio_hpf)/128; // TODO: SSB filter
 
 			// AGC
-			agc_1 = (fi>=0?fi:-fi) * 0x100; // rectify
+			agc_1 = abs(fi) * 0x100; // rectify
 			agc_diff = agc_1 - agc_level;
 			if(agc_diff > 0)
 				agc_level += agc_diff/256;
@@ -123,10 +126,55 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 
 }
 
+inline void synth_set_channel(int ch) {
+	*(uint32_t*)(uint8_t*)(0x40083000 + 56) = ch;
+}
+
+extern int testnumber;
+void ADC0_IRQHandler() {
+	int audioout;
+	static int hpf, lpf, agc_level=0;
+	testnumber++;
+
+	int audioin = ADC0->SINGLEDATA;
+	ADC_IntClear(ADC0, ADC_IF_SINGLE);
+
+	if(!p.keyed) {
+		synth_set_channel(p.channel);
+		return;
+	}
+
+	// DC block:
+	hpf += (audioin - hpf) / 32;
+	audioin -= hpf;
+	// lowpass
+	lpf += (audioin - lpf) / 2;
+	audioin = lpf;
+
+	// Just copied AGC code from RX for now
+	int agc_1, agc_diff;
+	agc_1 = abs(audioin) * 0x100; // rectify
+	agc_diff = agc_1 - agc_level;
+	if(agc_diff > 0)
+		agc_level += agc_diff/0x100;
+	else
+		agc_level += agc_diff/0x1000;
+
+	audioout = 32 + 20 * audioin / (agc_level/0x100);
+	if(audioout <= 0) audioout = 0;
+	if(audioout >= 63) audioout = 63;
+
+	synth_set_channel(audioout);
+}
 
 
 /* A task for DSP operations that can take a longer time */
 void dsp_task() {
+	NVIC_SetPriority(ADC0_IRQn, 3); // TODO: irq priorities in header or something
+	NVIC_EnableIRQ(ADC0_IRQn);
+	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
+ 	ADC_Start(ADC0, adcStartSingle);
+
 	for(;;) {
 		// TODO: semaphore?
 		if(fftbufp >= 2*FFTLEN) {
