@@ -16,6 +16,7 @@
 #include "em_usart.h"
 #include "em_gpio.h"
 #include "em_ldma.h"
+#include "em_timer.h"
 #include "InitDevice.h"
 #include "rail.h"
 
@@ -162,6 +163,12 @@ void display_scroll(unsigned y) {
 	writecommand(0x37);
 	writedata(y>>8);
 	writedata(y);
+}
+
+void display_backlight(int b) {
+	if(b < 0) b = 0;
+	if(b > 200) b = 200;
+ 	TIMER_CompareBufSet(TIMER0, 1, b);
 }
 
 /*void display_preinit() {

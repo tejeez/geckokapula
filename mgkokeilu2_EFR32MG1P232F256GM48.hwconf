@@ -23,6 +23,12 @@
     <property object="PA1" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PA1" propertyId="ports.settings.pulldirection" value="Pullup"/>
     <property object="PA1" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PC10" propertyId="ports.settings.custompinname" value="TFT_LED"/>
+    <property object="PC10" propertyId="ports.settings.dout" value="1"/>
+    <property object="PC10" propertyId="ports.settings.filter" value="Enabled"/>
+    <property object="PC10" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PC10" propertyId="ports.settings.pulldirection" value="Pullup"/>
+    <property object="PC10" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PC6" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC7" propertyId="ports.settings.custompinname" value="TFT_CS"/>
     <property object="PC7" propertyId="ports.settings.dout" value="1"/>
@@ -72,7 +78,9 @@
     <property object="PORTIO" propertyId="portio.adc0.enable.adctestn" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.aport.enable.dp_4" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.timer0.enable.cc0" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.timer0.enable.cc1" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.timer0.location.timer0_cc0loc" value="18"/>
+    <property object="PORTIO" propertyId="portio.timer0.location.timer0_cc1loc" value="14"/>
     <property object="PORTIO" propertyId="portio.timer1.enable.cc0" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.timer1.enable.cc1" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.timer1.location.timer1_cc0loc" value="19"/>
@@ -85,6 +93,7 @@
     <property object="PORTIO" propertyId="portio.usart1.location.usart1_txloc" value="11"/>
     <property object="TIMER0" propertyId="ABPeripheral.included" value="true"/>
     <property object="TIMER0" propertyId="timer.capturecomparech0.ccmode" value="PWM"/>
+    <property object="TIMER0" propertyId="timer.capturecomparech1.ccmode" value="PWM"/>
     <property object="TIMER1" propertyId="ABPeripheral.included" value="true"/>
     <property object="TIMER1" propertyId="timer.capturecomparech0.ccmode" value="Capture"/>
     <property object="TIMER1" propertyId="timer.capturecomparech0.digitalfilter" value="Enable filtering"/>

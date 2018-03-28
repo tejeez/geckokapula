@@ -18,6 +18,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#define BACKLIGHT_ON_TIME 2000
+int backlight_timer = 0;
+
 #define DISPLAYBUF_SIZE 384
 uint8_t displaybuf[DISPLAYBUF_SIZE];
 
@@ -128,20 +131,24 @@ static void ui_knob_turned(int cursor, int diff) {
 void ui_check_buttons() {
 	static unsigned pos_prev;
 	int pos_now, pos_diff;
+	char button = get_encoder_button();
 	p.keyed = ui_keyed ? 1 : get_ptt();
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
 	pos_diff = pos_now - pos_prev;
+	if(button)
+		backlight_timer = 0;
 	if(pos_diff) {
 		if(pos_diff >= 0x8000 / ENCODER_DIVIDER)
 			pos_diff -= 0x10000 / ENCODER_DIVIDER;
 		else if(pos_diff < -0x8000 / ENCODER_DIVIDER)
 			pos_diff += 0x10000 / ENCODER_DIVIDER;
 
-		if(get_encoder_button()) {
+		if(button) {
 			ui_cursor = wrap(ui_cursor + pos_diff, N_UI_FIELDS);
 		} else {
 			ui_knob_turned(ui_cursor, pos_diff);
 		}
+		backlight_timer = 0;
 	}
 
 	pos_prev = pos_now;
@@ -156,6 +163,10 @@ void ui_loop() {
 	ui_check_buttons();
 	display_init_loop();
 	if(!display_ready()) return;
+	if(backlight_timer <= BACKLIGHT_ON_TIME) {
+		display_backlight(BACKLIGHT_ON_TIME - backlight_timer);
+		backlight_timer++;
+	}
 
 	if(fftline_ready) {
 		ui_draw_fft_line(fftline_data);

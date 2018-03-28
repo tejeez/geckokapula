@@ -102,6 +102,7 @@ int main(void) {
 
  	TIMER_TopSet(TIMER0, 200);
  	TIMER_CompareBufSet(TIMER0, 0, 33);
+ 	TIMER_CompareBufSet(TIMER0, 1, 20);
 
  	ADC_Start(ADC0, adcStartSingle);
 

@@ -517,8 +517,8 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN | TIMER_ROUTEPEN_CC0PEN;
 	/* Set up CC1 */
 	TIMER0->ROUTELOC0 = (TIMER0->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC1LOC_MASK))
-			| TIMER_ROUTELOC0_CC1LOC_LOC0;
-	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN & (~TIMER_ROUTEPEN_CC1PEN);
+			| TIMER_ROUTELOC0_CC1LOC_LOC14;
+	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN | TIMER_ROUTEPEN_CC1PEN;
 	/* Set up CC2 */
 	TIMER0->ROUTELOC0 = (TIMER0->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC2LOC_MASK))
 			| TIMER_ROUTELOC0_CC2LOC_LOC0;
@@ -579,7 +579,7 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 	initCC1.prsInput = false;
 	initCC1.prsSel = timerPRSSELCh0;
 	initCC1.edge = timerEdgeRising;
-	initCC1.mode = timerCCModeOff;
+	initCC1.mode = timerCCModePWM;
 	initCC1.eventCtrl = timerEventEveryEdge;
 	initCC1.filter = 0;
 	initCC1.cofoa = timerOutputActionNone;
@@ -626,7 +626,8 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 	initDTI.faultSourcePrsSel1 = 0;
 	initDTI.faultSourcePrsSel1 = timerPRSSELCh0;
 	initDTI.faultAction = timerDtiFaultActionInactive;
-	initDTI.outputsEnableMask = 0 | TIMER_DTOGEN_DTOGCC0EN;
+	initDTI.outputsEnableMask = 0 | TIMER_DTOGEN_DTOGCC0EN
+			| TIMER_DTOGEN_DTOGCC1EN;
 	TIMER_InitDTI(TIMER0, &initDTI);
 	// [TIMER0 DTI init]$
 
@@ -830,6 +831,9 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	/* Pin PC9 is configured to Push-pull */
 	GPIO_PinModeSet(gpioPortC, 9, gpioModePushPull, 0);
+
+	/* Pin PC10 is configured to Push-pull */
+	GPIO_PinModeSet(gpioPortC, 10, gpioModePushPull, 1);
 	// [Port C Configuration]$
 
 	// $[Port D Configuration]

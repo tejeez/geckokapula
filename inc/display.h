@@ -19,5 +19,6 @@ void display_end();
 void display_pixel(uint8_t r, uint8_t g, uint8_t b);
 void display_transfer(uint8_t *dmadata, int dmalen);
 void display_scroll(unsigned y);
+void display_backlight(int b);
 
 #endif /* INC_DISPLAY_H_ */

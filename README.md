@@ -23,23 +23,28 @@ Speaker is driven from a PWM output through a series capacitor and a resistor.
 | Board pin | EFR32 pin | Connection   |
 |-----------|-----------|--------------|
 |   GND     |           | Ground plane |
-| VMCU_IN   |           | +3.3 V       |
+| VMCU\_IN  |           | +3.3 V       |
 |   P1      |   PC6     | Display SDA  |
 |   P3      |   PC7     | Display CS   |
 |   P5      |   PC8     | Display SCK  |
 |   P7      |   PC9     | Display AO   |
+|   P12     |   PC10    | Display AO   |
 |   P9      |   PA0     | Debug UART TX (to RXD on USB-UART ) |
 |   P11     |   PA1     | Debug UART RX (to TXD on USB-UART ) |
-|   P34     |   PF6     | PTT or CW key (switch to GND) |
+|   P34     |   PF6     | PTT or CW key (switch to GND) (optional) |
 |   P4      |   PD10    | PWM Audio out |
 |   P6      |   PD11    | Encoder A (switch to GND) |
 |   P8      |   PD12    | Encoder B (switch to GND) |
-|   P31     |   PD13    | Encoder push button (switch to GND) |
+|   P31/F18 |   PD13    | Encoder push button (switch to GND) |
 |   F14     |   PD15    | Audio in, biased around 0.625 V |
 |   P24     |   PF0     | J-link SWCLK |
 |   P26     |   PF1     | J-link SWDIO |
 
-VCC, RESET and LED pins on display are connected to +3.3 V.
+VCC and RESET pins on display are connected to +3.3 V.
+
+If you push wires straight to the radio board headers, reading pinout from the
+datasheet is prone to mistakes as you are looking at it mirrored.
+Here's a mirrored pinout to help: http://oh2eat.dy.fi/brd4151a-pinout.png
 
 # Files in the project
 The project should be opened in Simplicity Studio. If you find a way to import
