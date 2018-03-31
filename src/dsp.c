@@ -23,6 +23,7 @@
 // rig
 #include "rig.h"
 #include "ui.h"
+#include "ui_parameters.h"
 
 
 #define RXBUFL 2
@@ -30,9 +31,9 @@ typedef int16_t iqsample_t[2];
 iqsample_t rxbuf[RXBUFL];
 
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
-float fftbuf[2*FFTLEN];
-volatile int fftbufp = 0;
-
+#define SIGNALBUFLEN 512
+int16_t signalbuf[2*SIGNALBUFLEN];
+volatile int signalbufp = 0;
 
 extern rig_parameters_t p;
 
@@ -47,7 +48,6 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	static unsigned smeter_count = 0;
 	static uint64_t smeter_acc = 0;
 	static int audio_lpf = 0, audio_hpf = 0;
-	int vola = p.volume;
  	for(i=0; i<nread; i++) {
 		int si=rxbuf[i][0], sq=rxbuf[i][1];
 		int fi, fq;
@@ -103,15 +103,14 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 		smeter_acc += si*si + sq*sq;
 	}
 
-	int fp = fftbufp;
-	if(fp < 2*FFTLEN) {
-		const float scaling = 1.0f / (RXBUFL*0x8000);
-		fftbuf[fp]   = scaling*ssi;
-		fftbuf[fp+1] = scaling*ssq;
-		fftbufp = fp+2;
-	}
+	int fp = signalbufp;
+	signalbuf[fp]   = ssi;
+	signalbuf[fp+1] = ssq;
+	fp+=2;
+	if(fp >= SIGNALBUFLEN) fp = 0;
+	signalbufp = fp;
 
-	audioout = (vola * audioout / 0x400) + 100;
+	audioout = (p.volume2 * audioout / 0x1000) + 100;
 	if(audioout < 0) audioout = 0;
 	if(audioout > 200) audioout = 200;
 	TIMER_CompareBufSet(TIMER0, 0, audioout);
@@ -134,7 +133,7 @@ extern int testnumber;
 void ADC0_IRQHandler() {
 	int audioout;
 	static int hpf, lpf, agc_level=0;
-	testnumber++;
+	//testnumber++;
 
 	int audioin = ADC0->SINGLEDATA;
 	ADC_IntClear(ADC0, ADC_IF_SINGLE);
@@ -167,6 +166,76 @@ void ADC0_IRQHandler() {
 	synth_set_channel(audioout);
 }
 
+static void calculate_waterfall_line() {
+	extern uint8_t displaybuf2[3*(FFT_BIN2-FFT_BIN1)];
+	extern char fftline_ready; // TODO: semaphore or something?
+	unsigned i;
+	float mag_avg = 0;
+
+	/* These are static because so such big arrays would not be allocated from stack.
+	 * Not sure if this is a good idea.
+	 * If averaging were not used, mag could actually reuse fftdata
+	 * with some changes to indexing.
+	 */
+	static float fftdata[2*FFTLEN], mag[FFTLEN];
+	static uint8_t averages = 0;
+
+	//if(fftline_ready) return;
+
+	int sbp = signalbufp;
+	const float scaling = 1.0f / (RXBUFL*0x8000);
+	for(i=0; i<2*FFTLEN; i+=2) {
+		sbp &= SIGNALBUFLEN-1;
+		fftdata[i]   = scaling*signalbuf[sbp];
+		fftdata[i+1] = scaling*signalbuf[sbp+1];
+		sbp += 2;
+	}
+
+	// to see how many samples are between FFTs
+	/*static int debug_last_sbp = 0;
+	testnumber = (sbp - debug_last_sbp) & (SIGNALBUFLEN-1);
+	debug_last_sbp = sbp;*/
+
+	arm_cfft_f32(fftS, fftdata, 0, 1);
+
+	if(averages == 0)
+		for(i=0;i<FFTLEN;i++) mag[i] = 0;
+	for(i=0;i<FFTLEN;i++) {
+		float fft_i = fftdata[2*i], fft_q = fftdata[2*i+1];
+		mag_avg +=
+		mag[i ^ (FFTLEN/2)] += fft_i*fft_i + fft_q*fft_q;
+	}
+	averages++;
+	if(averages < p.waterfall_averages)
+		return;
+	averages = 0;
+	mag_avg = (130.0f*FFTLEN) / mag_avg;
+
+	uint8_t *bufp = displaybuf2;
+	for(i=FFT_BIN1;i<FFT_BIN2;i++) {
+		unsigned v = mag[i] * mag_avg;
+		if(v < 0x100) {  // black to blue
+			bufp[0] = v / 2;
+			bufp[1] = 0;
+			bufp[2] = v;
+		} else if(v < 0x200) { // blue to yellow
+			bufp[0] = v / 2;
+			bufp[1] = v - 0x100;
+			bufp[2] = 0x1FF - v;
+		} else if(v < 0x300) { // yellow to white
+			bufp[0] = 0xFF;
+			bufp[1] = 0xFF;
+			bufp[2] = v - 0x200;
+		} else { // white
+			bufp[0] = 0xFF;
+			bufp[1] = 0xFF;
+			bufp[2] = 0xFF;
+		}
+		bufp += 3;
+	}
+
+	fftline_ready = 1;
+}
 
 /* A task for DSP operations that can take a longer time */
 void dsp_task() {
@@ -177,12 +246,11 @@ void dsp_task() {
 
 	for(;;) {
 		// TODO: semaphore?
-		if(fftbufp >= 2*FFTLEN) {
-			arm_cfft_f32(fftS, fftbuf, 0, 1);
-			ui_fft_line(fftbuf);
-			fftbufp = 0;
-		}
-		vTaskDelay(2);
+
+		calculate_waterfall_line();
+
+		// delay can be commented out to see how often FFTs can be calculated
+		vTaskDelay(1);
 	}
 }
 

@@ -23,7 +23,8 @@
 int backlight_timer = 0;
 
 #define DISPLAYBUF_SIZE 384
-uint8_t displaybuf[DISPLAYBUF_SIZE];
+#define DISPLAYBUF2_SIZE 384
+uint8_t displaybuf[DISPLAYBUF_SIZE], displaybuf2[DISPLAYBUF2_SIZE];
 
 #if DISPLAYBUF_SIZE < 3*8*8
 #error "Too small display buffer for text"
@@ -77,7 +78,7 @@ const char *p_keyed_text[] = { "rx", "tx" };
 typedef struct {
 	char pos1, pos2, color;
 } ui_field_t;
-#define N_UI_FIELDS 13
+#define N_UI_FIELDS 14
 const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{ 0, 0, 0 },
 	{ 1, 1, 0 },
@@ -91,7 +92,8 @@ const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{ 9, 9, 0 },
 	{11,13, 1 },
 	{14,15, 2 },
-	{16,17, 1 }
+	{16,17, 1 },
+	{18,20, 2 }
 };
 
 extern int testnumber;
@@ -100,9 +102,9 @@ void ui_update_text() {
 	int pos1, pos2;
 	int s_dB = 10.0*log10(rs.smeter);
 
-	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d %2d %6d                ",
+	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d%3d|%2d %6d                ",
 			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed],
-			p.volume,
+			p.volume, p.waterfall_averages,
 			s_dB, testnumber);
 	for(; i<TEXT_LEN; i++) textline[i] = ' ';
 
@@ -122,7 +124,10 @@ static void ui_knob_turned(int cursor, int diff) {
 	} else if(cursor == 11) { // keyed
 		ui_keyed = wrap(ui_keyed + diff, 2);
 	} else if(cursor == 12) { // volume
-		p.volume = wrap(p.volume + diff, 12);
+		int vola = p.volume = wrap(p.volume + diff, 12);
+		p.volume2 = (vola&1) ? (3<<(vola/2)) : (2<<(vola/2));
+	} else if(cursor == 13) {
+		p.waterfall_averages = p.waterfall_averages + diff;
 	}
 }
 
@@ -156,9 +161,8 @@ void ui_check_buttons() {
 }
 
 
-static float fftline_data[2*FFTLEN];
-static char fftline_ready=0;
-static void ui_draw_fft_line(float *data);
+char fftline_ready=0;
+static void ui_draw_fft_line();
 
 void ui_loop() {
 	ui_check_buttons();
@@ -170,7 +174,7 @@ void ui_loop() {
 	}
 
 	if(fftline_ready) {
-		ui_draw_fft_line(fftline_data);
+		ui_draw_fft_line();
 		fftline_ready = 0;
 		return;
 	}
@@ -199,50 +203,16 @@ void ui_loop() {
 }
 
 int fftrow = FFT_ROW2;
-#define FFT_BIN1 64
-#define FFT_BIN2 192
-#if DISPLAYBUF_SIZE < 3*(FFT_BIN2-FFT_BIN1)
+#if DISPLAYBUF2_SIZE < 3*(FFT_BIN2-FFT_BIN1)
 #error "Too small display buffer for FFT"
 #endif
 
-void ui_fft_line(float *data) {
-	/* This is called from another task.
-	 * Copy data to an intermediate buffer so that only the display task
-	 * writes to the display DMA buffer and controls the display.
-	 */
-	if(fftline_ready) return;
-	memcpy(fftline_data, data, 2*FFTLEN*sizeof(float));
-	fftline_ready = 1;
-}
-
-static void ui_draw_fft_line(float *data) {
-	unsigned i;
-	float mag[FFTLEN], mag_avg = 0;
-
+static void ui_draw_fft_line() {
 	if(!display_ready()) return;
 	display_scroll(fftrow);
 	display_area(0,fftrow, FFT_BIN2-FFT_BIN1, fftrow);
 	display_start();
-
-	for(i=0;i<FFTLEN;i++) {
-		float fft_i = data[2*i], fft_q = data[2*i+1];
-		mag_avg +=
-		mag[i ^ (FFTLEN/2)] = fft_i*fft_i + fft_q*fft_q;
-	}
-	mag_avg = (70.0f*FFTLEN) / mag_avg;
-
-	uint8_t *bufp = displaybuf;
-	for(i=FFT_BIN1;i<FFT_BIN2;i++) {
-		int mag_norm = mag[i] * mag_avg;
-		bufp[2] = mag_norm >= 255 ? 255 : mag_norm;
-		mag_norm /= 2;
-		bufp[1] = mag_norm >= 255 ? 255 : mag_norm;
-		mag_norm /= 2;
-		bufp[0] = mag_norm >= 255 ? 255 : mag_norm;
-		bufp+=3;
-	}
-
-	display_transfer(displaybuf, 3*(FFT_BIN2-FFT_BIN1));
+	display_transfer(displaybuf2, 3*(FFT_BIN2-FFT_BIN1));
 
 	fftrow--;
 	if(fftrow < FFT_ROW1) fftrow = FFT_ROW2;
@@ -255,6 +225,6 @@ void ui_task() {
 	 */
 	for(;;) {
 		ui_loop();
-		vTaskDelay(2);
+		vTaskDelay(1);
 	}
 }

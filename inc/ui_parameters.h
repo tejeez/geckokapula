@@ -10,5 +10,7 @@
 
 #define FFT_ROW1 16
 #define FFT_ROW2 159
+#define FFT_BIN1 64
+#define FFT_BIN2 192
 
 #endif /* INC_UI_PARAMETERS_H_ */
