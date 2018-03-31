@@ -33,16 +33,18 @@ TaskHandle_t taskhandles[NTASKS];
 
 int testnumber=73;
 
-static void debugputc(char c) {USART_Tx(USART0, c); }
+void debugputc(char c) {USART_Tx(USART0, c); }
+void debugc(char c) {USART0->TXDATA = c;}
+void debugputs(char *c) { while(*c != '\0') { USART_Tx(USART0, *c); c++; } }
 
 void rail_task();
 void dsp_task();
 extern char rail_watchdog;
 
-static inline void restart_rail_task() {
+/*static inline void restart_rail_task() {
 	vTaskDelete(taskhandles[1]);
 	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &taskhandles[1]);
-}
+}*/
 
 void dump_memory(uint8_t *mem, int len, char last) {
 	int m;
@@ -87,6 +89,7 @@ void vApplicationStackOverflowHook() {
 	// beep
 	uint32_t piip=0;
 	for(;;) {
+		debugc('$');
 		TIMER_TopBufSet(TIMER0, 200);
 		TIMER_CompareBufSet(TIMER0, 0, (((++piip)>>7)&63)+68);
 	}
@@ -98,15 +101,22 @@ int main(void) {
 		LDMA_Init_t init = LDMA_INIT_DEFAULT;
 		LDMA_Init(&init);
 	}
-	debugputc('a');
 
 	TIMER_TopSet(TIMER0, TIMER0_PERIOD);
 
-	xTaskCreate(monitor_task, "task2", 0x100, NULL, 3, &taskhandles[3]);
-	xTaskCreate(ui_task, "ui_task", 0x300, NULL, 3, &taskhandles[0]);
-	//xTaskCreate(rail_task, "rail_task", 0x280, NULL, /*2*/ 3, &taskhandles[1]);
-	xTaskCreate(dsp_task, "task1", 0x280, NULL, 3, &taskhandles[2]);
+	xTaskCreate(monitor_task, "MON", 0x100, NULL, 3, &taskhandles[3]);
+	xTaskCreate(ui_task, "UI", 0x300, NULL, 3, &taskhandles[0]);
+	xTaskCreate(rail_task, "RAIL", 0x300, NULL, /*2*/ 3, &taskhandles[1]);
+	xTaskCreate(dsp_task, "DSP", 0x300, NULL, 3, &taskhandles[2]);
 	debugputc('\n');
  	vTaskStartScheduler();
 	return 0;
 }
+
+#define HANDLER(x) void x ## _Handler() { USART0->TXDATA = '!'; debugputs("\n" #x " :(\n"); for(;;); }
+HANDLER(HardFault);
+HANDLER(BusFault);
+HANDLER(UsageFault);
+HANDLER(MemManage);
+HANDLER(NMI);
+HANDLER(Default);

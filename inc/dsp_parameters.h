@@ -13,7 +13,7 @@
 #define PWM_IQ_FS_RATIO 3
 
 #define TXBLOCKLEN 32
-#define IQBLOCKLEN 64
+#define IQBLOCKLEN 16
 #define PWMBLOCKLEN (PWM_IQ_FS_RATIO*IQBLOCKLEN)
 #define PWMMAX TIMER0_PERIOD
 
@@ -24,5 +24,6 @@ void dsp_tx(uint8_t *input, uint8_t *output);
 
 void start_rx_dsp();
 void start_tx_dsp();
+void dsp_init();
 
 #endif /* INC_DSP_PARAMETERS_H_ */

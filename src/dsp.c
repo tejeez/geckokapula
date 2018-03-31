@@ -36,12 +36,31 @@ volatile int signalbufp = 0;
 
 extern rig_parameters_t p;
 
+#define DECIMATION1 2
+
 /* Interrupt for DSP operations that take a short time and need low latency */
 void dsp_rx(iqsample_t *input, uint8_t *output) {
-	int i;
+	int i, sn;
 	static int asd=0;
 	for(i=0; i<PWMBLOCKLEN; i++) {
 		output[i] = (asd++)/256;
+	}
+
+	for(sn=0; sn<IQBLOCKLEN;) {
+		int ssi=0, ssq=0;
+		for(i=0; i<DECIMATION1; i++) {
+			int si=input[sn][0], sq=input[sn][1];
+			ssi += si; ssq += sq;
+			sn++;
+		}
+
+		// for waterfall:
+		int fp = signalbufp;
+		signalbuf[fp]   = ssi;
+		signalbuf[fp+1] = ssq;
+		fp+=2;
+		if(fp >= SIGNALBUFLEN) fp = 0;
+		signalbufp = fp;
 	}
 #if 0 // TODO
 	unsigned nread, i;
@@ -251,12 +270,11 @@ static void calculate_waterfall_line() {
 
 /* A task for DSP operations that can take a longer time */
 void dsp_task() {
-	start_tx_dsp();
-	start_rx_dsp();
+	dsp_init();
 	for(;;) {
 		// TODO: semaphore?
 
-		//calculate_waterfall_line();
+		calculate_waterfall_line();
 
 		// delay can be commented out to see how often FFTs can be calculated
 		vTaskDelay(1);

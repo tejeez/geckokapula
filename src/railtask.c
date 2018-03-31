@@ -25,7 +25,7 @@ rig_status_t rs = {1};
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);
 	RAIL_ResetFifo(false, true);
-	RAIL_SetRxFifoThreshold(10); //FIFO size is 512B
+	RAIL_SetRxFifoThreshold(400); //FIFO size is 512B
 	RAIL_EnableRxFifoThreshold();
 	RAIL_RxStart(p.channel);
 }
@@ -84,9 +84,10 @@ void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 void __wrap_RAILInt_Assert() { }
 
 extern int testnumber;
-char rail_watchdog = 0;
+char rail_watchdog = 0, rail_initialized = 0;
 void rail_task() {
 	initRadio();
+	rail_initialized = 1;
 	for(;;) {
 		unsigned keyed = p.keyed;
 		rail_watchdog = 0;

@@ -111,6 +111,8 @@ void display_transfer(uint8_t *dmadata, int dmalen) {
 	LDMA_StartTransfer(DMA_CH_DISPLAY, &tr, &desc);
 #ifdef BLOCK_UNTIL_DMA_READY
 	ulTaskNotifyTake(pdFALSE, 100);
+#else
+	LDMA_IntDisable(DMA_CH_DISPLAY);
 #endif
 }
 
@@ -129,16 +131,22 @@ void display_area(int x1,int y1,int x2,int y2) {
 }
 
 int display_ready() {
+	static int ready_timeout = 0;
 	if(display_doing_dma) {
 		if(LDMA_TransferDone(DMA_CH_DISPLAY))
 			display_doing_dma = 0;
-		else return 0;
+		else {
+			if(ready_timeout < 100)
+			return 0;
+			ready_timeout++;
+		}
 	}
+	ready_timeout = 0;
 	return display_initialized;
 }
 
-// minimum delay between display init commands (us)
-#define DISPLAY_INIT_DELAY_US 20000
+// minimum delay between display init commands (ticks)
+#define DISPLAY_INIT_DELAY_TICKS 20
 #define CMD(x) ((x)|0x100)
 void display_init_loop() {
 	static int di_i = 0;
@@ -149,9 +157,9 @@ void display_init_loop() {
 			  0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 0
 	};
 
-	uint32_t time = RAIL_GetTime();
+	uint32_t time = xTaskGetTickCount();
 	if(di_i != 0 && next_time - time >= 0x80000000UL) return;
-	next_time = time + DISPLAY_INIT_DELAY_US;
+	next_time = time + DISPLAY_INIT_DELAY_TICKS;
 
 	if(di_i <  sizeof(display_init_commands)/sizeof(display_init_commands[0])) {
 		unsigned c = display_init_commands[di_i];

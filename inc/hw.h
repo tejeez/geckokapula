@@ -14,8 +14,8 @@
  */
 #define TIMER0_PERIOD 224
 
-#define DMA_CH_SYNTH 0
-#define DMA_CH_PWM 1
+#define DMA_CH_SYNTH 1
+#define DMA_CH_PWM 0
 #define DMA_CH_ADC 2
 #define DMA_CH_DISPLAY 3
 

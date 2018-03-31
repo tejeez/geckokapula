@@ -31,6 +31,13 @@ static uint8_t synthbuffer1[TXBLOCKLEN], synthbuffer2[TXBLOCKLEN];
 #define PONG 1
 static volatile char dma_adc_phase, dma_pwm_phase;
 
+void dsp_init() {
+	extern char rail_initialized;
+	while(!rail_initialized) vTaskDelay(20);
+	start_rx_dsp();
+	//start_tx_dsp();
+}
+
 void start_rx_dsp() {
 	/* RX chain reads I/Q samples from RAIL FIFO
 	 * and writes samples to PWM.
@@ -43,7 +50,7 @@ void start_rx_dsp() {
 	 * play a sidetone when needed.
 	 */
 	static const LDMA_TransferCfg_t pwmtrigger =
-	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_TIMER0_CC2);
+	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_TIMER0_UFOF);
 	static const LDMA_Descriptor_t pwmLoop[] = {
 	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer1, &TIMER0->CC[0], PWMBLOCKLEN, 1),
 	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer2, &TIMER0->CC[0], PWMBLOCKLEN, -1)
@@ -82,24 +89,30 @@ void start_tx_dsp() {
 	};
 
 	// stop ADC first to ensure the DMAs start at the same sample
-	ADC_Reset(ADC0);
+	//ADC_Reset(ADC0);
 
 	//LDMA_StopTransfer(DMA_CH_ADC);
 	//LDMA_StopTransfer(DMA_CH_SYNTH);
 
 	dma_adc_phase = PING;
 	LDMA_StartTransfer(DMA_CH_ADC,   &adctrigger, adcLoop);
-	LDMA_StartTransfer(DMA_CH_SYNTH, &adctrigger, synthLoop);
+	//LDMA_StartTransfer(DMA_CH_SYNTH, &adctrigger, synthLoop);
  	//LDMA_IntEnable(DMA_CH_ADC);
- 	LDMA_IntDisable(DMA_CH_SYNTH); // don't need interrupts from both
+ 	//LDMA_IntDisable(DMA_CH_SYNTH); // don't need interrupts from both
 
- 	ADC0_enter_DefaultMode_from_RESET();
+ 	//ADC0_enter_DefaultMode_from_RESET();
 	ADC_Start(ADC0, adcStartSingle);
 }
 
 void LDMA_IRQHandler() {
 	extern int testnumber;
+	debugc('.');
 	uint32_t pending = LDMA_IntGetEnabled();
+	if(pending & (1<<DMA_CH_DISPLAY)) {
+		//testnumber+=100;
+		// TODO: wake up display task if becomes necessary
+		LDMA->IFC = 1<<DMA_CH_DISPLAY;
+	}
 	if(pending & (1<<DMA_CH_SYNTH)) { // not used
 		LDMA->IFC = 1<<DMA_CH_SYNTH;
 	}
@@ -109,7 +122,6 @@ void LDMA_IRQHandler() {
 		 * transfer just completed? Now we just count it from start
 		 * and hope it stays in sync...
 		 */
-		//testnumber++;
 #if 1
 		if(dma_adc_phase == PING) {
 			dsp_tx(adcbuffer1, synthbuffer1);
@@ -123,7 +135,7 @@ void LDMA_IRQHandler() {
 	}
 	if(pending & (1<<DMA_CH_PWM)) {
 		testnumber++;
-		//RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
+		RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
 #if 1
 		if(dma_pwm_phase == PING) {
 			dsp_rx(iqbuffer, pwmbuffer1);
@@ -135,14 +147,13 @@ void LDMA_IRQHandler() {
 #endif
 		LDMA->IFC = 1<<DMA_CH_PWM;
 	}
-	if(pending & (1<<DMA_CH_DISPLAY)) {
-		//testnumber+=100;
-		// TODO: wake up display task if becomes necessary
-		LDMA->IFC = 1<<DMA_CH_DISPLAY;
-	}
 }
 
 void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
-	// not used now because reads are timed by the audio output DMA interrupt
+	/* This is not used now because reads are timed by
+	 * the audio output DMA interrupt.
+	 * It, however, seems necessary to read some samples here
+	 * because otherwise the program gets stuck for some reason.
+	 */
+	RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
 }
-

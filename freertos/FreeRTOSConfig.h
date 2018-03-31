@@ -48,6 +48,14 @@
 	extern uint32_t SystemCoreClock;
 #endif
 
+// Print first letter of task name. Doesn't slow down context switches that much.
+/*#define traceTASK_SWITCHED_OUT() {debugc(0x60 + (0x1F & pxCurrentTCB->pcTaskName[0]));}
+#define traceTASK_SWITCHED_IN()  {debugc(0x40 + (0x1F & pxCurrentTCB->pcTaskName[0]));}*/
+
+// These certainly slow down context switches but can be helpful
+/*#define traceTASK_SWITCHED_OUT() {debugputc('('); debugputs(pxCurrentTCB->pcTaskName); debugputc(')'); }
+#define traceTASK_SWITCHED_IN()  {debugputc('['); debugputs(pxCurrentTCB->pcTaskName); debugputc(']'); }*/
+
 #define configUSE_PREEMPTION			1
 #define configUSE_IDLE_HOOK				0
 #define configUSE_TICK_HOOK				0
