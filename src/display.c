@@ -24,13 +24,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-#include "semphr.h"
 
 // rig
 #include "ui_parameters.h"
+#include "hw.h"
 
-#define DISPLAY_DMA_CH 0
-static int display_initialized = 0, display_doing_dma = 0;
+static char display_initialized = 0, display_doing_dma = 0;
 
 #define GPIO_PortOutSet(g, p) GPIO->P[g].DOUT |= (1<<(p));
 #define GPIO_PortOutClear(g, p) GPIO->P[g].DOUT &= ~(1<<(p));
@@ -69,13 +68,14 @@ void display_pixel(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 extern int testnumber;
+#ifdef BLOCK_UNTIL_DMA_READY
 static TaskHandle_t myhandle;
 
 void LDMA_IRQHandler() {
 	//testnumber++;
 	uint32_t pending = LDMA_IntGetEnabled();
-	if(pending & (1<<DISPLAY_DMA_CH)) {
-		LDMA->IFC = 1<<DISPLAY_DMA_CH;
+	if(pending & (1<<DMA_CH_DISPLAY)) {
+		LDMA->IFC = 1<<DMA_CH_DISPLAY;
 
 		BaseType_t xHigherPriorityTaskWoken;
 		/* xHigherPriorityTaskWoken must be initialised to pdFALSE.  If calling
@@ -96,18 +96,22 @@ void LDMA_IRQHandler() {
 		portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 	}
 }
+#endif
 
 void display_transfer(uint8_t *dmadata, int dmalen) {
 	LDMA_TransferCfg_t tr =
 			LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART1_TXBL);
 	LDMA_Descriptor_t desc =
 			LDMA_DESCRIPTOR_SINGLE_M2P_BYTE(dmadata, &USART1->TXDATA, dmalen);
-	//LDMA_IntEnable(1<<DISPLAY_DMA_CH);
+	//LDMA_IntEnable(1<<DMA_CH_DISPLAY);
 	display_doing_dma = 1;
+#ifdef BLOCK_UNTIL_DMA_READY
 	myhandle = xTaskGetCurrentTaskHandle();
-	LDMA_StartTransfer(DISPLAY_DMA_CH, &tr, &desc);
-	//xSemaphoreTake(dma_semaphore, 10);
+#endif
+	LDMA_StartTransfer(DMA_CH_DISPLAY, &tr, &desc);
+#ifdef BLOCK_UNTIL_DMA_READY
 	ulTaskNotifyTake(pdFALSE, 100);
+#endif
 }
 
 void display_area(int x1,int y1,int x2,int y2) {
@@ -126,7 +130,7 @@ void display_area(int x1,int y1,int x2,int y2) {
 
 int display_ready() {
 	if(display_doing_dma) {
-		if(LDMA_TransferDone(DISPLAY_DMA_CH))
+		if(LDMA_TransferDone(DMA_CH_DISPLAY))
 			display_doing_dma = 0;
 		else return 0;
 	}
@@ -170,7 +174,3 @@ void display_backlight(int b) {
 	if(b > 200) b = 200;
  	TIMER_CompareBufSet(TIMER0, 1, b);
 }
-
-/*void display_preinit() {
-	dma_semaphore = xSemaphoreCreateBinary();
-}*/

@@ -24,11 +24,10 @@
 #include "rig.h"
 #include "ui.h"
 #include "ui_parameters.h"
-
+#include "dsp_parameters.h"
 
 #define RXBUFL 2
 typedef int16_t iqsample_t[2];
-iqsample_t rxbuf[RXBUFL];
 
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
 #define SIGNALBUFLEN 512
@@ -38,7 +37,13 @@ volatile int signalbufp = 0;
 extern rig_parameters_t p;
 
 /* Interrupt for DSP operations that take a short time and need low latency */
-void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
+void dsp_rx(iqsample_t *input, uint8_t *output) {
+	int i;
+	static int asdf=0;
+	for(i=0; i<PWMBLOCKLEN; i++) {
+		output[i] = (asdf++)/4;
+	}
+#if 0 // TODO
 	unsigned nread, i;
 	static int psi=0, psq=0;
 	static int agc_level=0;
@@ -122,13 +127,10 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 		smeter_acc = 0;
 		smeter_count = 0;
 	}
-
+#endif
 }
 
-inline void synth_set_channel(int ch) {
-	*(uint32_t*)(uint8_t*)(0x40083000 + 56) = ch;
-}
-
+#if 0
 extern int testnumber;
 void ADC0_IRQHandler() {
 	int audioout;
@@ -164,6 +166,16 @@ void ADC0_IRQHandler() {
 	if(audioout >= 63) audioout = 63;
 
 	synth_set_channel(audioout);
+}
+#endif
+
+void dsp_tx(uint8_t *input, uint8_t *output) {
+	int i;
+	static int asdf=0;
+	for(i=0; i<TXBLOCKLEN; i++) {
+		output[i] = asdf & 63;
+		asdf++;
+	}
 }
 
 static void calculate_waterfall_line() {
@@ -239,15 +251,12 @@ static void calculate_waterfall_line() {
 
 /* A task for DSP operations that can take a longer time */
 void dsp_task() {
-	NVIC_SetPriority(ADC0_IRQn, 3); // TODO: irq priorities in header or something
-	NVIC_EnableIRQ(ADC0_IRQn);
-	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
- 	ADC_Start(ADC0, adcStartSingle);
-
+	start_tx_dsp();
+	start_rx_dsp();
 	for(;;) {
 		// TODO: semaphore?
 
-		calculate_waterfall_line();
+		//calculate_waterfall_line();
 
 		// delay can be commented out to see how often FFTs can be calculated
 		vTaskDelay(1);

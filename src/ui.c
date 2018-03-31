@@ -165,13 +165,13 @@ char fftline_ready=0;
 static void ui_draw_fft_line();
 
 void ui_loop() {
-	ui_check_buttons();
-	display_init_loop();
-	if(!display_ready()) return;
 	if(backlight_timer <= BACKLIGHT_ON_TIME) {
 		display_backlight(BACKLIGHT_DIM_LEVEL + BACKLIGHT_ON_TIME - backlight_timer);
 		backlight_timer++;
 	}
+	ui_check_buttons();
+	display_init_loop();
+	if(!display_ready()) return;
 
 	if(fftline_ready) {
 		ui_draw_fft_line();

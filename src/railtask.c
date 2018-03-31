@@ -20,7 +20,7 @@
 #define MIDDLECHANNEL 32
 
 rig_parameters_t p = {MIDDLECHANNEL,1,0, 0, 2400000000, 1, 3, 5 };
-rig_status_t rs = {0};
+rig_status_t rs = {1};
 
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);

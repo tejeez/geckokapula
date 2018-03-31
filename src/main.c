@@ -67,8 +67,8 @@ void monitor_task() {
 			if(ti == NTASKS-1) o[n++] = '\n';
 			for(i=0; i<n; i++)
 				debugputc(o[i]);
-			if(++rail_watchdog >= 3)
-				restart_rail_task();
+			/*if(++rail_watchdog >= 3)
+				restart_rail_task();*/
 			vTaskDelay(100);
 		}
 #if 0
@@ -105,7 +105,7 @@ int main(void) {
 
 	xTaskCreate(monitor_task, "task2", 0x100, NULL, 3, &taskhandles[3]);
 	xTaskCreate(ui_task, "ui_task", 0x300, NULL, 3, &taskhandles[0]);
-	xTaskCreate(rail_task, "rail_task", 0x280, NULL, /*2*/ 3, &taskhandles[1]);
+	//xTaskCreate(rail_task, "rail_task", 0x280, NULL, /*2*/ 3, &taskhandles[1]);
 	xTaskCreate(dsp_task, "task1", 0x280, NULL, 3, &taskhandles[2]);
 	debugputc('\n');
  	vTaskStartScheduler();
