@@ -43,18 +43,10 @@ void start_rx_dsp() {
 	 * play a sidetone when needed.
 	 */
 	static const LDMA_TransferCfg_t pwmtrigger =
- 	LDMA_TRANSFER_CFG_PERIPHERAL(
- 			//ldmaPeripheralSignal_TIMER0_UFOF
- 			/* Trigger from ADC0 only for initial test until
- 			 * I find out how to trigger on each PWM cycle.
- 			 */
- 			ldmaPeripheralSignal_ADC0_SINGLE
-			);
+	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_TIMER0_CC2);
 	static const LDMA_Descriptor_t pwmLoop[] = {
-	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer1, &TIMER0->CC[0], 500, 1),
-	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer2, &TIMER0->CC[0], 500, -1)
-	/*LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer1, &TIMER0->CC[0], PWMBLOCKLEN, 1),
-	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer2, &TIMER0->CC[0], PWMBLOCKLEN, -1)*/
+	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer1, &TIMER0->CC[0], PWMBLOCKLEN, 1),
+	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer2, &TIMER0->CC[0], PWMBLOCKLEN, -1)
 	};
 
 	//LDMA_StopTransfer(DMA_CH_PWM);
@@ -97,7 +89,7 @@ void start_tx_dsp() {
 
 	dma_adc_phase = PING;
 	LDMA_StartTransfer(DMA_CH_ADC,   &adctrigger, adcLoop);
- 	//LDMA_StartTransfer(DMA_CH_SYNTH, &adctrigger, synthLoop);
+	LDMA_StartTransfer(DMA_CH_SYNTH, &adctrigger, synthLoop);
  	//LDMA_IntEnable(DMA_CH_ADC);
  	LDMA_IntDisable(DMA_CH_SYNTH); // don't need interrupts from both
 
@@ -118,7 +110,7 @@ void LDMA_IRQHandler() {
 		 * and hope it stays in sync...
 		 */
 		//testnumber++;
-#if 0
+#if 1
 		if(dma_adc_phase == PING) {
 			dsp_tx(adcbuffer1, synthbuffer1);
 			dma_adc_phase = PONG;
@@ -132,7 +124,7 @@ void LDMA_IRQHandler() {
 	if(pending & (1<<DMA_CH_PWM)) {
 		testnumber++;
 		//RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
-#if 0
+#if 1
 		if(dma_pwm_phase == PING) {
 			dsp_rx(iqbuffer, pwmbuffer1);
 			dma_pwm_phase = PONG;

@@ -39,9 +39,9 @@ extern rig_parameters_t p;
 /* Interrupt for DSP operations that take a short time and need low latency */
 void dsp_rx(iqsample_t *input, uint8_t *output) {
 	int i;
-	static int asdf=0;
+	static int asd=0;
 	for(i=0; i<PWMBLOCKLEN; i++) {
-		output[i] = (asdf++)/4;
+		output[i] = (asd++)/256;
 	}
 #if 0 // TODO
 	unsigned nread, i;
@@ -115,9 +115,9 @@ void dsp_rx(iqsample_t *input, uint8_t *output) {
 	if(fp >= SIGNALBUFLEN) fp = 0;
 	signalbufp = fp;
 
-	audioout = (p.volume2 * audioout / 0x1000) + 100;
+	audioout = (p.volume2 * audioout / 0x1000) + TIMER0_PERIOD/2;
 	if(audioout < 0) audioout = 0;
-	if(audioout > 200) audioout = 200;
+	if(audioout > TIMER0_PERIOD) audioout = TIMER0_PERIOD;
 	TIMER_CompareBufSet(TIMER0, 0, audioout);
 	//USART_Tx(USART0, 'r');
 

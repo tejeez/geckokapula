@@ -7,10 +7,15 @@
 
 #ifndef INC_DSP_PARAMETERS_H_
 #define INC_DSP_PARAMETERS_H_
+#include "hw.h"
 
-#define TXBLOCKLEN 1000
-#define IQBLOCKLEN 8
-#define PWMBLOCKLEN (4*IQBLOCKLEN)
+// see hw.h
+#define PWM_IQ_FS_RATIO 3
+
+#define TXBLOCKLEN 32
+#define IQBLOCKLEN 64
+#define PWMBLOCKLEN (PWM_IQ_FS_RATIO*IQBLOCKLEN)
+#define PWMMAX TIMER0_PERIOD
 
 typedef int16_t iqsample_t[2];
 

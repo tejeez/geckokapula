@@ -91,9 +91,12 @@
     <property object="PORTIO" propertyId="portio.usart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart1.location.usart1_clkloc" value="11"/>
     <property object="PORTIO" propertyId="portio.usart1.location.usart1_txloc" value="11"/>
+    <property object="PRS" propertyId="prs.channel0configuration.sourceperipheral" value="TIMER0"/>
     <property object="TIMER0" propertyId="ABPeripheral.included" value="true"/>
     <property object="TIMER0" propertyId="timer.capturecomparech0.ccmode" value="PWM"/>
     <property object="TIMER0" propertyId="timer.capturecomparech1.ccmode" value="PWM"/>
+    <property object="TIMER0" propertyId="timer.capturecomparech2.ccmode" value="Compare"/>
+    <property object="TIMER0" propertyId="timer.settings.cleardmarequestduringtransfer" value="Clear the DMA request while the transfer is active"/>
     <property object="TIMER1" propertyId="ABPeripheral.included" value="true"/>
     <property object="TIMER1" propertyId="timer.capturecomparech0.ccmode" value="Capture"/>
     <property object="TIMER1" propertyId="timer.capturecomparech0.digitalfilter" value="Enable filtering"/>

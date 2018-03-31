@@ -26,6 +26,7 @@
 #include "display.h"
 #include "ui.h"
 #include "rig.h"
+#include "hw.h"
 
 #define NTASKS 4
 TaskHandle_t taskhandles[NTASKS];
@@ -99,9 +100,7 @@ int main(void) {
 	}
 	debugputc('a');
 
- 	TIMER_TopSet(TIMER0, 200);
- 	TIMER_CompareBufSet(TIMER0, 0, 33);
- 	TIMER_CompareBufSet(TIMER0, 1, 20);
+	TIMER_TopSet(TIMER0, TIMER0_PERIOD);
 
 	xTaskCreate(monitor_task, "task2", 0x100, NULL, 3, &taskhandles[3]);
 	xTaskCreate(ui_task, "ui_task", 0x300, NULL, 3, &taskhandles[0]);

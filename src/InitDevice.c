@@ -542,7 +542,7 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 
 	init.enable = 1;
 	init.debugRun = 0;
-	init.dmaClrAct = 0;
+	init.dmaClrAct = 1;
 	init.sync = 0;
 	init.clkSel = timerClkSelHFPerClk;
 	init.prescale = timerPrescale1;
@@ -596,7 +596,7 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 	initCC2.prsInput = false;
 	initCC2.prsSel = timerPRSSELCh0;
 	initCC2.edge = timerEdgeRising;
-	initCC2.mode = timerCCModeOff;
+	initCC2.mode = timerCCModeCompare;
 	initCC2.eventCtrl = timerEventEveryEdge;
 	initCC2.filter = 0;
 	initCC2.cofoa = timerOutputActionNone;
@@ -627,7 +627,7 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 	initDTI.faultSourcePrsSel1 = timerPRSSELCh0;
 	initDTI.faultAction = timerDtiFaultActionInactive;
 	initDTI.outputsEnableMask = 0 | TIMER_DTOGEN_DTOGCC0EN
-			| TIMER_DTOGEN_DTOGCC1EN;
+			| TIMER_DTOGEN_DTOGCC1EN | TIMER_DTOGEN_DTOGCC2EN;
 	TIMER_InitDTI(TIMER0, &initDTI);
 	// [TIMER0 DTI init]$
 

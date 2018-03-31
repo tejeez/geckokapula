@@ -171,6 +171,6 @@ void display_scroll(unsigned y) {
 
 void display_backlight(int b) {
 	if(b < 0) b = 0;
-	if(b > 200) b = 200;
+	if(b > TIMER0_PERIOD) b = TIMER0_PERIOD;
  	TIMER_CompareBufSet(TIMER0, 1, b);
 }
