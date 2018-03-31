@@ -79,6 +79,10 @@ void initRadio() {
 void RAILCb_TxFifoAlmostEmpty(uint16_t bytes) {
 }
 
+/* Skip RAIL asserts to extend the tuning range.
+ * Needs linker parameter --wrap=RAILInt_Assert */
+void __wrap_RAILInt_Assert() { }
+
 extern int testnumber;
 char rail_watchdog = 0;
 void rail_task() {

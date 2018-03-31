@@ -170,6 +170,7 @@
 							<tool id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base.1343579731" name="GNU ARM C Linker" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base">
 								<option id="gnu.c.link.option.other.1000424332" name="Other options (-Xlinker [option])" superClass="gnu.c.link.option.other" valueType="stringList">
 									<listOptionValue builtIn="false" value="--defsym=FLASH_SIZE=262144"/>
+									<listOptionValue builtIn="false" value="--wrap=RAILInt_Assert"/>
 									<listOptionValue builtIn="false" value="--defsym=RAM_SIZE=32768"/>
 									<listOptionValue builtIn="false" value="--defsym=&quot;SIMEEPROM_SIZE=8K&quot;"/>
 								</option>
