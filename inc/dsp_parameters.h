@@ -7,15 +7,19 @@
 
 #ifndef INC_DSP_PARAMETERS_H_
 #define INC_DSP_PARAMETERS_H_
-#include "hw.h"
 
-// see hw.h
+// see hw.h:
 #define PWM_IQ_FS_RATIO 3
+#define PWMMAX 224
 
+// block sizes for DSP interrupts:
 #define TXBLOCKLEN 32
 #define IQBLOCKLEN 16
 #define PWMBLOCKLEN (PWM_IQ_FS_RATIO*IQBLOCKLEN)
-#define PWMMAX TIMER0_PERIOD
+
+// frequency synthesizer:
+#define CHANNELSPACING 147 // 38.4 MHz / 2^18
+#define MIDDLECHANNEL 32
 
 typedef int16_t iqsample_t[2];
 

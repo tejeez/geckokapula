@@ -42,8 +42,8 @@ void dsp_task();
 extern char rail_watchdog;
 
 /*static inline void restart_rail_task() {
-	vTaskDelete(taskhandles[1]);
-	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &taskhandles[1]);
+	vTaskDelete(taskhandles[2]);
+	xTaskCreate(rail_task, "RAIL", 0x200, NULL, 2, &taskhandles[2]);
 }*/
 
 void dump_memory(uint8_t *mem, int len, char last) {
@@ -104,10 +104,10 @@ int main(void) {
 
 	TIMER_TopSet(TIMER0, TIMER0_PERIOD);
 
-	xTaskCreate(monitor_task, "MON", 0x100, NULL, 3, &taskhandles[3]);
-	xTaskCreate(ui_task, "UI", 0x300, NULL, 3, &taskhandles[0]);
-	xTaskCreate(rail_task, "RAIL", 0x300, NULL, /*2*/ 3, &taskhandles[1]);
-	xTaskCreate(dsp_task, "DSP", 0x300, NULL, 3, &taskhandles[2]);
+	xTaskCreate(monitor_task, "MON", 0x200, NULL, 3, &taskhandles[0]);
+	xTaskCreate(ui_task, "UI", 0x200, NULL, 3, &taskhandles[1]);
+	xTaskCreate(rail_task, "RAIL", 0x200, NULL, /*2*/ 3, &taskhandles[2]);
+	xTaskCreate(dsp_task, "DSP", 0x200, NULL, 3, &taskhandles[3]);
 	debugputc('\n');
  	vTaskStartScheduler();
 	return 0;

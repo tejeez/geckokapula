@@ -43,7 +43,8 @@ void dsp_rx(iqsample_t *input, uint8_t *output) {
 	int i, sn;
 	static int asd=0;
 	for(i=0; i<PWMBLOCKLEN; i++) {
-		output[i] = (asd++)/256;
+		//output[i] = (asd++)/256;
+		output[i] = PWMMAX/2;
 	}
 
 	for(sn=0; sn<IQBLOCKLEN;) {
@@ -149,53 +150,53 @@ void dsp_rx(iqsample_t *input, uint8_t *output) {
 #endif
 }
 
-#if 0
-extern int testnumber;
-void ADC0_IRQHandler() {
-	int audioout;
-	static int hpf, lpf, agc_level=0;
-	//testnumber++;
 
-	int audioin = ADC0->SINGLEDATA;
-	ADC_IntClear(ADC0, ADC_IF_SINGLE);
-
+/* Measured sample rate here (based on transmitted tone frequency)
+ * is about 32.55 kHz.
+ */
+void dsp_tx(uint8_t *input, uint8_t *output) {
+	int i;
 	if(!p.keyed) {
-		synth_set_channel(p.channel);
+		for(i=0; i<TXBLOCKLEN; i++)
+			output[i] = MIDDLECHANNEL;
 		return;
 	}
 
-	// DC block:
-	hpf += (audioin - hpf) / 32;
-	audioin -= hpf;
-	// lowpass
-	lpf += (audioin - lpf) / 2;
-	audioin = lpf;
-
-	// Just copied AGC code from RX for now
-	int agc_1, agc_diff;
-	agc_1 = abs(audioin) * 0x100; // rectify
-	agc_diff = agc_1 - agc_level;
-	if(agc_diff > 0)
-		agc_level += agc_diff/0x100;
-	else
-		agc_level += agc_diff/0x1000;
-
-	audioout = 32 + 20 * audioin / (agc_level/0x100);
-	if(audioout <= 0) audioout = 0;
-	if(audioout >= 63) audioout = 63;
-
-	synth_set_channel(audioout);
-}
-#endif
-
-void dsp_tx(uint8_t *input, uint8_t *output) {
-	int i;
-	static int asdf=0;
+	/*static int asdf=0;
 	for(i=0; i<TXBLOCKLEN; i++) {
-		output[i] = asdf & 63;
+		output[i] = (asdf>>3) & 63;
 		asdf++;
 	}
+	return;*/
+
+	static int hpf, lpf, agc_level=0;
+
+	for(i=0; i<TXBLOCKLEN; i++) {
+		int audioin = input[i], audioout;
+
+		// DC block:
+		hpf += (audioin - hpf) / 32;
+		audioin -= hpf;
+		// lowpass
+		lpf += (audioin - lpf) / 2;
+		audioin = lpf;
+
+		// Just copied AGC code from RX for now
+		int agc_1, agc_diff;
+		agc_1 = abs(audioin) * 0x100; // rectify
+		agc_diff = agc_1 - agc_level;
+		if(agc_diff > 0)
+			agc_level += agc_diff/0x100;
+		else
+			agc_level += agc_diff/0x1000;
+
+		audioout = MIDDLECHANNEL + 20 * audioin / (agc_level/0x100);
+		if(audioout <= 0) audioout = 0;
+		if(audioout >= 63) audioout = 63;
+		output[i] = audioout;
+	}
 }
+
 
 static void calculate_waterfall_line() {
 	extern uint8_t displaybuf2[3*(FFT_BIN2-FFT_BIN1)];

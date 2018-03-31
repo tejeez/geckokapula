@@ -34,8 +34,8 @@ static volatile char dma_adc_phase, dma_pwm_phase;
 void dsp_init() {
 	extern char rail_initialized;
 	while(!rail_initialized) vTaskDelay(20);
+	start_tx_dsp();
 	start_rx_dsp();
-	//start_tx_dsp();
 }
 
 void start_rx_dsp() {
@@ -89,52 +89,42 @@ void start_tx_dsp() {
 	};
 
 	// stop ADC first to ensure the DMAs start at the same sample
-	//ADC_Reset(ADC0);
+	ADC_Reset(ADC0);
 
-	//LDMA_StopTransfer(DMA_CH_ADC);
-	//LDMA_StopTransfer(DMA_CH_SYNTH);
+	LDMA_StopTransfer(DMA_CH_ADC);
+	LDMA_StopTransfer(DMA_CH_SYNTH);
+
+	vTaskDelay(1); // Ensure ADC has time to stop. Maybe not necessary.
 
 	dma_adc_phase = PING;
 	LDMA_StartTransfer(DMA_CH_ADC,   &adctrigger, adcLoop);
-	//LDMA_StartTransfer(DMA_CH_SYNTH, &adctrigger, synthLoop);
+	LDMA_StartTransfer(DMA_CH_SYNTH, &adctrigger, synthLoop);
  	//LDMA_IntEnable(DMA_CH_ADC);
- 	//LDMA_IntDisable(DMA_CH_SYNTH); // don't need interrupts from both
+	LDMA_IntDisable(DMA_CH_SYNTH); // don't need interrupts from both
 
- 	//ADC0_enter_DefaultMode_from_RESET();
+	ADC0_enter_DefaultMode_from_RESET();
 	ADC_Start(ADC0, adcStartSingle);
 }
 
 void LDMA_IRQHandler() {
 	extern int testnumber;
-	debugc('.');
 	uint32_t pending = LDMA_IntGetEnabled();
-	if(pending & (1<<DMA_CH_DISPLAY)) {
-		//testnumber+=100;
-		// TODO: wake up display task if becomes necessary
-		LDMA->IFC = 1<<DMA_CH_DISPLAY;
+	static const uint32_t masks[] = {
+			1<<DMA_CH_DISPLAY, 1<<DMA_CH_SYNTH, 1<<DMA_CH_PWM, 1<<DMA_CH_ADC
+	};
+	int i;
+	//debugc('.');
+	for(i=0; i<4; i++) {
+		uint32_t m = masks[i] /*1<<i*/;
+		if(pending & m) LDMA->IFC = m;
 	}
-	if(pending & (1<<DMA_CH_SYNTH)) { // not used
-		LDMA->IFC = 1<<DMA_CH_SYNTH;
-	}
-	if(pending & (1<<DMA_CH_ADC)) {
-		//testnumber+=10;
-		/* Is there a way to check which half of the ping-pong
-		 * transfer just completed? Now we just count it from start
-		 * and hope it stays in sync...
-		 */
-#if 1
-		if(dma_adc_phase == PING) {
-			dsp_tx(adcbuffer1, synthbuffer1);
-			dma_adc_phase = PONG;
-		} else {
-			dsp_tx(adcbuffer2, synthbuffer2);
-			dma_adc_phase = PING;
-		}
-#endif
-		LDMA->IFC = 1<<DMA_CH_ADC;
-	}
+	/* Is there a way to check which half of the ping-pong
+	 * transfer just completed? Now we just count it from start
+	 * and hope it stays in sync...
+	 * (apparently it doesn't)
+	 */
 	if(pending & (1<<DMA_CH_PWM)) {
-		testnumber++;
+		//testnumber++;
 		RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
 #if 1
 		if(dma_pwm_phase == PING) {
@@ -145,7 +135,18 @@ void LDMA_IRQHandler() {
 			dma_pwm_phase = PING;
 		}
 #endif
-		LDMA->IFC = 1<<DMA_CH_PWM;
+	}
+	if(pending & (1<<DMA_CH_ADC)) {
+		//testnumber+=10;
+#if 1
+		if(dma_adc_phase == PING) {
+			dsp_tx(adcbuffer1, synthbuffer1);
+			dma_adc_phase = PONG;
+		} else {
+			dsp_tx(adcbuffer2, synthbuffer2);
+			dma_adc_phase = PING;
+		}
+#endif
 	}
 }
 
@@ -154,6 +155,11 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	 * the audio output DMA interrupt.
 	 * It, however, seems necessary to read some samples here
 	 * because otherwise the program gets stuck for some reason.
+	 * This should get called rarely in normal operation!
 	 */
-	RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
+	debugc('?');
+	uint8_t dummybuffer[8];
+	int i;
+	for(i=0; i<8; i++)
+		RAIL_ReadRxFifo(dummybuffer, 8);
 }
