@@ -10,6 +10,7 @@
 #include "em_timer.h"
 #include "em_adc.h"
 #include "em_ldma.h"
+#include "em_bus.h"
 
 #include "InitDevice.h"
 
@@ -24,18 +25,44 @@
 
 static iqsample_t iqbuffer[IQBLOCKLEN];
 static uint8_t pwmbuffer1[PWMBLOCKLEN], pwmbuffer2[PWMBLOCKLEN];
-static uint8_t adcbuffer1[TXBLOCKLEN], adcbuffer2[TXBLOCKLEN];
+static uint16_t adcbuffer1[TXBLOCKLEN], adcbuffer2[TXBLOCKLEN];
 static uint8_t synthbuffer1[TXBLOCKLEN], synthbuffer2[TXBLOCKLEN];
 
 #define PING 0
 #define PONG 1
 static volatile char dma_adc_phase, dma_pwm_phase;
 
+#define LDMA_DESCRIPTOR_LINKREL_P2M_HALF(src, dest, count, linkjmp) \
+  {                                                                 \
+    .xfer =                                                         \
+    {                                                               \
+      .structType   = ldmaCtrlStructTypeXfer,                       \
+      .structReq    = 0,                                            \
+      .xferCnt      = (count) - 1,                                  \
+      .byteSwap     = 0,                                            \
+      .blockSize    = ldmaCtrlBlockSizeUnit1,                       \
+      .doneIfs      = 1,                                            \
+      .reqMode      = ldmaCtrlReqModeBlock,                         \
+      .decLoopCnt   = 0,                                            \
+      .ignoreSrec   = 0,                                            \
+      .srcInc       = ldmaCtrlSrcIncNone,                           \
+      .size         = ldmaCtrlSizeHalf,                             \
+      .dstInc       = ldmaCtrlDstIncTwo,                            \
+      .srcAddrMode  = ldmaCtrlSrcAddrModeAbs,                       \
+      .dstAddrMode  = ldmaCtrlDstAddrModeAbs,                       \
+      .srcAddr      = (uint32_t)(src),                              \
+      .dstAddr      = (uint32_t)(dest),                             \
+      .linkMode     = ldmaLinkModeRel,                              \
+      .link         = 1,                                            \
+      .linkAddr     = (linkjmp) * 4                                 \
+    }                                                               \
+  }
+
 void dsp_init() {
 	extern char rail_initialized;
 	while(!rail_initialized) vTaskDelay(20);
-	start_tx_dsp();
-	start_rx_dsp();
+	/*start_tx_dsp();
+	start_rx_dsp();*/
 }
 
 void start_rx_dsp() {
@@ -50,7 +77,7 @@ void start_rx_dsp() {
 	 * play a sidetone when needed.
 	 */
 	static const LDMA_TransferCfg_t pwmtrigger =
-	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_TIMER0_UFOF);
+	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_TIMER0_CC2);
 	static const LDMA_Descriptor_t pwmLoop[] = {
 	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer1, &TIMER0->CC[0], PWMBLOCKLEN, 1),
 	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer2, &TIMER0->CC[0], PWMBLOCKLEN, -1)
@@ -60,6 +87,7 @@ void start_rx_dsp() {
 	dma_pwm_phase = PING;
  	LDMA_StartTransfer(DMA_CH_PWM, &pwmtrigger, pwmLoop);
 }
+
 
 void start_tx_dsp() {
 	/* TX chain reads samples from microphone ADC
@@ -79,8 +107,8 @@ void start_tx_dsp() {
  	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_ADC0_SINGLE);
 
 	static const LDMA_Descriptor_t adcLoop[] = {
-	LDMA_DESCRIPTOR_LINKREL_P2M_BYTE(&ADC0->SINGLEDATA, adcbuffer1, TXBLOCKLEN, 1),
-	LDMA_DESCRIPTOR_LINKREL_P2M_BYTE(&ADC0->SINGLEDATA, adcbuffer2, TXBLOCKLEN, -1)
+	LDMA_DESCRIPTOR_LINKREL_P2M_HALF(&ADC0->SINGLEDATA, adcbuffer1, TXBLOCKLEN, 1),
+	LDMA_DESCRIPTOR_LINKREL_P2M_HALF(&ADC0->SINGLEDATA, adcbuffer2, TXBLOCKLEN, -1)
 	};
 
 	static const LDMA_Descriptor_t synthLoop[] = {
@@ -91,16 +119,15 @@ void start_tx_dsp() {
 	// stop ADC first to ensure the DMAs start at the same sample
 	ADC_Reset(ADC0);
 
-	LDMA_StopTransfer(DMA_CH_ADC);
-	LDMA_StopTransfer(DMA_CH_SYNTH);
+	/*LDMA_StopTransfer(DMA_CH_ADC);
+	LDMA_StopTransfer(DMA_CH_SYNTH);*/
 
-	vTaskDelay(1); // Ensure ADC has time to stop. Maybe not necessary.
+	//vTaskDelay(1); // Ensure ADC has time to stop. Maybe not necessary.
 
 	dma_adc_phase = PING;
 	LDMA_StartTransfer(DMA_CH_ADC,   &adctrigger, adcLoop);
 	LDMA_StartTransfer(DMA_CH_SYNTH, &adctrigger, synthLoop);
- 	//LDMA_IntEnable(DMA_CH_ADC);
-	LDMA_IntDisable(DMA_CH_SYNTH); // don't need interrupts from both
+	LDMA_IntDisable(1<<DMA_CH_SYNTH); // don't need interrupts from both
 
 	ADC0_enter_DefaultMode_from_RESET();
 	ADC_Start(ADC0, adcStartSingle);
@@ -124,27 +151,35 @@ void LDMA_IRQHandler() {
 	 * (apparently it doesn't)
 	 */
 	if(pending & (1<<DMA_CH_PWM)) {
+		//BUS_RegMaskedClear(LDMA->CHDONE, 1<<DMA_CH_PWM);
+		uint8_t *srcaddr = (uint8_t*)LDMA->CH[DMA_CH_PWM].SRC;
 		//testnumber++;
+#if 0
 		RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
-#if 1
-		if(dma_pwm_phase == PING) {
+		if(/*dma_pwm_phase == PING*/srcaddr >= pwmbuffer2 && srcaddr < pwmbuffer2+PWMBLOCKLEN) {
+			debugc('p');
 			dsp_rx(iqbuffer, pwmbuffer1);
-			dma_pwm_phase = PONG;
+			//dma_pwm_phase = PONG;
 		} else {
+			debugc('P');
 			dsp_rx(iqbuffer, pwmbuffer2);
-			dma_pwm_phase = PING;
+			//dma_pwm_phase = PING;
 		}
 #endif
 	}
 	if(pending & (1<<DMA_CH_ADC)) {
+		//BUS_RegMaskedClear(LDMA->CHDONE, 1<<DMA_CH_ADC);
+		uint8_t *dstaddr = (uint8_t*)LDMA->CH[DMA_CH_ADC].DST;
 		//testnumber+=10;
-#if 1
-		if(dma_adc_phase == PING) {
+#if 0
+		if(/*dma_adc_phase == PING*/ dstaddr >= adcbuffer2 && dstaddr < adcbuffer2+TXBLOCKLEN) {
+			debugc('a');
 			dsp_tx(adcbuffer1, synthbuffer1);
-			dma_adc_phase = PONG;
+			//dma_adc_phase = PONG;
 		} else {
+			debugc('A');
 			dsp_tx(adcbuffer2, synthbuffer2);
-			dma_adc_phase = PING;
+			//dma_adc_phase = PING;
 		}
 #endif
 	}
@@ -162,4 +197,14 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	int i;
 	for(i=0; i<8; i++)
 		RAIL_ReadRxFifo(dummybuffer, 8);
+}
+
+/* For DMA debugging. Should make a triangle wave */
+void dsp_rx_testsignals() {
+	int i;
+	for(i=0; i<PWMBLOCKLEN; i++) {
+		int a = PWMMAX * i / PWMBLOCKLEN;
+		pwmbuffer1[i] = a;
+		pwmbuffer2[i] = PWMMAX - a;
+	}
 }

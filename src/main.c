@@ -95,21 +95,36 @@ void vApplicationStackOverflowHook() {
 	}
 }
 
+void dsp_rx_testsignals();
+void start_rx_dsp();
 int main(void) {
 	enter_DefaultMode_from_RESET();
 	{
-		LDMA_Init_t init = LDMA_INIT_DEFAULT;
+		static const LDMA_Init_t init = {
+		.ldmaInitCtrlNumFixed     = 7, /* Fixed priority arbitration.*/
+		.ldmaInitCtrlSyncPrsClrEn = 0, /* No PRS Synctrig clear enable*/
+		.ldmaInitCtrlSyncPrsSetEn = 0, /* No PRS Synctrig set enable. */
+		.ldmaInitIrqPriority      = 3  /* IRQ priority level 3.       */
+		};
 		LDMA_Init(&init);
 	}
 
 	TIMER_TopSet(TIMER0, TIMER0_PERIOD);
 
+	dsp_rx_testsignals();
+	start_tx_dsp();
+	start_rx_dsp();
+	LDMA_IntDisable((1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7));
+#if 1
 	xTaskCreate(monitor_task, "MON", 0x200, NULL, 3, &taskhandles[0]);
 	xTaskCreate(ui_task, "UI", 0x200, NULL, 3, &taskhandles[1]);
-	xTaskCreate(rail_task, "RAIL", 0x200, NULL, /*2*/ 3, &taskhandles[2]);
+	xTaskCreate(rail_task, "RAIL", 0x200, NULL, 3, &taskhandles[2]);
 	xTaskCreate(dsp_task, "DSP", 0x200, NULL, 3, &taskhandles[3]);
 	debugputc('\n');
  	vTaskStartScheduler();
+#else
+ 	for(;;);
+#endif
 	return 0;
 }
 

@@ -14,7 +14,7 @@
 
 // block sizes for DSP interrupts:
 #define TXBLOCKLEN 32
-#define IQBLOCKLEN 16
+#define IQBLOCKLEN 100
 #define PWMBLOCKLEN (PWM_IQ_FS_RATIO*IQBLOCKLEN)
 
 // frequency synthesizer:

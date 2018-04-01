@@ -15,10 +15,10 @@
 #define TIMER0_PERIOD 224
 
 // something didn't work when using channels 0, 1, 2, 3
-#define DMA_CH_SYNTH 4
-#define DMA_CH_PWM 5
-#define DMA_CH_ADC 6
-#define DMA_CH_DISPLAY 7
+#define DMA_CH_SYNTH 3
+#define DMA_CH_PWM 4
+#define DMA_CH_ADC 5
+#define DMA_CH_DISPLAY 6
 
 #define SYNTH_CHANNEL (*(volatile uint8_t*)0x40083038)
 

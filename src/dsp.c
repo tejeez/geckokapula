@@ -43,8 +43,9 @@ void dsp_rx(iqsample_t *input, uint8_t *output) {
 	int i, sn;
 	static int asd=0;
 	for(i=0; i<PWMBLOCKLEN; i++) {
+		output[i] = i * (PWMMAX / PWMBLOCKLEN);
 		//output[i] = (asd++)/256;
-		output[i] = PWMMAX/2;
+		//output[i] = PWMMAX/2;
 	}
 
 	for(sn=0; sn<IQBLOCKLEN;) {
