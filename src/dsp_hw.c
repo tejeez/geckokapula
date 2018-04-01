@@ -76,18 +76,35 @@ void start_rx_dsp() {
 	 * DMA is kept running during TX so it's possible to
 	 * play a sidetone when needed.
 	 */
+#if 1
 	static const LDMA_TransferCfg_t pwmtrigger =
 	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_TIMER0_CC2);
 	static const LDMA_Descriptor_t pwmLoop[] = {
-	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer1, &TIMER0->CC[0], PWMBLOCKLEN, 1),
-	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer2, &TIMER0->CC[0], PWMBLOCKLEN, -1)
+	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer1, &TIMER0->CC[0].CCVB, PWMBLOCKLEN, 1),
+	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(pwmbuffer2, &TIMER0->CC[0].CCVB, PWMBLOCKLEN, -1)
 	};
 
 	//LDMA_StopTransfer(DMA_CH_PWM);
 	dma_pwm_phase = PING;
  	LDMA_StartTransfer(DMA_CH_PWM, &pwmtrigger, pwmLoop);
+#endif
+#if 0
+	NVIC_SetPriority(TIMER0_IRQn, 3); // TODO: irq priorities in header or something
+	NVIC_EnableIRQ(TIMER0_IRQn);
+	TIMER_IntEnable(TIMER0, TIMER_IF_OF);
+#endif
 }
 
+#if 0
+static volatile int dspbufindex = 0;
+void TIMER0_Handler() {
+	int b = dspbufindex;
+	TIMER0->CC[0] = pwmbuffer1[b];
+	b++;
+	if(b >= PWMBLOCKLEN) b = 0;
+	dspbufindex = b;
+}
+#endif
 
 void start_tx_dsp() {
 	/* TX chain reads samples from microphone ADC
