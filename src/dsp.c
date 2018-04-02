@@ -41,10 +41,10 @@ extern rig_parameters_t p;
 /* Interrupt for DSP operations that take a short time and need low latency */
 void dsp_rx(iqsample_t *input, uint8_t *output) {
 	int i, sn;
-	static int asd=0;
+	static unsigned asd=0;
 	for(i=0; i<PWMBLOCKLEN; i++) {
-		output[i] = i * (PWMMAX / PWMBLOCKLEN);
-		//output[i] = (asd++)/256;
+		//output[i] = i * (PWMMAX / PWMBLOCKLEN);
+		output[i] = (0x1F&(++asd)/64) + PWMMAX-0x10;
 		//output[i] = PWMMAX/2;
 	}
 
@@ -155,7 +155,7 @@ void dsp_rx(iqsample_t *input, uint8_t *output) {
 /* Measured sample rate here (based on transmitted tone frequency)
  * is about 32.55 kHz.
  */
-void dsp_tx(uint8_t *input, uint8_t *output) {
+void dsp_tx(uint16_t *input, uint8_t *output) {
 	int i;
 	if(!p.keyed) {
 		for(i=0; i<TXBLOCKLEN; i++)
@@ -163,12 +163,12 @@ void dsp_tx(uint8_t *input, uint8_t *output) {
 		return;
 	}
 
-	/*static int asdf=0;
+	static int asdf=0;
 	for(i=0; i<TXBLOCKLEN; i++) {
 		output[i] = (asdf>>3) & 63;
 		asdf++;
 	}
-	return;*/
+	return;
 
 	static int hpf, lpf, agc_level=0;
 

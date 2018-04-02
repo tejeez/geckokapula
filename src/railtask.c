@@ -21,6 +21,8 @@ rig_parameters_t p = {MIDDLECHANNEL,1,0, 0, 2400000000, 1, 3, 5 };
 rig_status_t rs = {1};
 
 void startrx() {
+	extern char can_read_rail_fifo;
+	can_read_rail_fifo = 0;
 	RAIL_RfIdleExt(RAIL_IDLE, true);
 	RAIL_ResetFifo(false, true);
 	RAIL_SetRxFifoThreshold(400); //FIFO size is 512B

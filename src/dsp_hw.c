@@ -23,10 +23,16 @@
 #include "hw.h"
 #include "dsp_parameters.h"
 
+#if 0
+#define interrupt_debugc debugc
+#else
+#define interrupt_debugc(...)
+#endif
+
 static iqsample_t iqbuffer[IQBLOCKLEN];
-static uint8_t pwmbuffer1[PWMBLOCKLEN], pwmbuffer2[PWMBLOCKLEN];
-static uint16_t adcbuffer1[TXBLOCKLEN], adcbuffer2[TXBLOCKLEN];
-static uint8_t synthbuffer1[TXBLOCKLEN], synthbuffer2[TXBLOCKLEN];
+static uint8_t pwmbuffer1[2*PWMBLOCKLEN], *const pwmbuffer2 = pwmbuffer1 + PWMBLOCKLEN;
+static uint16_t adcbuffer1[2*TXBLOCKLEN], *const adcbuffer2 = adcbuffer1 + TXBLOCKLEN;
+static uint8_t synthbuffer1[2*TXBLOCKLEN], *const synthbuffer2 = synthbuffer1 + TXBLOCKLEN;
 
 #define PING 0
 #define PONG 1
@@ -61,8 +67,8 @@ static volatile char dma_adc_phase, dma_pwm_phase;
 void dsp_init() {
 	extern char rail_initialized;
 	while(!rail_initialized) vTaskDelay(20);
-	/*start_tx_dsp();
-	start_rx_dsp();*/
+	start_tx_dsp();
+	start_rx_dsp();
 }
 
 void start_rx_dsp() {
@@ -96,7 +102,7 @@ void start_rx_dsp() {
 }
 
 #if 0
-static volatile int dspbufindex = 0;
+static volatile unsigned dspbufindex = 0;
 void TIMER0_Handler() {
 	int b = dspbufindex;
 	TIMER0->CC[0] = pwmbuffer1[b];
@@ -124,13 +130,15 @@ void start_tx_dsp() {
  	LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_ADC0_SINGLE);
 
 	static const LDMA_Descriptor_t adcLoop[] = {
+	LDMA_DESCRIPTOR_LINKREL_SYNC(1, 0, 0, 0, 1),
 	LDMA_DESCRIPTOR_LINKREL_P2M_HALF(&ADC0->SINGLEDATA, adcbuffer1, TXBLOCKLEN, 1),
-	LDMA_DESCRIPTOR_LINKREL_P2M_HALF(&ADC0->SINGLEDATA, adcbuffer2, TXBLOCKLEN, -1)
+	LDMA_DESCRIPTOR_LINKREL_P2M_HALF(&ADC0->SINGLEDATA, adcbuffer2, TXBLOCKLEN, -2)
 	};
 
 	static const LDMA_Descriptor_t synthLoop[] = {
+	LDMA_DESCRIPTOR_LINKREL_SYNC(0, 1, 1, 1, 1),
 	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(synthbuffer1, &SYNTH_CHANNEL, TXBLOCKLEN, 1),
-	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(synthbuffer2, &SYNTH_CHANNEL, TXBLOCKLEN, -1)
+	LDMA_DESCRIPTOR_LINKREL_M2P_BYTE(synthbuffer2, &SYNTH_CHANNEL, TXBLOCKLEN, -2)
 	};
 
 	// stop ADC first to ensure the DMAs start at the same sample
@@ -150,6 +158,8 @@ void start_tx_dsp() {
 	ADC_Start(ADC0, adcStartSingle);
 }
 
+char can_read_rail_fifo = 0;
+volatile int rail_bytes=0;
 void LDMA_IRQHandler() {
 	extern int testnumber;
 	uint32_t pending = LDMA_IntGetEnabled();
@@ -171,14 +181,23 @@ void LDMA_IRQHandler() {
 		//BUS_RegMaskedClear(LDMA->CHDONE, 1<<DMA_CH_PWM);
 		uint8_t *srcaddr = (uint8_t*)LDMA->CH[DMA_CH_PWM].SRC;
 		//testnumber++;
-#if 0
-		RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
+#if 1
+		int ba = RAIL_GetRxFifoBytesAvailable();
+		if(!can_read_rail_fifo) {
+			// start reading when enough is available
+			if(ba >
+			   (IQBLOCKLEN+10)*sizeof(iqsample_t))
+				can_read_rail_fifo = 1;
+		}
+		rail_bytes = ba;
+		if(can_read_rail_fifo)
+			RAIL_ReadRxFifo((uint8_t*)iqbuffer, IQBLOCKLEN*sizeof(iqsample_t));
 		if(/*dma_pwm_phase == PING*/srcaddr >= pwmbuffer2 && srcaddr < pwmbuffer2+PWMBLOCKLEN) {
-			debugc('p');
+			interrupt_debugc('p');
 			dsp_rx(iqbuffer, pwmbuffer1);
 			//dma_pwm_phase = PONG;
 		} else {
-			debugc('P');
+			interrupt_debugc('P');
 			dsp_rx(iqbuffer, pwmbuffer2);
 			//dma_pwm_phase = PING;
 		}
@@ -186,15 +205,17 @@ void LDMA_IRQHandler() {
 	}
 	if(pending & (1<<DMA_CH_ADC)) {
 		//BUS_RegMaskedClear(LDMA->CHDONE, 1<<DMA_CH_ADC);
-		uint8_t *dstaddr = (uint8_t*)LDMA->CH[DMA_CH_ADC].DST;
+		uint16_t *dstaddr = (uint16_t*)LDMA->CH[DMA_CH_ADC].DST;
+		uint8_t *srcaddr = (uint8_t*)LDMA->CH[DMA_CH_SYNTH].SRC;
 		//testnumber+=10;
-#if 0
-		if(/*dma_adc_phase == PING*/ dstaddr >= adcbuffer2 && dstaddr < adcbuffer2+TXBLOCKLEN) {
-			debugc('a');
+#if 1
+		//if(/*dma_adc_phase == PING*/ dstaddr >= adcbuffer2 && dstaddr < adcbuffer2+TXBLOCKLEN) {
+		if(srcaddr >= synthbuffer2 && srcaddr < synthbuffer2+TXBLOCKLEN) {
+			interrupt_debugc('a');
 			dsp_tx(adcbuffer1, synthbuffer1);
 			//dma_adc_phase = PONG;
 		} else {
-			debugc('A');
+			interrupt_debugc('A');
 			dsp_tx(adcbuffer2, synthbuffer2);
 			//dma_adc_phase = PING;
 		}
@@ -209,10 +230,10 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	 * because otherwise the program gets stuck for some reason.
 	 * This should get called rarely in normal operation!
 	 */
-	debugc('?');
+	interrupt_debugc('?');
 	uint8_t dummybuffer[8];
 	int i;
-	for(i=0; i<8; i++)
+	for(i=0; i<128/8; i++)
 		RAIL_ReadRxFifo(dummybuffer, 8);
 }
 
@@ -224,4 +245,21 @@ void dsp_rx_testsignals() {
 		pwmbuffer1[i] = a;
 		pwmbuffer2[i] = PWMMAX - a;
 	}
+}
+
+#include <stdio.h>
+void debugputs(char*);
+void dsp_buf_debug() {
+	char o[30];
+	uint16_t *dstaddr;
+	uint8_t *srcaddr;
+	portDISABLE_INTERRUPTS();
+	dstaddr = (uint16_t*)LDMA->CH[DMA_CH_ADC].DST;
+	srcaddr = (uint8_t*)LDMA->CH[DMA_CH_SYNTH].SRC;
+	portENABLE_INTERRUPTS();
+	int adcpos = dstaddr - adcbuffer1, synthpos = srcaddr - synthbuffer1;
+	snprintf(o, 30, "%4d %4d %4d  %5d\n",
+			adcpos, synthpos, (synthpos-adcpos) & (TXBLOCKLEN-1),
+			rail_bytes);
+	debugputs(o);
 }

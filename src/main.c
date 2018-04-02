@@ -60,6 +60,7 @@ void dump_memory(uint8_t *mem, int len, char last) {
 
 void monitor_task() {
 	for(;;) {
+#if 0
 		//testnumber++;
 		int ti;
 		for(ti=0; ti<NTASKS; ti++) {
@@ -74,6 +75,7 @@ void monitor_task() {
 				restart_rail_task();*/
 			vTaskDelay(100);
 		}
+#endif
 #if 0
 		// print some registers which might be related to the radio
 		dump_memory((void*)0x40080000, 1024, '/');
@@ -82,6 +84,8 @@ void monitor_task() {
 		dump_memory((void*)0x40083000, 1024, '/');
 		dump_memory((void*)0x40084000, 1024, '\n');
 #endif
+		dsp_buf_debug();
+		vTaskDelay(1);
 	}
 }
 
@@ -112,9 +116,9 @@ int main(void) {
 	TIMER_TopSet(TIMER0, TIMER0_PERIOD);
 
 	dsp_rx_testsignals();
-	start_tx_dsp();
-	start_rx_dsp();
-	LDMA_IntDisable((1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7));
+	/*start_tx_dsp();
+	start_rx_dsp();*/
+	//LDMA_IntDisable((1<<3) | (1<<4) | (1<<5) | (1<<6) | (1<<7));
 #if 1
 	xTaskCreate(monitor_task, "MON", 0x200, NULL, 3, &taskhandles[0]);
 	xTaskCreate(ui_task, "UI", 0x200, NULL, 3, &taskhandles[1]);

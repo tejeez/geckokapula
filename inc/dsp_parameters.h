@@ -13,8 +13,8 @@
 #define PWMMAX 224
 
 // block sizes for DSP interrupts:
-#define TXBLOCKLEN 32
-#define IQBLOCKLEN 100
+#define TXBLOCKLEN 64
+#define IQBLOCKLEN 32
 #define PWMBLOCKLEN (PWM_IQ_FS_RATIO*IQBLOCKLEN)
 
 // frequency synthesizer:
@@ -24,7 +24,7 @@
 typedef int16_t iqsample_t[2];
 
 void dsp_rx(iqsample_t *input, uint8_t *output);
-void dsp_tx(uint8_t *input, uint8_t *output);
+void dsp_tx(uint16_t *input, uint8_t *output);
 
 void start_rx_dsp();
 void start_tx_dsp();
