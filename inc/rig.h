@@ -17,6 +17,7 @@ typedef struct {
 	uint8_t volume;
 	int volume2;
 	uint8_t waterfall_averages;
+	unsigned squelch;
 } rig_parameters_t;
 extern rig_parameters_t p;
 

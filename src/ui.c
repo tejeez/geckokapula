@@ -78,7 +78,7 @@ const char *p_keyed_text[] = { "rx", "tx" };
 typedef struct {
 	char pos1, pos2, color;
 } ui_field_t;
-#define N_UI_FIELDS 14
+#define N_UI_FIELDS 15
 const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{ 0, 0, 0 },
 	{ 1, 1, 0 },
@@ -90,10 +90,11 @@ const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{ 7, 7, 0 },
 	{ 8, 8, 0 },
 	{ 9, 9, 0 },
-	{11,13, 1 },
-	{14,15, 2 },
-	{16,17, 1 },
-	{18,20, 2 }
+	{11,13, 1 }, // mode
+	{14,15, 2 }, // rx/tx
+	{16,17, 1 }, // volume
+	{18,19, 2 }, // averages
+	{20,22, 1 }  // squelch
 };
 
 extern int testnumber;
@@ -102,9 +103,9 @@ void ui_update_text() {
 	int pos1, pos2;
 	int s_dB = 10.0*log10(rs.smeter);
 
-	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d%3d|%2d %6d                ",
+	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d%2d%3d|%2d %4d",
 			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed],
-			p.volume, p.waterfall_averages,
+			p.volume, p.waterfall_averages, p.squelch,
 			s_dB, testnumber);
 	for(; i<TEXT_LEN; i++) textline[i] = ' ';
 
@@ -124,10 +125,12 @@ static void ui_knob_turned(int cursor, int diff) {
 	} else if(cursor == 11) { // keyed
 		ui_keyed = wrap(ui_keyed + diff, 2);
 	} else if(cursor == 12) { // volume
-		int vola = p.volume = wrap(p.volume + diff, 12);
+		int vola = p.volume = wrap(p.volume + diff, 20);
 		p.volume2 = (vola&1) ? (3<<(vola/2)) : (2<<(vola/2));
 	} else if(cursor == 13) {
-		p.waterfall_averages = p.waterfall_averages + diff;
+		p.waterfall_averages = wrap(p.waterfall_averages + diff, 100);
+	} else if(cursor == 14) {
+		p.squelch = wrap(p.squelch + diff, 100);
 	}
 }
 

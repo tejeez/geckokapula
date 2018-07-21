@@ -42,6 +42,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	unsigned nread, i;
 	static int psi=0, psq=0;
 	static int agc_level=0;
+	static int audioout_prev=0, squelchlpf=0;
 	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 4*RXBUFL);
 	nread /= 4;
 	int ssi=0, ssq=0, audioout = 0;
@@ -49,7 +50,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	static uint64_t smeter_acc = 0;
 	static int audio_lpf = 0, audio_hpf = 0;
  	for(i=0; i<nread; i++) {
-		int si=rxbuf[i][0], sq=rxbuf[i][1];
+		int si=rxbuf[i][1], sq=rxbuf[i][0]; // I and Q swapped
 		int fi, fq;
 		switch(p.mode) {
 		case MODE_FM: {
@@ -110,9 +111,16 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	if(fp >= SIGNALBUFLEN) fp = 0;
 	signalbufp = fp;
 
-	audioout = (p.volume2 * audioout / 0x1000) + 100;
-	if(audioout < 0) audioout = 0;
-	if(audioout > 200) audioout = 200;
+	squelchlpf += (0x100*abs(audioout - audioout_prev) - squelchlpf) / 0x800;
+	audioout_prev = audioout;
+
+	if(squelchlpf < 0x2000*p.squelch) {
+		audioout = (p.volume2 * audioout / 0x1000) + 100;
+		if(audioout < 0) audioout = 0;
+		if(audioout > 200) audioout = 200;
+	} else {
+		audioout = 100;
+	}
 	TIMER_CompareBufSet(TIMER0, 0, audioout);
 	//USART_Tx(USART0, 'r');
 
@@ -143,8 +151,8 @@ void ADC0_IRQHandler() {
 		return;
 	}
 
-	// DC block:
-	hpf += (audioin - hpf) / 32;
+	// DC block / HPF:
+	hpf += (audioin - hpf) / 4;
 	audioin -= hpf;
 	// lowpass
 	lpf += (audioin - lpf) / 2;
@@ -159,7 +167,7 @@ void ADC0_IRQHandler() {
 	else
 		agc_level += agc_diff/0x1000;
 
-	audioout = 32 + 20 * audioin / (agc_level/0x100);
+	audioout = 32 + 30 * audioin / (agc_level/0x100);
 	if(audioout <= 0) audioout = 0;
 	if(audioout >= 63) audioout = 63;
 
@@ -247,7 +255,8 @@ void dsp_task() {
 	for(;;) {
 		// TODO: semaphore?
 
-		calculate_waterfall_line();
+		if(!p.keyed)
+			calculate_waterfall_line();
 
 		// delay can be commented out to see how often FFTs can be calculated
 		vTaskDelay(1);

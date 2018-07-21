@@ -19,7 +19,7 @@
 #define CHANNELSPACING 147 // 38.4 MHz / 2^18
 #define MIDDLECHANNEL 32
 
-rig_parameters_t p = {MIDDLECHANNEL,1,0, 0, 2400000000, 1, 3, 5 };
+rig_parameters_t p = {MIDDLECHANNEL,1,0, 0, 2400000000, 11, 96, 5, 29 };
 rig_status_t rs = {0};
 
 void startrx() {

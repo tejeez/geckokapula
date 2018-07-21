@@ -166,6 +166,7 @@
 									<listOptionValue builtIn="false" value="CONFIGURATION_HEADER=&quot;flex-configuration.h&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2141231901" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<inputType id="org.eclipse.cdt.core.asmSource.1786444076" superClass="org.eclipse.cdt.core.asmSource"/>
 							</tool>
 							<tool id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base.1343579731" name="GNU ARM C Linker" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base">
 								<option id="gnu.c.link.option.other.1000424332" name="Other options (-Xlinker [option])" superClass="gnu.c.link.option.other" valueType="stringList">
