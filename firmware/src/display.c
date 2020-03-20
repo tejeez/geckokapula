@@ -18,7 +18,9 @@
 #include "em_ldma.h"
 #include "em_timer.h"
 #include "InitDevice.h"
+#ifndef DISABLE_RAIL
 #include "rail.h"
+#endif
 
 // FreeRTOS
 #include "FreeRTOS.h"
@@ -145,9 +147,11 @@ void display_init_loop() {
 			  0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 0
 	};
 
+#ifndef DISABLE_RAIL
 	uint32_t time = RAIL_GetTime();
 	if(di_i != 0 && next_time - time >= 0x80000000UL) return;
 	next_time = time + DISPLAY_INIT_DELAY_US;
+#endif
 
 	if(di_i <  sizeof(display_init_commands)/sizeof(display_init_commands[0])) {
 		unsigned c = display_init_commands[di_i];

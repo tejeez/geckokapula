@@ -5,9 +5,11 @@
  *      Author: Tatu
  */
 // RAIL
+#ifndef DISABLE_RAIL
 #include "rail.h"
 #include "rail_config.h"
 #include "pa.h"
+#endif
 
 // FreeRTOS
 #include "FreeRTOS.h"
@@ -22,6 +24,7 @@
 rig_parameters_t p = {MIDDLECHANNEL,1,0, 0, 2400000000, 11, 96, 5, 29 };
 rig_status_t rs = {0};
 
+#ifndef DISABLE_RAIL
 void startrx() {
 	RAIL_RfIdleExt(RAIL_IDLE, true);
 	RAIL_ResetFifo(false, true);
@@ -108,3 +111,11 @@ void rail_task() {
 		vTaskDelay(2);
 	}
 }
+#else
+char rail_watchdog = 0;
+void rail_task(void)
+{
+	for (;;)
+		vTaskDelay(1000);
+}
+#endif

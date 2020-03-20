@@ -3,7 +3,6 @@
  * @brief Simple RAIL application which includes hal
  * @copyright Copyright 2017 Silicon Laboratories, Inc. http://www.silabs.com
  ******************************************************************************/
-#include "hal_common.h"
 
 // emlib
 #include "em_chip.h"

@@ -12,9 +12,13 @@
 #include "arm_const_structs.h"
 
 // emlib
-#include "rail.h"
 #include "em_timer.h"
 #include "em_adc.h"
+
+// RAIL
+#ifndef DISABLE_RAIL
+#include "rail.h"
+#endif
 
 // FreeRTOS
 #include "FreeRTOS.h"
@@ -37,6 +41,7 @@ volatile int signalbufp = 0;
 
 extern rig_parameters_t p;
 
+#ifndef DISABLE_RAIL
 /* Interrupt for DSP operations that take a short time and need low latency */
 void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	unsigned nread, i;
@@ -132,6 +137,7 @@ void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
 	}
 
 }
+#endif
 
 inline void synth_set_channel(int ch) {
 	*(uint32_t*)(uint8_t*)(0x40083000 + 56) = ch;

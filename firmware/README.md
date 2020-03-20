@@ -44,10 +44,16 @@ datasheet is prone to mistakes as you are looking at it mirrored.
 Here's a mirrored pinout to help: http://oh2eat.dy.fi/brd4151a-pinout.png
 
 # Files in the project
-The project should be opened in Simplicity Studio. If you find a way to import
-it so that paths and compiler parameters are right, tell me how you did it!
-Also try regenerating the RAIL configuration (click Generate in the isc file)
-as it seems to fix (or in some cases, break) these settings.
+The project was originally made in Simplicity Studio.
+Simplicity Studio, however, was found difficult to use for development
+since a project opened on another machine was usually broken, its
+configuration generators regularly broke something in the project,
+and it was quite frustrating in general.
+
+Now there's a Makefile to compile the code, though currently it works
+only for RAIL 2 whereas the project originally used RAIL 1.
+Port to RAIL 2 should be done next.
+Calls to RAIL are commented out, so only the user interface is working.
 
 The interesting code is under src/ and inc/
 except for InitDevice.c which is generated.
@@ -55,5 +61,10 @@ Everything else is mostly silabs libraries and generated stuff.
 The isc and hwconf files have the hardware parameters
 that can be edited in Simplicity Studio GUI.
 
-
 Font is from https://github.com/dhepper/font8x8/
+
+# Compiling
+See https://github.com/tejeez/efr32-template/ for instructions.
+
+Programming with openocd sometimes doesn't work.
+Try programming with Simplicity Commander in that case.
