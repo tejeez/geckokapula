@@ -10,7 +10,7 @@ TARGET = gekkofirmis
 BUILD_DIR = build
 
 # Optimization flags
-OPT = -O1
+OPT = -O2
 
 DEBUG = 1
 
@@ -56,7 +56,7 @@ LD_FLAGS =
 
 
 #######################################
-# Gecko SDK
+# CMSIS and Gecko SDK
 #######################################
 
 # Path to Gecko SDK
@@ -68,9 +68,13 @@ C_INCLUDES += -I$(GECKOSDK)/platform/CMSIS/Include
 # CMSIS DSP
 C_SOURCES += $(GECKOSDK)/platform/CMSIS/DSP_Lib/Source/CommonTables/arm_const_structs.c
 C_SOURCES += $(GECKOSDK)/platform/CMSIS/DSP_Lib/Source/CommonTables/arm_common_tables.c
-C_DEFS += -DARM_MATH_CM4=1 -D__FPU_PRESENT=1
-LIBDIR += -L$(GECKOSDK)/platform/CMSIS/Lib/GCC
-LIBS += -larm_cortexM4lf_math
+# Precompiled CMSIS DSP can't be used, since it uses hard float ABI whereas
+# RAIL uses softfp ABI, so the whole program has to be compiled with softfp.
+#LIBDIR += -L$(GECKOSDK)/platform/CMSIS/Lib/GCC
+#LIBS += -larm_cortexM4lf_math
+C_SOURCES   += $(GECKOSDK)/platform/CMSIS/DSP_Lib/Source/TransformFunctions/arm_cfft_f32.c
+C_SOURCES   += $(GECKOSDK)/platform/CMSIS/DSP_Lib/Source/TransformFunctions/arm_cfft_radix8_f32.c
+ASM_SOURCES += $(GECKOSDK)/platform/CMSIS/DSP_Lib/Source/TransformFunctions/arm_bitreversal2.S
 
 # EMLIB
 C_SOURCES += $(wildcard $(GECKOSDK)/platform/emlib/src/*.c)
@@ -95,16 +99,19 @@ C_SOURCES += $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/system_efr
 LDSCRIPT ?= $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/GCC/efr32mg1p.ld
 
 # RAIL library
-#C_INCLUDES += -I$(GECKOSDK)/platform/radio/rail_lib/common
-#C_INCLUDES += -I$(GECKOSDK)/platform/radio/rail_lib/chip/efr32/efr32xg1x
-#LIBDIR += -L$(GECKOSDK)/platform/radio/rail_lib/autogen/librail_release
-#LIBS += -lrail_efr32xg1_gcc_release
+C_INCLUDES += -I$(GECKOSDK)/platform/radio/rail_lib/common
+C_INCLUDES += -I$(GECKOSDK)/platform/radio/rail_lib/chip/efr32/efr32xg1x
+LIBDIR += -L$(GECKOSDK)/platform/radio/rail_lib/autogen/librail_release
+LIBS += -lrail_efr32xg1_gcc_release
 
 # Processor core
 MCU = -mcpu=cortex-m4 -mthumb
 
-# Float ABI
-MCU += -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+# Float ABI: softfp is needed to link RAIL
+MCU += -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+
+# TODO: avoid __FPU_PRESENT redefinition warnings somehow
+C_DEFS += -DARM_MATH_CM4=1 -D__FPU_PRESENT=1
 
 
 #######################################

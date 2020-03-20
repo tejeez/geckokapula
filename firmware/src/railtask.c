@@ -9,6 +9,8 @@
 #include "rail.h"
 #include "rail_config.h"
 #include "pa.h"
+#else
+#include "rail.h"
 #endif
 
 // FreeRTOS
@@ -115,6 +117,8 @@ void rail_task() {
 char rail_watchdog = 0;
 void rail_task(void)
 {
+	// call some RAIL2 function to see if it compiles
+	RAIL_GetTime();
 	for (;;)
 		vTaskDelay(1000);
 }
