@@ -3,8 +3,7 @@
         {
 			"name": "EFR32",
 			"defines": [
-                "EFR32MG1P232F256GM48",
-                "DISABLE_RAIL"
+                "EFR32MG1P232F256GM48"
 			],
             "includePath": [
                 "${workspaceFolder}",

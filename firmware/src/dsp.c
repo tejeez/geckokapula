@@ -42,13 +42,14 @@ volatile int signalbufp = 0;
 extern rig_parameters_t p;
 
 #ifndef DISABLE_RAIL
+
 /* Interrupt for DSP operations that take a short time and need low latency */
-void RAILCb_RxFifoAlmostFull(uint16_t bytesAvailable) {
+void RxFifoAlmostFull_callback(RAIL_Handle_t rail) {
 	unsigned nread, i;
 	static int psi=0, psq=0;
 	static int agc_level=0;
 	static int audioout_prev=0, squelchlpf=0;
-	nread = RAIL_ReadRxFifo((uint8_t*)rxbuf, 4*RXBUFL);
+	nread = RAIL_ReadRxFifo(rail, (uint8_t*)rxbuf, 4*RXBUFL);
 	nread /= 4;
 	int ssi=0, ssq=0, audioout = 0;
 	static unsigned smeter_count = 0;

@@ -23,9 +23,7 @@ C_SOURCES += $(wildcard freertos/*.c)
 C_INCLUDES = -I. -Iinc -Ifreertos
 
 # C defines
-# Define DISABLE_RAIL to remove all cails to RAIL 1, so that
-# compiling everything else can be tested before porting to RAIL 2
-C_DEFS = -DDISABLE_RAIL
+C_DEFS =
 
 # Other C flags
 C_FLAGS = -std=gnu11 -Wall -Wextra -fdata-sections -ffunction-sections

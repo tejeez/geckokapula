@@ -5,7 +5,7 @@
             "name": "Cortex Debug",
             "cwd": "${workspaceRoot}",
             "executable": "./build/gekkofirmis.elf",
-            "request": "attach",
+            "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
             "device": "EFR32MG1P232F256GM48",
