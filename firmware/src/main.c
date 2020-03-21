@@ -31,8 +31,6 @@ TaskHandle_t taskhandles[NTASKS];
 
 int testnumber=73;
 
-static void debugputc(char c) {USART_Tx(USART0, c); }
-
 void rail_task();
 void dsp_task();
 extern char rail_watchdog;
@@ -47,11 +45,8 @@ void dump_memory(uint8_t *mem, int len, char last) {
 	char o[4];
 	for(m=0; m<len; m++) {
 		int n, i;
-		n = snprintf(o, 4, "%02x ", mem[m]);
-		for(i=0; i<n; i++)
-			debugputc(o[i]);
+		printf("%02x ", mem[m]);
 	}
-	debugputc(last);
 }
 
 void monitor_task() {
@@ -59,14 +54,13 @@ void monitor_task() {
 		//testnumber++;
 		int ti;
 		for(ti=0; ti<NTASKS; ti++) {
-			char o[20];
-			int v, n, i;
+#if 0
+			int v;
 			v = uxTaskGetStackHighWaterMark(taskhandles[ti]);
-			n = snprintf(o, 18, "%d:%4d | ", ti, v);
-			if(ti == NTASKS-1) o[n++] = '\n';
-			for(i=0; i<n; i++)
-				debugputc(o[i]);
-			if(++rail_watchdog >= 3)
+			printf("%d:%4d | ", ti, v);
+			if(ti == NTASKS-1) printf("\n");
+#endif
+			if(++rail_watchdog >= 20)
 				restart_rail_task();
 			vTaskDelay(100);
 		}
@@ -90,23 +84,27 @@ void vApplicationStackOverflowHook() {
 	}
 }
 
+void debug_init(void);
+
 int main(void) {
+	debug_init();
+	printf("Gekkokapula\n");
 	enter_DefaultMode_from_RESET();
 	{
 		LDMA_Init_t init = LDMA_INIT_DEFAULT;
 		LDMA_Init(&init);
 	}
-	debugputc('a');
 
  	TIMER_TopSet(TIMER0, 200);
  	TIMER_CompareBufSet(TIMER0, 0, 33);
  	TIMER_CompareBufSet(TIMER0, 1, 20);
+	printf("Peripherals initialized\n");
 
 	xTaskCreate(monitor_task, "task2", 0x100, NULL, 3, &taskhandles[3]);
 	xTaskCreate(ui_task, "ui_task", 0x300, NULL, 3, &taskhandles[0]);
 	xTaskCreate(rail_task, "rail_task", 0x280, NULL, /*2*/ 3, &taskhandles[1]);
 	xTaskCreate(dsp_task, "task1", 0x280, NULL, 3, &taskhandles[2]);
-	debugputc('\n');
+	printf("Starting scheduler\n");
  	vTaskStartScheduler();
 	return 0;
 }

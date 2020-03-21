@@ -16,7 +16,7 @@ DEBUG = 1
 
 # C sources
 C_SOURCES = $(wildcard src/*.c)
-#C_SOURCES += rail_config.c
+C_SOURCES += rail_config.c
 C_SOURCES += $(wildcard freertos/*.c)
 
 # C include paths

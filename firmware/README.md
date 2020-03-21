@@ -26,8 +26,8 @@ Speaker is driven from a PWM output through a series capacitor and a resistor.
 |   P5      |   PC8     | Display SCK  |
 |   P7      |   PC9     | Display AO   |
 |   P12     |   PC10    | Display LED  |
-|   P9      |   PA0     | Debug UART TX (to RXD on USB-UART ) |
-|   P11     |   PA1     | Debug UART RX (to TXD on USB-UART ) |
+|   P9      |   PA0     | Debug UART TX (currently not used) |
+|   P11     |   PA1     | Debug UART RX (currently not used) |
 |   P34     |   PF6     | PTT or CW key (switch to GND) (optional) |
 |   P4      |   PD10    | PWM Audio out |
 |   P6      |   PD11    | Encoder A (switch to GND) |
@@ -48,12 +48,9 @@ The project was originally made in Simplicity Studio.
 Simplicity Studio, however, was found difficult to use for development
 since a project opened on another machine was usually broken, its
 configuration generators regularly broke something in the project,
-and it was quite frustrating in general.
-
-Now there's a Makefile to compile the code, though currently it works
-only for RAIL 2 whereas the project originally used RAIL 1.
-Port to RAIL 2 should be done next.
-Calls to RAIL are commented out, so only the user interface is working.
+and it was quite frustrating in general. Now the code can be compiled
+with `make`, and Simplicity Studio is only needed to generate the
+radio configuration.
 
 The interesting code is under src/ and inc/
 except for InitDevice.c which is generated.
@@ -63,8 +60,11 @@ that can be edited in Simplicity Studio GUI.
 
 Font is from https://github.com/dhepper/font8x8/
 
-# Compiling
+# Compiling and flashing
 See https://github.com/tejeez/efr32-template/ for instructions.
 
 Programming with openocd sometimes doesn't work.
 Try programming with Simplicity Commander in that case.
+
+To read debug prints, use
+https://gist.github.com/tejeez/ccdf3d03740bdffaf93b992b114aeb51

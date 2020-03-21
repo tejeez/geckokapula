@@ -17,6 +17,8 @@
 // rig
 #include "rig.h"
 
+#include <stdio.h>
+
 #define CHANNELSPACING 147 // 38.4 MHz / 2^18
 #define MIDDLECHANNEL 32
 
@@ -27,10 +29,13 @@ rig_status_t rs = {0};
 RAIL_Handle_t rail;
 
 void startrx() {
+	unsigned r;
 	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
 	RAIL_ResetFifo(rail, false, true);
-	RAIL_SetRxFifoThreshold(rail, 10); //FIFO size is 512B
-	RAIL_StartRx(rail, p.channel, NULL);
+	r = RAIL_SetRxFifoThreshold(rail, 10); //FIFO size is 512B
+	printf("RAIL_SetRxFifoThreshold: %u\n", r);
+	r = RAIL_StartRx(rail, p.channel, NULL);
+	printf("RAIL_StartRx: %u\n", r);
 }
 
 
@@ -38,7 +43,7 @@ RAIL_ChannelConfigEntryAttr_t generated_entryAttr = {
   { 0xFFFFFFFFUL }
 };
 
-RAIL_ChannelConfigEntry_t channelconfigs[] = {
+RAIL_ChannelConfigEntry_t channelconfig_entry[] = {
 	{
 		.phyConfigDeltaAdd = NULL,
 		.baseFrequency = 2395000000UL,
@@ -51,14 +56,22 @@ RAIL_ChannelConfigEntry_t channelconfigs[] = {
 	}
 };
 
-const RAIL_ChannelConfig_t channelConfig = { channelconfigs, 1 };
+extern const uint32_t generated[];
+const RAIL_ChannelConfig_t channelConfig = {
+	generated,
+	NULL,
+	channelconfig_entry,
+	1
+};
+
 
 void config_channel() {
-
+	unsigned r;
 	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
 
-	channelconfigs[0].baseFrequency = p.frequency - MIDDLECHANNEL*CHANNELSPACING;
-	RAIL_ConfigChannels(rail, &channelConfig, NULL);
+	channelconfig_entry[0].baseFrequency = p.frequency - MIDDLECHANNEL*CHANNELSPACING;
+	r = RAIL_ConfigChannels(rail, &channelConfig, NULL);
+	printf("RAIL_ConfigChannels (2): %u\n", r);
 }
 
 
@@ -78,22 +91,29 @@ static RAIL_Config_t railCfg = {
 };
 
 void initRadio() {
+	unsigned r;
 	rail = RAIL_Init(&railCfg, NULL);
-	RAIL_ConfigCal(rail, RAIL_CAL_ALL);
-	RAIL_ConfigChannels(rail, &channelConfig, NULL);
+	r = RAIL_ConfigCal(rail, RAIL_CAL_ALL);
+	printf("RAIL_ConfigCal: %u\n", r);
+	r = RAIL_ConfigChannels(rail, &channelConfig, NULL);
+	printf("RAIL_ConfigChannels (1): %u\n", r);
 
 	RAIL_TxPowerConfig_t txPowerConfig = {
 		.mode = RAIL_TX_POWER_MODE_2P4GIG_HP,
 		.voltage = 3300,
 		.rampTime = 10,
 	};
-	RAIL_ConfigTxPower(rail, &txPowerConfig);
-	RAIL_SetTxPower(rail, RAIL_TX_POWER_LEVEL_HP_MAX);
+	r = RAIL_ConfigTxPower(rail, &txPowerConfig);
+	printf("RAIL_ConfigTxPower: %u\n", r);
+	r = RAIL_SetTxPower(rail, RAIL_TX_POWER_LEVEL_HP_MAX);
+	printf("RAIL_SetTxPower: %u\n", r);
 
-	RAIL_ConfigEvents(rail, RAIL_EVENTS_ALL, RAIL_EVENT_RX_FIFO_ALMOST_FULL);
+	r = RAIL_ConfigEvents(rail, RAIL_EVENTS_ALL, RAIL_EVENT_RX_FIFO_ALMOST_FULL);
+	printf("RAIL_ConfigEvents: %u\n", r);
 
 	RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, FIFO_MODE /*PACKET_MODE*/, FIFO_MODE };
-	RAIL_ConfigData(rail, &dataConfig);
+	r = RAIL_ConfigData(rail, &dataConfig);
+	printf("RAIL_ConfigData: %u\n", r);
 }
 
 
@@ -108,22 +128,30 @@ void rail_task() {
 	for(;;) {
 		unsigned keyed = p.keyed;
 		rail_watchdog = 0;
-		if(p.channel_changed) {
+		/* Changing channel configuration here seems to break something,
+		 * so don't call it for now. Maybe events or data have to be
+		 * reconfigured after it. */
+		if(0 && p.channel_changed) {
 			config_channel();
 		}
-		if(keyed && ((RAIL_GetRadioState(rail) & RAIL_RF_STATE_TX) == 0 || p.channel_changed)) {
+
+		unsigned r;
+		RAIL_RadioState_t rs = RAIL_GetRadioState(rail);
+		printf("RAIL_GetRadioState: %08x\n", rs);
+		if(keyed && ((rs & RAIL_RF_STATE_TX) == 0 || p.channel_changed)) {
 			p.channel_changed = 0;
 			RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
-			RAIL_StartTxStream(rail, p.channel, RAIL_STREAM_CARRIER_WAVE);
-			//RAIL_DebugModeSet(1);
+			r = RAIL_StartTxStream(rail, p.channel, RAIL_STREAM_CARRIER_WAVE);
+			printf("RAIL_StartTxStream: %u\n", r);
 		}
-		if((!keyed) && ((RAIL_GetRadioState(rail) & RAIL_RF_STATE_RX) == 0 || p.channel_changed)) {
+		if((!keyed) && ((rs & RAIL_RF_STATE_RX) == 0 || p.channel_changed)) {
 			p.channel_changed = 0;
-			RAIL_StopTxStream(rail);
+			if (rs & RAIL_RF_STATE_TX)
+				RAIL_StopTxStream(rail);
 			startrx();
 		}
 		//testnumber++; // to see if RAIL has stuck in some function
-		vTaskDelay(2);
+		vTaskDelay(200);
 	}
 }
 #else
