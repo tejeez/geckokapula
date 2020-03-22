@@ -29,10 +29,9 @@
 #include "ui.h"
 #include "ui_parameters.h"
 
+#include "dsp.h"
 
 #define RXBUFL 2
-typedef int16_t iqsample_t[2];
-iqsample_t rxbuf[RXBUFL];
 
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
 #define SIGNALBUFLEN 512
@@ -41,21 +40,23 @@ volatile int signalbufp = 0;
 
 extern rig_parameters_t p;
 
-#ifndef DISABLE_RAIL
 
-/* Interrupt for DSP operations that take a short time and need low latency */
-void RxFifoAlmostFull_callback(RAIL_Handle_t rail) {
+/* Process some IQ samples and return one audio sample.
+ * The plan is to allow processing in bigger blocks, but for now
+ * this is an intermediate step in the ongoing refactoring. */
+audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
+{
 	unsigned nread, i;
 	static int psi=0, psq=0;
 	static int agc_level=0;
 	static int audioout_prev=0, squelchlpf=0;
-	nread = RAIL_ReadRxFifo(rail, (uint8_t*)rxbuf, 4*RXBUFL);
-	nread /= 4;
 	int ssi=0, ssq=0, audioout = 0;
 	static unsigned smeter_count = 0;
 	static uint64_t smeter_acc = 0;
 	static int audio_lpf = 0, audio_hpf = 0;
- 	for(i=0; i<nread; i++) {
+
+	nread = RXBUFL;
+	for (i=0; i < nread; i++) {
 		int si=rxbuf[i][1], sq=rxbuf[i][0]; // I and Q swapped
 		int fi, fq;
 		switch(p.mode) {
@@ -127,8 +128,6 @@ void RxFifoAlmostFull_callback(RAIL_Handle_t rail) {
 	} else {
 		audioout = 100;
 	}
-	TIMER_CompareBufSet(TIMER0, 0, audioout);
-	//USART_Tx(USART0, 'r');
 
 	smeter_count += nread;
 	if(smeter_count >= 0x4000) {
@@ -136,9 +135,24 @@ void RxFifoAlmostFull_callback(RAIL_Handle_t rail) {
 		smeter_acc = 0;
 		smeter_count = 0;
 	}
-
+	return audioout;
 }
-#endif
+
+
+/* Function for fast DSP processing */
+void dsp_process_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
+{
+	if (out_len * RXBUFL != in_len)
+		return;
+	int i;
+	for (i = 0; i < out_len; i++) {
+		out[i] = dsp_process_rx_sample(in);
+		in += RXBUFL;
+	}
+}
+
+
+
 
 inline void synth_set_channel(int ch) {
 	*(uint32_t*)(uint8_t*)(0x40083000 + 56) = ch;
@@ -253,8 +267,8 @@ static void calculate_waterfall_line() {
 }
 
 /* A task for DSP operations that can take a longer time */
-void dsp_task() {
-	NVIC_SetPriority(ADC0_IRQn, 3); // TODO: irq priorities in header or something
+void slow_dsp_task(void *arg) {
+	(void)arg;
 	NVIC_EnableIRQ(ADC0_IRQn);
 	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
  	ADC_Start(ADC0, adcStartSingle);

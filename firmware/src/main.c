@@ -26,13 +26,20 @@
 #include "ui.h"
 #include "rig.h"
 
-#define NTASKS 4
+/* Interrupt priorities.
+ * When changing these, remember to check
+ * configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY in FreeRTOSConfig.h
+ */
+#define IRQPRI_RAIL 3
+#define IRQPRI_AUDIO_ADC 3
+
+
+#define NTASKS 5
 TaskHandle_t taskhandles[NTASKS];
 
 int testnumber=73;
 
 void rail_task();
-void dsp_task();
 extern char rail_watchdog;
 
 static inline void restart_rail_task() {
@@ -85,6 +92,10 @@ void vApplicationStackOverflowHook() {
 }
 
 void debug_init(void);
+void dsp_rtos_init(void);
+
+void fast_dsp_task(void *);
+void slow_dsp_task(void *);
 
 int main(void) {
 	debug_init();
@@ -95,15 +106,31 @@ int main(void) {
 		LDMA_Init(&init);
 	}
 
+	NVIC_SetPriorityGrouping(0);
+	NVIC_SetPriority( FRC_PRI_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority(     FRC_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority(   MODEM_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority( RAC_SEQ_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority( RAC_RSM_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority(    BUFC_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority(     AGC_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority(PROTIMER_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority(   SYNTH_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority( RFSENSE_IRQn, IRQPRI_RAIL);
+	NVIC_SetPriority(    ADC0_IRQn, IRQPRI_AUDIO_ADC);
+
  	TIMER_TopSet(TIMER0, 200);
  	TIMER_CompareBufSet(TIMER0, 0, 33);
  	TIMER_CompareBufSet(TIMER0, 1, 20);
 	printf("Peripherals initialized\n");
 
-	xTaskCreate(monitor_task, "task2", 0x100, NULL, 3, &taskhandles[3]);
-	xTaskCreate(ui_task, "ui_task", 0x300, NULL, 3, &taskhandles[0]);
-	xTaskCreate(rail_task, "rail_task", 0x280, NULL, /*2*/ 3, &taskhandles[1]);
-	xTaskCreate(dsp_task, "task1", 0x280, NULL, 3, &taskhandles[2]);
+	dsp_rtos_init();
+
+	//xTaskCreate(monitor_task, "Monitor", 0x100, NULL, 1, &taskhandles[3]);
+	xTaskCreate(ui_task, "UI", 0x300, NULL, 3, &taskhandles[0]);
+	xTaskCreate(rail_task, "RAIL", 0x300, NULL, /*2*/ 3, &taskhandles[1]);
+	xTaskCreate(fast_dsp_task, "Fast DSP", 0x400, NULL, 1, &taskhandles[4]);
+	//xTaskCreate(slow_dsp_task, "Slow DSP", 0x300, NULL, 3, &taskhandles[2]);
 	printf("Starting scheduler\n");
  	vTaskStartScheduler();
 	return 0;

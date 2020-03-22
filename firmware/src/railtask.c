@@ -75,8 +75,10 @@ void config_channel() {
 }
 
 
-void RxFifoAlmostFull_callback(RAIL_Handle_t rail);
+void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events);
 
+#if 0
+void RxFifoAlmostFull_callback(RAIL_Handle_t rail);
 void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 {
 	/* In RAIL 2, all events use this same callback.
@@ -85,6 +87,7 @@ void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 		RxFifoAlmostFull_callback(rail);
 	}
 }
+#endif
 
 static RAIL_Config_t railCfg = {
 	.eventsCallback = &rail_callback,
