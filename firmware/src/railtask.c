@@ -28,15 +28,8 @@ rig_status_t rs = {0};
 #ifndef DISABLE_RAIL
 RAIL_Handle_t rail;
 
-void startrx() {
-	unsigned r;
-	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
-	RAIL_ResetFifo(rail, false, true);
-	r = RAIL_SetRxFifoThreshold(rail, 10); //FIFO size is 512B
-	printf("RAIL_SetRxFifoThreshold: %u\n", r);
-	r = RAIL_StartRx(rail, p.channel, NULL);
-	printf("RAIL_StartRx: %u\n", r);
-}
+int start_rx_dsp(RAIL_Handle_t rail);
+int start_tx_dsp(RAIL_Handle_t rail);
 
 
 RAIL_ChannelConfigEntryAttr_t generated_entryAttr = {
@@ -61,7 +54,8 @@ const RAIL_ChannelConfig_t channelConfig = {
 	generated,
 	NULL,
 	channelconfig_entry,
-	1
+	1,
+	0
 };
 
 
@@ -146,14 +140,18 @@ void rail_task() {
 			RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
 			r = RAIL_StartTxStream(rail, p.channel, RAIL_STREAM_CARRIER_WAVE);
 			printf("RAIL_StartTxStream: %u\n", r);
+			start_tx_dsp(rail);
 		}
 		if((!keyed) && ((rs & RAIL_RF_STATE_RX) == 0 || p.channel_changed)) {
 			p.channel_changed = 0;
 			if (rs & RAIL_RF_STATE_TX)
 				RAIL_StopTxStream(rail);
-			startrx();
+			RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
+			start_rx_dsp(rail);
 		}
 		//testnumber++; // to see if RAIL has stuck in some function
+
+		// TODO: receive commands from queue instead of polling with delay
 		vTaskDelay(200);
 	}
 }

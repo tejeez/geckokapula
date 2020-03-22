@@ -11,15 +11,6 @@
 #include "arm_math.h"
 #include "arm_const_structs.h"
 
-// emlib
-#include "em_timer.h"
-#include "em_adc.h"
-
-// RAIL
-#ifndef DISABLE_RAIL
-#include "rail.h"
-#endif
-
 // FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
@@ -139,39 +130,26 @@ static inline audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
 }
 
 
-/* Function for fast DSP processing */
-void dsp_process_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
+/* Function to convert received IQ to output audio */
+int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 {
 	if (out_len * RXBUFL != in_len)
-		return;
+		return 0;
 	int i;
 	for (i = 0; i < out_len; i++) {
 		out[i] = dsp_process_rx_sample(in);
 		//out[i] = 200;
 		in += RXBUFL;
 	}
+	return out_len;
 }
 
 
-
-
-inline void synth_set_channel(int ch) {
-	*(uint32_t*)(uint8_t*)(0x40083000 + 56) = ch;
-}
-
-extern int testnumber;
-void ADC0_IRQHandler() {
+/* Process one transmit sample */
+static inline fm_out_t dsp_process_tx_sample(audio_in_t audioin)
+{
 	int audioout;
 	static int hpf, lpf, agc_level=0;
-	//testnumber++;
-
-	int audioin = ADC0->SINGLEDATA;
-	ADC_IntClear(ADC0, ADC_IF_SINGLE);
-
-	if(!p.keyed) {
-		synth_set_channel(p.channel);
-		return;
-	}
 
 	// DC block / HPF:
 	hpf += (audioin - hpf) / 4;
@@ -192,9 +170,20 @@ void ADC0_IRQHandler() {
 	audioout = 32 + 30 * audioin / (agc_level/0x100);
 	if(audioout <= 0) audioout = 0;
 	if(audioout >= 63) audioout = 63;
-
-	synth_set_channel(audioout);
+	return audioout;
 }
+
+
+/* Function to convert input audio to transmit frequency modulation */
+int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
+{
+	int i;
+	for (i = 0; i < len; i++) {
+		out[i] = dsp_process_tx_sample(in[i]);
+	}
+	return len;
+}
+
 
 static void calculate_waterfall_line() {
 	extern uint8_t displaybuf2[3*(FFT_BIN2-FFT_BIN1)];
@@ -267,13 +256,10 @@ static void calculate_waterfall_line() {
 	fftline_ready = 1;
 }
 
+
 /* A task for DSP operations that can take a longer time */
 void slow_dsp_task(void *arg) {
 	(void)arg;
-	NVIC_EnableIRQ(ADC0_IRQn);
-	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
- 	ADC_Start(ADC0, adcStartSingle);
-
 	for(;;) {
 		// TODO: semaphore?
 

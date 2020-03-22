@@ -3,8 +3,12 @@
 #include <stdint.h>
 
 typedef int16_t iq_in_t[2];
-typedef uint32_t audio_out_t;
+typedef uint16_t audio_out_t;
 
-void dsp_process_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len);
+typedef uint16_t audio_in_t;
+typedef uint16_t fm_out_t;
+
+int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len);
+int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len);
 
 #endif
