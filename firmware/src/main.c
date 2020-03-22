@@ -82,7 +82,20 @@ void monitor_task() {
 	}
 }
 
-void vApplicationStackOverflowHook() {
+
+const char *current_task_name(void)
+{
+	TaskHandle_t t = xTaskGetCurrentTaskHandle();
+	if (t != NULL)
+		return pcTaskGetTaskName(t);
+	else
+		return "none";
+}
+
+
+void vApplicationStackOverflowHook()
+{
+	printf(":( Stack overflow in task %s\n", current_task_name());
 	// beep
 	uint32_t piip=0;
 	for(;;) {
@@ -90,6 +103,27 @@ void vApplicationStackOverflowHook() {
 		TIMER_CompareBufSet(TIMER0, 0, (((++piip)>>7)&63)+68);
 	}
 }
+
+
+void vApplicationMallocFailedHook()
+{
+	printf(":( Malloc failed in task %s\n", current_task_name());
+	// beep
+	uint32_t piip=0;
+	for(;;) {
+		TIMER_TopBufSet(TIMER0, 200);
+		TIMER_CompareBufSet(TIMER0, 0, (((++piip)>>8)&63)+68);
+	}
+}
+
+
+void vApplicationIdleHook()
+{
+	__DSB();
+	__WFI();
+	__ISB();
+}
+
 
 void debug_init(void);
 void dsp_rtos_init(void);
@@ -126,11 +160,11 @@ int main(void) {
 
 	dsp_rtos_init();
 
-	//xTaskCreate(monitor_task, "Monitor", 0x100, NULL, 1, &taskhandles[3]);
-	xTaskCreate(ui_task, "UI", 0x300, NULL, 3, &taskhandles[0]);
-	xTaskCreate(rail_task, "RAIL", 0x300, NULL, /*2*/ 3, &taskhandles[1]);
-	xTaskCreate(fast_dsp_task, "Fast DSP", 0x400, NULL, 1, &taskhandles[4]);
-	//xTaskCreate(slow_dsp_task, "Slow DSP", 0x300, NULL, 3, &taskhandles[2]);
+	//xTaskCreate(monitor_task, "Monitor", 0x100, NULL, 4, &taskhandles[3]);
+	xTaskCreate(ui_task, "UI", 0x300, NULL, 2, &taskhandles[0]);
+	xTaskCreate(rail_task, "RAIL", 0x300, NULL, 2, &taskhandles[1]);
+	xTaskCreate(fast_dsp_task, "Fast DSP", 0x300, NULL, 4, &taskhandles[4]);
+	xTaskCreate(slow_dsp_task, "Slow DSP", 0x300, NULL, 2, &taskhandles[2]);
 	printf("Starting scheduler\n");
  	vTaskStartScheduler();
 	return 0;

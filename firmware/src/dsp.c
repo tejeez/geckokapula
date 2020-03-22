@@ -44,7 +44,7 @@ extern rig_parameters_t p;
 /* Process some IQ samples and return one audio sample.
  * The plan is to allow processing in bigger blocks, but for now
  * this is an intermediate step in the ongoing refactoring. */
-audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
+static inline audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
 {
 	unsigned nread, i;
 	static int psi=0, psq=0;
@@ -147,6 +147,7 @@ void dsp_process_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 	int i;
 	for (i = 0; i < out_len; i++) {
 		out[i] = dsp_process_rx_sample(in);
+		//out[i] = 200;
 		in += RXBUFL;
 	}
 }

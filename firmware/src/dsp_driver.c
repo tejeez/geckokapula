@@ -50,15 +50,21 @@
 /* How many samples to process at a time in the DSP task.
  * This is the number of audio samples, so number of I/Q
  * samples is RX_SAMPLE_RATIO times the value. */
-#define RX_DSP_BLOCK 16
+#define RX_DSP_BLOCK 32
 
-/* Size of the RX ring buffer.
- * Should be a multiple ot RX_DSP_BLOCK. */
-#define RX_BUF_SIZE (RX_DSP_BLOCK*2)
+/* Size of the RX ring buffer as a multiple of block size. */
+#define RX_BUF_BLOCKS 2
+
+/* Diagnostics, could be moved to some more global place */
+struct diagnostics {
+	uint32_t rx_blocks_overflow, rx_blocks_isr, rx_blocks_task;
+	uint32_t rx_rail_underruns, rx_samples_isr;
+};
+struct diagnostics diag;
 
 
-audio_out_t buf_audio_out[RX_BUF_SIZE];
-iq_in_t buf_iq_in[RX_BUF_SIZE * RX_SAMPLE_RATIO];
+audio_out_t buf_audio_out[RX_DSP_BLOCK * RX_BUF_BLOCKS];
+iq_in_t buf_iq_in[RX_DSP_BLOCK * RX_BUF_BLOCKS * RX_SAMPLE_RATIO];
 unsigned rx_buf_p = 0;
 
 struct fast_dsp_rx_msg {
@@ -73,9 +79,12 @@ void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 {
 	BaseType_t yield = 0;
 	if (events & RAIL_EVENT_RX_FIFO_ALMOST_FULL) {
-		unsigned p = rx_buf_p;
+		unsigned nread, p = rx_buf_p;
 		TIMER_CompareBufSet(TIMER0, 0, buf_audio_out[p]);
-		RAIL_ReadRxFifo(rail, (uint8_t*)(buf_iq_in + p * RX_SAMPLE_RATIO), sizeof(iq_in_t) * RX_SAMPLE_RATIO);
+		nread = RAIL_ReadRxFifo(rail, (uint8_t*)(buf_iq_in + p * RX_SAMPLE_RATIO), sizeof(iq_in_t) * RX_SAMPLE_RATIO);
+		if (nread != sizeof(iq_in_t) * RX_SAMPLE_RATIO)
+			++diag.rx_rail_underruns;
+		++diag.rx_samples_isr;
 
 		if (p % RX_DSP_BLOCK == RX_DSP_BLOCK - 1) {
 			// Index of the first sample in the latest received block
@@ -87,11 +96,13 @@ void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 				RX_DSP_BLOCK * RX_SAMPLE_RATIO,
 				RX_DSP_BLOCK
 			};
-			xQueueSendFromISR(fast_dsp_rx_q, &msg, &yield);
+			if (xQueueSendFromISR(fast_dsp_rx_q, &msg, &yield))
+				++diag.rx_blocks_isr;
+			else
+				++diag.rx_blocks_overflow;
 		}
 
-		++p;
-		if (p >= RX_BUF_SIZE)
+		if (++p >= RX_DSP_BLOCK * RX_BUF_BLOCKS)
 			p = 0;
 		rx_buf_p = p;
 	}
@@ -106,6 +117,7 @@ void fast_dsp_task(void *arg)
 		struct fast_dsp_rx_msg msg;
 		if (xQueueReceive(fast_dsp_rx_q, &msg, portMAX_DELAY)) {
 			dsp_process_rx(msg.in, msg.in_len, msg.out, msg.out_len);
+			++diag.rx_blocks_task;
 		}
 	}
 }
@@ -115,5 +127,5 @@ void fast_dsp_task(void *arg)
  * Called before starting the scheduler. */
 void dsp_rtos_init(void)
 {
-	fast_dsp_rx_q = xQueueCreate(1, sizeof(struct fast_dsp_rx_msg));
+	fast_dsp_rx_q = xQueueCreate(RX_BUF_BLOCKS - 1, sizeof(struct fast_dsp_rx_msg));
 }
