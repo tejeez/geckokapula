@@ -48,6 +48,7 @@ void misc_fast_task(void *);
 
 void debug_init(void);
 void dsp_rtos_init(void);
+void slow_dsp_rtos_init(void);
 
 
 /* -------------
@@ -84,9 +85,10 @@ int main(void) {
 	printf("Peripherals initialized\n");
 
 	dsp_rtos_init();
+	slow_dsp_rtos_init();
 
 	xTaskCreate(misc_fast_task, "Misc", 0x100, NULL, 4, &taskhandles[3]);
-	xTaskCreate(ui_task, "UI", 0x300, NULL, 2, &taskhandles[0]);
+	xTaskCreate(display_task, "Display", 0x300, NULL, 2, &taskhandles[0]);
 	xTaskCreate(rail_task, "RAIL", 0x300, NULL, 2, &taskhandles[1]);
 	xTaskCreate(fast_dsp_task, "Fast DSP", 0x300, NULL, 4, &taskhandles[4]);
 	xTaskCreate(slow_dsp_task, "Slow DSP", 0x300, NULL, 2, &taskhandles[2]);
@@ -119,6 +121,7 @@ static inline void restart_rail_task() {
 void misc_fast_task(void *arg) {
 	(void)arg;
 	for(;;) {
+		ui_check_buttons();
 		//testnumber++;
 		int ti;
 		for(ti=0; ti<NTASKS; ti++) {

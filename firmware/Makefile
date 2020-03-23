@@ -50,7 +50,7 @@ LIBS =
 #LDSCRIPT =
 
 # Other linker flags
-LD_FLAGS =
+LD_FLAGS = -Wl,--wrap=RAILINT_999bd22c50df2f99ce048cba68f11c3a
 
 
 #######################################

@@ -44,7 +44,7 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 	//display_area(y1, x1, y1+7, x1+7);
 	display_area(x1, y1, x1+7, y1+7);
 	display_start();
-	char *font = font8x8_basic[c];
+	const char *font = font8x8_basic[c];
 	uint8_t *bufp = displaybuf;
 	/*for(x=0; x<8; x++) {
 		for(y=7; y>=0; y--) {*/
@@ -70,7 +70,7 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 char textline[TEXT_LEN+1] = "geckokapula";
 char textprev[TEXT_LEN+1] = "";
 
-static unsigned char aaa = 0, ui_cursor = 6, ui_keyed = 0;
+static unsigned char ui_cursor = 6, ui_keyed = 0;
 
 const char *p_mode_names[] = { " FM", " AM", "DSB", "---" };
 const char *p_keyed_text[] = { "rx", "tx" };
@@ -137,7 +137,12 @@ static void ui_knob_turned(int cursor, int diff) {
 // count only every 4th position
 #define ENCODER_DIVIDER 4
 
-void ui_check_buttons() {
+
+/* ui_check_buttons is called from the misc task.
+ * TODO: think about thread safety when other tasks
+ * read the updated data */
+void ui_check_buttons(void)
+{
 	static unsigned pos_prev;
 	int pos_now, pos_diff;
 	char button = get_encoder_button();
@@ -168,8 +173,8 @@ char fftline_ready=0;
 static void ui_draw_fft_line();
 
 void ui_loop() {
-	ui_check_buttons();
-	display_init_loop();
+	static unsigned char aaa = 0;
+	//ui_check_buttons();
 	if(!display_ready()) return;
 	if(backlight_timer <= BACKLIGHT_ON_TIME) {
 		display_backlight(BACKLIGHT_DIM_LEVEL + BACKLIGHT_ON_TIME - backlight_timer);
@@ -179,7 +184,7 @@ void ui_loop() {
 	if(fftline_ready) {
 		ui_draw_fft_line();
 		fftline_ready = 0;
-		return;
+		//return;
 	}
 
 	/* Update text when starting to draw next line of text.
@@ -205,6 +210,7 @@ void ui_loop() {
 		aaa = 0;
 }
 
+
 int fftrow = FFT_ROW2;
 #if DISPLAYBUF2_SIZE < 3*(FFT_BIN2-FFT_BIN1)
 #error "Too small display buffer for FFT"
@@ -222,12 +228,12 @@ static void ui_draw_fft_line() {
 }
 
 
-void ui_task() {
-	/* TODO: Put display control and button check in different tasks?
-	 * Have to ensure that they are thread safe first.
-	 */
-	for(;;) {
+void display_task(void *arg)
+{
+	display_init();
+	for (;;) {
+		// TODO: use queues/semaphores instead of polling for everything
 		ui_loop();
-		vTaskDelay(1);
+		vTaskDelay(2);
 	}
 }

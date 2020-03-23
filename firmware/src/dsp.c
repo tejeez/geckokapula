@@ -14,6 +14,7 @@
 // FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
 
 // rig
 #include "rig.h"
@@ -28,6 +29,7 @@ const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
 #define SIGNALBUFLEN 512
 int16_t signalbuf[2*SIGNALBUFLEN];
 volatile int signalbufp = 0;
+SemaphoreHandle_t fft_sem;
 
 extern rig_parameters_t p;
 
@@ -108,6 +110,8 @@ static inline audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
 	fp+=2;
 	if(fp >= SIGNALBUFLEN) fp = 0;
 	signalbufp = fp;
+	if (fp == 0 || fp == 171 || fp == 341)
+		xSemaphoreGive(fft_sem);
 
 	squelchlpf += (0x100*abs(audioout - audioout_prev) - squelchlpf) / 0x800;
 	audioout_prev = audioout;
@@ -262,12 +266,14 @@ void slow_dsp_task(void *arg) {
 	(void)arg;
 	for(;;) {
 		// TODO: semaphore?
-
-		if(!p.keyed)
+		if (xSemaphoreTake(fft_sem, portMAX_DELAY)) {
 			calculate_waterfall_line();
-
-		// delay can be commented out to see how often FFTs can be calculated
-		vTaskDelay(1);
+		}
 	}
 }
 
+
+void slow_dsp_rtos_init(void)
+{
+	fft_sem = xSemaphoreCreateBinary();
+}

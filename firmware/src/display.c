@@ -37,26 +37,47 @@ static int display_initialized = 0, display_doing_dma = 0;
 #define GPIO_PortOutSet(g, p) GPIO->P[g].DOUT |= (1<<(p));
 #define GPIO_PortOutClear(g, p) GPIO->P[g].DOUT &= ~(1<<(p));
 
-void display_start() {
+/*
+ * The display has a pin which selects whether an SPI transfer is going
+ * to be a command or a data byte. This is controlled by a GPIO output.
+ * writecommand() and writedata() set the state of that pin and
+ * busy-wait until the next transfer can be done, so that the GPIO is
+ * set at the right moment.
+ *
+ * Busy-waiting during SPI transfers seems kind of ugly, but a typical
+ * command-data cycle takes just a few tens of CPU clock cycles.
+ * Thus, there's not much time to do a context switch to something
+ * else during a command transfer.
+ * For short commands, I guess it's most efficient to just busy wait...
+ *
+ * Pixel data is transferred using DMA and the task is blocked during
+ * the transfer, allowing a context switch to another task.
+ */
+
+void display_start(void)
+{
 	while (!(USART1->STATUS & USART_STATUS_TXC));
 	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
 	GPIO_PortOutSet(TFT_DC_PORT, TFT_DC_PIN);
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
 }
 
-void display_end() {
+void display_end(void)
+{
 	while (!(USART1->STATUS & USART_STATUS_TXC));
 	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
 }
 
-static void writedata(uint8_t d) {
+static void writedata(uint8_t d)
+{
 	//display_start();
 	GPIO_PortOutSet(TFT_DC_PORT, TFT_DC_PIN);
 	USART_SpiTransfer(USART1, d);
 	//display_end();
 }
 
-static void writecommand(uint8_t d) {
+static void writecommand(uint8_t d)
+{
 	GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
 	GPIO_PortOutClear(TFT_DC_PORT, TFT_DC_PIN);
 	GPIO_PortOutClear(TFT_CS_PORT, TFT_CS_PIN);
@@ -64,7 +85,8 @@ static void writecommand(uint8_t d) {
 	//GPIO_PortOutSet(TFT_CS_PORT, TFT_CS_PIN);
 }
 
-void display_pixel(uint8_t r, uint8_t g, uint8_t b) {
+void display_pixel(uint8_t r, uint8_t g, uint8_t b)
+{
 	USART_Tx(USART1, r);
 	USART_Tx(USART1, g);
 	USART_Tx(USART1, b);
@@ -73,7 +95,8 @@ void display_pixel(uint8_t r, uint8_t g, uint8_t b) {
 extern int testnumber;
 static TaskHandle_t myhandle;
 
-void LDMA_IRQHandler() {
+void LDMA_IRQHandler(void)
+{
 	//testnumber++;
 	uint32_t pending = LDMA_IntGetEnabled();
 	if(pending & (1<<DISPLAY_DMA_CH)) {
@@ -99,7 +122,8 @@ void LDMA_IRQHandler() {
 	}
 }
 
-void display_transfer(uint8_t *dmadata, int dmalen) {
+void display_transfer(uint8_t *dmadata, int dmalen)
+{
 	LDMA_TransferCfg_t tr =
 			LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART1_TXBL);
 	LDMA_Descriptor_t desc =
@@ -112,7 +136,8 @@ void display_transfer(uint8_t *dmadata, int dmalen) {
 	ulTaskNotifyTake(pdFALSE, 100);
 }
 
-void display_area(int x1,int y1,int x2,int y2) {
+void display_area(int x1,int y1,int x2,int y2)
+{
 	writecommand(0x2A); // column address set
 	writedata(0);
 	writedata(x1);
@@ -126,7 +151,8 @@ void display_area(int x1,int y1,int x2,int y2) {
 	writecommand(0x2C); // memory write
 }
 
-int display_ready() {
+int display_ready()
+{
 	if(display_doing_dma) {
 		if(LDMA_TransferDone(DISPLAY_DMA_CH))
 			display_doing_dma = 0;
@@ -135,41 +161,45 @@ int display_ready() {
 	return display_initialized;
 }
 
-// minimum delay between display init commands (us)
-#define DISPLAY_INIT_DELAY_US 20000
 #define CMD(x) ((x)|0x100)
-void display_init_loop() {
-	static int di_i = 0;
-	static uint32_t next_time = 0;
-	const uint16_t display_init_commands[] = {
-			CMD(0x01), CMD(0x01), CMD(0x11), CMD(0x11), CMD(0x29), CMD(0x29),
-			CMD(0x33), // vertical scrolling definition
-			  0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 0
-	};
+#define INIT_LIST_END 0x200
 
-#ifndef DISABLE_RAIL
-	uint32_t time = RAIL_GetTime();
-	if(di_i != 0 && next_time - time >= 0x80000000UL) return;
-	next_time = time + DISPLAY_INIT_DELAY_US;
-#endif
+const uint16_t display_init_commands[] = {
+		CMD(0x01), CMD(0x01), CMD(0x11), CMD(0x11), CMD(0x29), CMD(0x29),
+		CMD(0x33), // vertical scrolling definition
+			0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 0,
+		INIT_LIST_END
+};
 
-	if(di_i <  sizeof(display_init_commands)/sizeof(display_init_commands[0])) {
-		unsigned c = display_init_commands[di_i];
-		if(c & 0x100) writecommand(c & 0xFF);
-		else writedata(c);
-		di_i++;
-	} else {
-		display_initialized = 1;
+int display_init(void)
+{
+	display_initialized = 0;
+	unsigned i, c;
+	for (i = 0;; i++) {
+		unsigned c = display_init_commands[i];
+		if (c == INIT_LIST_END)
+			break;
+		if (c & 0x100) {
+			vTaskDelay(30);
+			writecommand(c & 0xFF);
+		} else {
+			writedata(c);
+		}
 	}
+	display_initialized = 1;
+	return 0;
 }
 
-void display_scroll(unsigned y) {
+
+void display_scroll(unsigned y)
+{
 	writecommand(0x37);
 	writedata(y>>8);
 	writedata(y);
 }
 
-void display_backlight(int b) {
+void display_backlight(int b)
+{
 	if(b < 0) b = 0;
 	if(b > 200) b = 200;
  	TIMER_CompareBufSet(TIMER0, 1, b);
