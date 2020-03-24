@@ -62,10 +62,8 @@ int main(void) {
 	debug_init();
 	printf("Gekkokapula\n");
 	enter_DefaultMode_from_RESET();
-	{
-		LDMA_Init_t init = LDMA_INIT_DEFAULT;
-		LDMA_Init(&init);
-	}
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
 	NVIC_SetPriorityGrouping(0);
 	NVIC_SetPriority( FRC_PRI_IRQn, IRQPRI_RAIL);
@@ -79,6 +77,10 @@ int main(void) {
 	NVIC_SetPriority(   SYNTH_IRQn, IRQPRI_RAIL);
 	NVIC_SetPriority( RFSENSE_IRQn, IRQPRI_RAIL);
 	NVIC_SetPriority(    ADC0_IRQn, IRQPRI_AUDIO_ADC);
+	{
+		LDMA_Init_t init = LDMA_INIT_DEFAULT;
+		LDMA_Init(&init);
+	}
 
 	TIMER_TopSet(TIMER0, 200);
 	TIMER_CompareBufSet(TIMER0, 0, 33);

@@ -87,6 +87,9 @@ struct diagnostics {
 	uint32_t rx_blocks_overflow, rx_blocks_isr, rx_blocks_task;
 	uint32_t rx_rail_underruns, rx_samples_isr;
 	uint32_t tx_blocks_overflow, tx_blocks_isr, tx_blocks_task;
+
+	// Cycle counters to estimate CPU usage of fast DSP
+	uint32_t cycles_dsp, cycles_nodsp;
 };
 struct diagnostics diag;
 
@@ -236,9 +239,13 @@ void dsp_rtos_init(void)
 void fast_dsp_task(void *arg)
 {
 	(void)arg;
+	uint32_t cyc1, cyc2;
+	cyc2 = DWT->CYCCNT;
 	for (;;) {
 		QueueHandle_t q;
 		q = xQueueSelectFromSet(fast_dsp_qs, portMAX_DELAY);
+		cyc1 = DWT->CYCCNT;
+		diag.cycles_nodsp += cyc1 - cyc2;
 		if (q == fast_dsp_rx_q) {
 			struct fast_dsp_rx_msg msg;
 			if (xQueueReceive(q, &msg, 0)) {
@@ -252,5 +259,7 @@ void fast_dsp_task(void *arg)
 				++diag.tx_blocks_task;
 			}
 		}
+		cyc2 = DWT->CYCCNT;
+		diag.cycles_dsp += cyc2 - cyc1;
 	}
 }

@@ -32,7 +32,6 @@ extern rig_parameters_t p;
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
 #define SIGNALBUFLEN 512
 int16_t signalbuf[2*SIGNALBUFLEN];
-unsigned signalbufp = 0;
 QueueHandle_t fft_queue;
 
 
@@ -162,7 +161,7 @@ struct biquad_coeff {
  * or by cascading multiple stages in a single loop.
  * We'll need some benchmarks to test such ideas.
  */
-void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_float *buf, unsigned len)
+void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_float_t *buf, unsigned len)
 {
 	unsigned i;
 	const float a1 = -c->a1, a2 = -c->a2, b0 = c->b0, b1 = c->b1, b2 = c->b2;
@@ -175,16 +174,16 @@ void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_floa
 
 	for (i = 0; i < len; i++) {
 		float in_i, in_q, out_i, out_q;
-		in_i = buf[i][0];
-		in_q = buf[i][1];
+		in_i = buf[i].i;
+		in_q = buf[i].q;
 		out_i = s1_i + b0 * in_i;
 		out_q = s1_q + b0 * in_q;
 		s1_i  = s2_i + b1 * in_i + a1 * out_i;
 		s1_q  = s2_q + b1 * in_q + a1 * out_q;
 		s2_i  =        b2 * in_i + a2 * out_i;
 		s2_q  =        b2 * in_q + a2 * out_q;
-		buf[i][0] = out_i;
-		buf[i][1] = out_q;
+		buf[i].i = out_i;
+		buf[i].q = out_q;
 	}
 
 	s->s1_i = s1_i;
@@ -196,12 +195,35 @@ void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_floa
 
 /* Demodulator state */
 struct demod {
-	float fm_prev_i, fm_prev_q;
+	/* Phase of the digital down-converter,
+	 * i.e. first oscillator used in SSB demodulation */
+	float ddc_i, ddc_q;
+	// Frequency of the digital down-converter
+	float ddcfreq_i, ddcfreq_q;
+
+	// Phase of the second oscillator in SSB demodulation
 	float bfo_i, bfo_q;
+	// Frequency of the second oscillator in SSB demodulation
 	float bfofreq_i, bfofreq_q;
+
+	// Previous sample stored by FM demodulator
+	float fm_prev_i, fm_prev_q;
+
+	// Audio filter state
 	float audio_lpf, audio_hpf, audio_po;
+
+	// AGC state
 	float agc_amp;
+
+	// S-meter state
+	uint64_t smeter_acc;
+	unsigned smeter_count;
+
+	unsigned signalbufp;
+
+	// Biquad filter states, used in SSB demodulation
 	struct biquad_state bq1, bq2;
+
 	enum rig_mode prev_mode;
 };
 
@@ -217,32 +239,41 @@ static void demod_reset(struct demod *ds)
 }
 
 
-/* Average 2 samples and store them for waterfall FFT.
- * This is remnant from old code and could be done more
- * efficiently at some point. */
-static void demod_store_2_samples(iq_in_t *s)
+/* Store samples for waterfall FFT, decimating by 2.
+ * Also calculate total signal power for S-meter. */
+void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
 {
-	int fp = signalbufp;
-	signalbuf[fp]   = ((int32_t)s[0][1] + s[1][1]) / 2;
-	signalbuf[fp+1] = ((int32_t)s[0][0] + s[1][0]) / 2;
-	fp+=2;
-	if(fp >= SIGNALBUFLEN) fp = 0;
-	signalbufp = fp;
-	if (fp == 0 || fp == 171 || fp == 341) {
-		uint16_t msg = fp;
-		if (!xQueueSend(fft_queue, &msg, 0)) {
-			//++diag.fft_overflows;
+	unsigned i, fp = ds->signalbufp;
+	uint64_t acc = ds->smeter_acc;
+	for (i = 0; i < len; i += 2) {
+		int32_t s0i, s0q, s1i, s1q;
+		s0i = in[i].i;
+		s0q = in[i].q;
+		s1i = in[i+1].i;
+		s1q = in[i+1].q;
+		signalbuf[fp] = s0i + s1i;
+		signalbuf[fp+1] = s0q + s1q;
+		acc += s0i * s0i + s0q * s0q;
+		acc += s1i * s1i + s1q * s1q;
+		fp = (fp + 2) & (SIGNALBUFLEN-2);
+		if (fp == 0 || fp == 171*2 || fp == 341*2) {
+			uint16_t msg = fp;
+			if (!xQueueSend(fft_queue, &msg, 0)) {
+				//++diag.fft_overflows;
+			}
 		}
 	}
-}
+	if((ds->smeter_count += len) >= 0x4000) {
+		/* Update S-meter value on display */
+		rs.smeter = acc / 0x4000;
+		acc = 0;
+		ds->smeter_count = 0;
 
-
-/* Store samples for waterfall FFT. Remnant from old code. */
-static void demod_store(iq_in_t *in, unsigned len)
-{
-	unsigned i;
-	for (i = 0; i < len; i += 2)
-		demod_store_2_samples(&in[i]);
+		display_ev.text_changed = 1;
+		xSemaphoreGive(display_sem);
+	}
+	ds->signalbufp = fp;
+	ds->smeter_acc = acc;
 }
 
 
@@ -272,14 +303,14 @@ static void demod_store(iq_in_t *in, unsigned len)
 	s0q = ds->fm_prev_q;
 	for (i = 0; i < len; i+=2) {
 		float fi, fq, fm;
-		s1i = in[i][0];
-		s1q = in[i][1];
+		s1i = in[i].i;
+		s1q = in[i].q;
 		fi = s1i * s0i + s1q * s0q;
 		fq = s1q * s0i - s1i * s0q;
 		fm = fq / (fabsf(fi) + fabsf(fq));
 
-		s0i = in[i+1][0];
-		s0q = in[i+1][1];
+		s0i = in[i+1].i;
+		s0q = in[i+1].q;
 		fi += s0i * s1i + s0q * s1q;
 		fq += s0q * s1i - s0i * s1q;
 		fm += fq / (fabsf(fi) + fabsf(fq));
@@ -308,11 +339,11 @@ static void demod_store(iq_in_t *in, unsigned len)
 	const float beta = 0.4142f;
 	for (i = 0; i < len; i+=2) {
 		float ai, aq, o;
-		ai = fabsf(in[i][0]);
-		aq = fabsf(in[i][1]);
+		ai = fabsf(in[i].i);
+		aq = fabsf(in[i].q);
 		o = (ai >= aq) ? (ai + aq * beta) : (aq + ai * beta);
-		ai = fabsf(in[i+1][0]);
-		aq = fabsf(in[i+1][1]);
+		ai = fabsf(in[i+1].i);
+		aq = fabsf(in[i+1].q);
 		o += (ai >= aq) ? (ai + aq * beta) : (aq + ai * beta);
 		out[i/2] = o;
 	}
@@ -332,7 +363,7 @@ static void demod_store(iq_in_t *in, unsigned len)
  * The previous and next oscillator values alternate between variables
  * osc0 and osc1, and the loop is unrolled for 2 input samples.
  * */
-void demod_dsb_f(struct demod *ds, iq_float *in, float *out, unsigned len)
+void demod_dsb_f(struct demod *ds, iq_float_t *in, float *out, unsigned len)
 {
 	(void)ds;
 	unsigned i;
@@ -341,11 +372,11 @@ void demod_dsb_f(struct demod *ds, iq_float *in, float *out, unsigned len)
 	const float oscfi = ds->bfofreq_i, oscfq = ds->bfofreq_q;
 	for (i = 0; i < len; i+=2) {
 		float o;
-		o = osc0i * in[i][0] - osc0q * in[i][1];
+		o = osc0i * in[i].i - osc0q * in[i].q;
 		osc1i = osc0i * oscfi - osc0q * oscfq;
 		osc1q = osc0i * oscfq + osc0q * oscfi;
 
-		o += osc1i * in[i+1][0] - osc1q * in[i+1][1];
+		o += osc1i * in[i+1].i - osc1q * in[i+1].q;
 		osc0i = osc1i * oscfi - osc1q * oscfq;
 		osc0q = osc1i * oscfq + osc1q * oscfi;
 
@@ -375,14 +406,14 @@ static const struct biquad_coeff biquad1_ssb = {
  */
 void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 {
-	iq_float buf[IQ_MAXLEN];
+	iq_float_t buf[IQ_MAXLEN];
 	unsigned i;
 
 	/* Convert the buffer to float.
 	 * TODO: also mix with the first oscillator here. */
 	for (i = 0; i < len; i++) {
-		buf[i][0] = in[i][0];
-		buf[i][1] = in[i][1];
+		buf[i].i = in[i].i;
+		buf[i].q = in[i].q;
 	}
 
 	// Calculated for 1500 Hz at 57142 Hz sample rate
@@ -467,7 +498,7 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 	if (out_len * 2 != in_len || out_len > AUDIO_MAXLEN)
 		return 0;
 
-	demod_store(in, in_len);
+	demod_store(&demodstate, in, in_len);
 
 	enum rig_mode mode = p.mode;
 	/* Reset state after mode change */
