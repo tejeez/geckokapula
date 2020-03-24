@@ -5,18 +5,22 @@
  *      Author: Tatu
  */
 
-#include "display.h"
-#include "font8x8_basic.h"
-#include "rig.h"
-#include "ui_hw.h"
-#include "ui_parameters.h"
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-
 // FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
+
+#include "display.h"
+#include "rig.h"
+#include "ui.h"
+#include "ui_hw.h"
+#include "ui_parameters.h"
+
+#include "font8x8_basic.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 #define BACKLIGHT_ON_TIME 2000
 #define BACKLIGHT_DIM_LEVEL 50
@@ -25,6 +29,8 @@ int backlight_timer = 0;
 #define DISPLAYBUF_SIZE 384
 #define DISPLAYBUF2_SIZE 384
 uint8_t displaybuf[DISPLAYBUF_SIZE], displaybuf2[DISPLAYBUF2_SIZE];
+
+volatile struct display_ev display_ev;
 
 #if DISPLAYBUF_SIZE < 3*8*8
 #error "Too small display buffer for text"
@@ -138,7 +144,7 @@ static void ui_knob_turned(int cursor, int diff) {
 #define ENCODER_DIVIDER 4
 
 
-/* ui_check_buttons is called from the misc task.
+/* ui_check_buttons is regularly called from the misc task.
  * TODO: think about thread safety when other tasks
  * read the updated data */
 void ui_check_buttons(void)
@@ -163,51 +169,24 @@ void ui_check_buttons(void)
 			ui_knob_turned(ui_cursor, pos_diff);
 		}
 		backlight_timer = 0;
+
+		/* Something on the display may have changed at this point,
+		 * so make the display task check for that. */
+		display_ev.text_changed = 1;
+		xSemaphoreGive(display_sem);
 	}
 
 	pos_prev = pos_now;
 }
 
 
-char fftline_ready=0;
-static void ui_draw_fft_line();
-
-void ui_loop() {
-	static unsigned char aaa = 0;
-	//ui_check_buttons();
-	if(!display_ready()) return;
+/* ui_control_backlight is regularly called from the misc task. */
+void ui_control_backlight(void)
+{
 	if(backlight_timer <= BACKLIGHT_ON_TIME) {
 		display_backlight(BACKLIGHT_DIM_LEVEL + BACKLIGHT_ON_TIME - backlight_timer);
 		backlight_timer++;
 	}
-
-	if(fftline_ready) {
-		ui_draw_fft_line();
-		fftline_ready = 0;
-		//return;
-	}
-
-	/* Update text when starting to draw next line of text.
-	 * Find the next character to be drawn
-	 * and draw one character per call.
-	 */
-	if(aaa == 0)
-		ui_update_text();
-
-	while(textline[aaa] == textprev[aaa] && aaa < TEXT_LEN)
-		aaa++;
-
-	if(aaa < TEXT_LEN/* && textline[aaa] != textprev[aaa]*/) {
-		char c = textline[aaa];
-		if(aaa < 16) // first line
-			ui_character(aaa*8, /*128-8*/0, c&0x7F, (c&0x80) != 0);
-		else // second line
-			ui_character((aaa-16)*8, /*128-16*/8, c&0x7F, (c&0x80) != 0);
-		textprev[aaa] = c;
-	}
-
-	if(aaa >= TEXT_LEN)
-		aaa = 0;
 }
 
 
@@ -216,8 +195,17 @@ int fftrow = FFT_ROW2;
 #error "Too small display buffer for FFT"
 #endif
 
-static void ui_draw_fft_line() {
-	if(!display_ready()) return;
+/* Check for the waterfall line flag and draw the line.
+ * If the flag is not set, just return. */
+static void ui_display_waterfall(void)
+{
+	if (!display_ev.waterfall_line)
+		return;
+	display_ev.waterfall_line = 0;
+	if (!display_ready()) {
+		printf("Bug? Display not ready in waterfall\n");
+		return;
+	}
 	display_scroll(fftrow);
 	display_area(0,fftrow, FFT_BIN2-FFT_BIN1, fftrow);
 	display_start();
@@ -228,12 +216,49 @@ static void ui_draw_fft_line() {
 }
 
 
+/* Update text on the display.
+ *
+ * To make both the text and the waterfall respond fast
+ * for smooth user experience, draw the text one character
+ * at a time and check for a possible new waterfall line
+ * in between drawing each character.
+ * Also update only the characters that have changed. */
+static void ui_display_text(void)
+{
+	ui_update_text();
+	int i;
+	for (i = 0; i < TEXT_LEN; i++) {
+		char c = textline[i], cp = textprev[i];
+		if (c != cp) {
+			if(i < 16) // first line
+				ui_character(i*8, 0, c&0x7F, (c&0x80) != 0);
+			else // second line
+				ui_character((i-16)*8, 8, c&0x7F, (c&0x80) != 0);
+			textprev[i] = c;
+			ui_display_waterfall();
+		}
+	}
+}
+
+
 void display_task(void *arg)
 {
+	(void)arg;
 	display_init();
 	for (;;) {
-		// TODO: use queues/semaphores instead of polling for everything
-		ui_loop();
-		vTaskDelay(2);
+		xSemaphoreTake(display_sem, portMAX_DELAY);
+		ui_display_waterfall();
+		if (display_ev.text_changed) {
+			display_ev.text_changed = 0;
+			ui_display_text();
+		}
 	}
+}
+
+
+/* Create the RTOS objects needed by the user interface.
+ * Called before starting the scheduler. */
+void ui_rtos_init(void)
+{
+	display_sem = xSemaphoreCreateBinary();
 }

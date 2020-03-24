@@ -14,6 +14,7 @@
 // FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
 
 // rig
 #include "display.h"
@@ -86,6 +87,7 @@ int main(void) {
 
 	dsp_rtos_init();
 	slow_dsp_rtos_init();
+	ui_rtos_init();
 
 	xTaskCreate(misc_fast_task, "Misc", 0x100, NULL, 4, &taskhandles[3]);
 	xTaskCreate(display_task, "Display", 0x300, NULL, 2, &taskhandles[0]);
@@ -114,14 +116,17 @@ static inline void restart_rail_task() {
 
 /* Task to do various "small" things which have to run regularly,
  * don't take much CPU time and don't need a dedicated task.
+ * These are typically things that poll for something.
  * This includes:
  * - Reading user interface inputs
+ * - Controlling display backlight brightness
  * - Monitoring other tasks
  */
 void misc_fast_task(void *arg) {
 	(void)arg;
 	for(;;) {
 		ui_check_buttons();
+		ui_control_backlight();
 		//testnumber++;
 		int ti;
 		for(ti=0; ti<NTASKS; ti++) {

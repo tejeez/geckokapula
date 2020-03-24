@@ -23,18 +23,21 @@
 
 #include "dsp.h"
 
-#define RXBUFL 2
+extern rig_parameters_t p;
 
+/* Waterfall FFT related things */
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
 #define SIGNALBUFLEN 512
 int16_t signalbuf[2*SIGNALBUFLEN];
-volatile int signalbufp = 0;
-SemaphoreHandle_t fft_sem;
+unsigned signalbufp = 0;
+QueueHandle_t fft_queue;
 
-extern rig_parameters_t p;
 
+/* TODO: Reimplement S-meter and squelch */
 
 #if 0
+#define RXBUFL 2
+
 /* Process some IQ samples and return one audio sample.
  * The plan is to allow processing in bigger blocks, but for now
  * this is an intermediate step in the ongoing refactoring. */
@@ -165,8 +168,12 @@ static void demod_store_2_samples(iq_in_t *s)
 	fp+=2;
 	if(fp >= SIGNALBUFLEN) fp = 0;
 	signalbufp = fp;
-	if (fp == 0 || fp == 171 || fp == 341)
-		xSemaphoreGive(fft_sem);
+	if (fp == 0 || fp == 171 || fp == 341) {
+		uint16_t msg = fp;
+		if (!xQueueSend(fft_queue, &msg, 0)) {
+			//++diag.fft_overflows;
+		}
+	}
 }
 
 
@@ -238,7 +245,7 @@ static void demod_store(iq_in_t *in, unsigned len)
 {
 	(void)ds;
 	unsigned i;
-	const float beta = 0.32326099f;
+	const float beta = 0.4142f;
 	for (i = 0; i < len; i+=2) {
 		float ai, aq, o;
 		ai = fabsf(in[i][0]);
@@ -407,9 +414,9 @@ int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 }
 
 
-static void calculate_waterfall_line() {
+static void calculate_waterfall_line(unsigned sbp)
+{
 	extern uint8_t displaybuf2[3*(FFT_BIN2-FFT_BIN1)];
-	extern char fftline_ready; // TODO: semaphore or something?
 	unsigned i;
 	float mag_avg = 0;
 
@@ -421,21 +428,17 @@ static void calculate_waterfall_line() {
 	static float fftdata[2*FFTLEN], mag[FFTLEN];
 	static uint8_t averages = 0;
 
-	//if(fftline_ready) return;
+	/* sbp is the message received from the fast DSP task,
+	 * containing the index of the latest sample written by it.
+	 * Take one FFT worth of previous samples before it. */
+	sbp -= 2*FFTLEN;
 
-	int sbp = signalbufp;
-	const float scaling = 1.0f / (RXBUFL*0x8000);
 	for(i=0; i<2*FFTLEN; i+=2) {
 		sbp &= SIGNALBUFLEN-1;
-		fftdata[i]   = scaling*signalbuf[sbp];
-		fftdata[i+1] = scaling*signalbuf[sbp+1];
+		fftdata[i]   = signalbuf[sbp];
+		fftdata[i+1] = signalbuf[sbp+1];
 		sbp += 2;
 	}
-
-	// to see how many samples are between FFTs
-	/*static int debug_last_sbp = 0;
-	testnumber = (sbp - debug_last_sbp) & (SIGNALBUFLEN-1);
-	debug_last_sbp = sbp;*/
 
 	arm_cfft_f32(fftS, fftdata, 0, 1);
 
@@ -475,7 +478,8 @@ static void calculate_waterfall_line() {
 		bufp += 3;
 	}
 
-	fftline_ready = 1;
+	display_ev.waterfall_line = 1;
+	xSemaphoreGive(display_sem);
 }
 
 
@@ -483,9 +487,9 @@ static void calculate_waterfall_line() {
 void slow_dsp_task(void *arg) {
 	(void)arg;
 	for(;;) {
-		// TODO: semaphore?
-		if (xSemaphoreTake(fft_sem, portMAX_DELAY)) {
-			calculate_waterfall_line();
+		uint16_t msg;
+		if (xQueueReceive(fft_queue, &msg, portMAX_DELAY)) {
+			calculate_waterfall_line(msg);
 		}
 	}
 }
@@ -493,5 +497,5 @@ void slow_dsp_task(void *arg) {
 
 void slow_dsp_rtos_init(void)
 {
-	fft_sem = xSemaphoreCreateBinary();
+	fft_queue = xQueueCreate(1, sizeof(uint16_t));
 }
