@@ -149,18 +149,14 @@ struct biquad_state {
 
 // Coefficients of a biquad filter
 struct biquad_coeff {
-	float a0, a1, a2, b1, b2;
+	float a1, a2, b0, b1, b2;
 };
 
 /* Apply a biquad filter to a complex signal with real coefficients,
  * i.e. run it separately for the I and Q parts.
  * Write output back to the same buffer.
- * The algorithm used is called transposed direct form II, or at least
- * I tried to follow how it was drawn at
- * https://www.earlevel.com/main/2003/02/28/biquads/ ...
- * But in some other sources, a and b are named the other way around
- * and the structure looks somehow different.
- * I'm a bit confused now and have to read more on those...
+ * The algorithm used is called transposed direct form II, as shown at
+ * https://www.dsprelated.com/freebooks/filters/Transposed_Direct_Forms.html
  *
  * The code could possibly be optimized by unrolling a couple of times
  * or by cascading multiple stages in a single loop.
@@ -169,7 +165,7 @@ struct biquad_coeff {
 void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_float *buf, unsigned len)
 {
 	unsigned i;
-	const float a0 = c->a0, a1 = c->a1, a2 = c->a2, b1 = c->b1, b2 = c->b2;
+	const float a1 = -c->a1, a2 = -c->a2, b0 = c->b0, b1 = c->b1, b2 = c->b2;
 
 	float
 	s1_i = s->s1_i,
@@ -181,19 +177,19 @@ void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_floa
 		float in_i, in_q, out_i, out_q;
 		in_i = buf[i][0];
 		in_q = buf[i][1];
-		out_i = s1_i + a0 * in_i;
-		out_q = s1_q + a0 * in_q;
-		s1_i  = s2_i + a1 * in_i + b1 * out_i;
-		s1_q  = s2_q + a1 * in_q + b1 * out_q;
-		s2_i  =        a2 * in_i + b2 * out_i;
-		s2_q  =        a2 * in_q + b2 * out_q;
+		out_i = s1_i + b0 * in_i;
+		out_q = s1_q + b0 * in_q;
+		s1_i  = s2_i + b1 * in_i + a1 * out_i;
+		s1_q  = s2_q + b1 * in_q + a1 * out_q;
+		s2_i  =        b2 * in_i + a2 * out_i;
+		s2_q  =        b2 * in_q + a2 * out_q;
 		buf[i][0] = out_i;
 		buf[i][1] = out_q;
 	}
 
 	s->s1_i = s1_i;
 	s->s1_q = s1_q;
-	s->s1_i = s1_i;
+	s->s2_i = s2_i;
 	s->s2_q = s2_q;
 }
 
@@ -216,7 +212,8 @@ static void demod_reset(struct demod *ds)
 	ds->audio_lpf = ds->audio_hpf = ds->audio_po = 0;
 	ds->agc_amp = 0;
 	ds->bfo_i = 1; ds->bfo_q = 0;
-	//TODO reset biquads too
+	memset(&ds->bq1, 0, sizeof(ds->bq1));
+	memset(&ds->bq2, 0, sizeof(ds->bq2));
 }
 
 
@@ -361,7 +358,17 @@ void demod_dsb_f(struct demod *ds, iq_float *in, float *out, unsigned len)
 }
 
 
-static const struct biquad_coeff biquad1_ssb = { };//TODO
+/* Coefficients from https://arachnoid.com/BiQuadDesigner/
+ * with: 1000 Hz, sample rate 57142 Hz, Q 0.8.
+ * Now the same coefficients are used for two stages, but a better
+ * response could be obtained by designing a proper 2-stage filter. */
+static const struct biquad_coeff biquad1_ssb = {
+	.a1 = -1.86033082,
+	.a2 = 0.87163404f,
+	.b0 = 0.00282581f,
+	.b1 = 0.00565161f,
+	.b2 = 0.00282581f
+};
 
 /* Demodulate SSB.
  * The Weaver method is used.
@@ -382,7 +389,8 @@ void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 	ds->bfofreq_i = 0.98642885096843314f;
 	ds->bfofreq_q = 0.16418928703510721f;
 
-	//biquad_filter(&ds->bq1, &biquad1_ssb, buf, len);
+	biquad_filter(&ds->bq1, &biquad1_ssb, buf, len);
+	biquad_filter(&ds->bq2, &biquad1_ssb, buf, len);
 	demod_dsb_f(ds, buf, out, len);
 }
 
