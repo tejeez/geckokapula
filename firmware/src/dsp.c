@@ -34,6 +34,7 @@ SemaphoreHandle_t fft_sem;
 extern rig_parameters_t p;
 
 
+#if 0
 /* Process some IQ samples and return one audio sample.
  * The plan is to allow processing in bigger blocks, but for now
  * this is an intermediate step in the ongoing refactoring. */
@@ -132,19 +133,236 @@ static inline audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
 	}
 	return audioout;
 }
+#endif
 
+
+
+/* Demodulator state */
+struct demod {
+	float fm_prev_i, fm_prev_q;
+	float audio_lpf, audio_hpf, audio_po;
+	float agc_amp;
+	enum rig_mode prev_mode;
+};
+
+
+static void demod_reset(struct demod *ds)
+{
+	ds->fm_prev_i = ds->fm_prev_q = 0;
+	ds->audio_lpf = ds->audio_hpf = ds->audio_po = 0;
+	ds->agc_amp = 0;
+}
+
+
+/* Average 2 samples and store them for waterfall FFT.
+ * This is remnant from old code and could be done more
+ * efficiently at some point. */
+static void demod_store_2_samples(iq_in_t *s)
+{
+	int fp = signalbufp;
+	signalbuf[fp]   = ((int32_t)s[0][1] + s[1][1]) / 2;
+	signalbuf[fp+1] = ((int32_t)s[0][0] + s[1][0]) / 2;
+	fp+=2;
+	if(fp >= SIGNALBUFLEN) fp = 0;
+	signalbufp = fp;
+	if (fp == 0 || fp == 171 || fp == 341)
+		xSemaphoreGive(fft_sem);
+}
+
+
+/* Store samples for waterfall FFT. Remnant from old code. */
+static void demod_store(iq_in_t *in, unsigned len)
+{
+	unsigned i;
+	for (i = 0; i < len; i += 2)
+		demod_store_2_samples(&in[i]);
+}
+
+
+
+/* FM demodulate a buffer.
+ * Each I/Q sample is multiplied by the conjugate of the previous sample,
+ * giving a value whose complex argument is proportional to the frequency.
+ *
+ * Instead of actually calculating the argument, a very crude approximation
+ * for small values is used instead, but it sounds "good enough" since
+ * the input signal is somewhat oversampled.
+ *
+ * The multiplication results in numbers with a big dynamic range, so
+ * floating point math is used.
+ *
+ * The loop is unrolled two times, so we can nicely reuse the previous
+ * sample values already loaded and converted without storing them in
+ * another variable.
+ * Also, the audio output gets decimated by two by just
+ * "integrate and dump". Again, sounds good enough given the oversampling.
+ */
+/*static inline*/ void demod_fm(struct demod *ds, iq_in_t *in, float *out, unsigned len)
+{
+	unsigned i;
+	float s0i, s0q, s1i, s1q;
+	s0i = ds->fm_prev_i;
+	s0q = ds->fm_prev_q;
+	for (i = 0; i < len; i+=2) {
+		float fi, fq, fm;
+		s1i = in[i][0];
+		s1q = in[i][1];
+		fi = s1i * s0i + s1q * s0q;
+		fq = s1q * s0i - s1i * s0q;
+		fm = fq / (fabsf(fi) + fabsf(fq));
+
+		s0i = in[i+1][0];
+		s0q = in[i+1][1];
+		fi += s0i * s1i + s0q * s1q;
+		fq += s0q * s1i - s0i * s1q;
+		fm += fq / (fabsf(fi) + fabsf(fq));
+
+		// Avoid NaN
+		if (fm != fm)
+			fm = 0;
+
+		out[i/2] = fm;
+	}
+	ds->fm_prev_i = s0i;
+	ds->fm_prev_q = s0q;
+}
+
+
+/* Demodulate AM.
+ * Again, output audio is decimated by 2.
+ *
+ * An approximation explained here is used:
+ * https://dspguru.com/dsp/tricks/magnitude-estimator/
+ */
+/*static inline*/ void demod_am(struct demod *ds, iq_in_t *in, float *out, unsigned len)
+{
+	(void)ds;
+	unsigned i;
+	const float beta = 0.32326099f;
+	for (i = 0; i < len; i+=2) {
+		float ai, aq, o;
+		ai = fabsf(in[i][0]);
+		aq = fabsf(in[i][1]);
+		o = (ai >= aq) ? (ai + aq * beta) : (aq + ai * beta);
+		ai = fabsf(in[i+1][0]);
+		aq = fabsf(in[i+1][1]);
+		o += (ai >= aq) ? (ai + aq * beta) : (aq + ai * beta);
+		out[i/2] = o;
+	}
+}
+
+
+/* Demodulate DSB.
+ * Just decimate I by 2 and not much else. */
+void demod_dsb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
+{
+	(void)ds;
+	unsigned i;
+	for (i = 0; i < len; i+=2) {
+		out[i/2] = (float)in[i][0] + (float)in[i+1][0];
+	}
+}
+
+
+/* Apply some low-pass filtering to audio for de-emphasis
+ * and some high-pass filtering for DC blocking.
+ * Store the result in the same buffer.
+ *
+ * Also calculate the average amplitude which is used for AGC.
+ * Average amplitude of differentiated signal is used for squelch.
+ */
+/*static inline*/ void demod_audio_filter(struct demod *ds, float *buf, unsigned len)
+{
+	unsigned i;
+	const float lpf_a = 0.1f, hpf_a = 0.001f;
+	float
+	lpf = ds->audio_lpf,
+	hpf = ds->audio_hpf,
+	po  = ds->audio_po;
+	float amp = 0, diff_amp = 0;
+	for (i = 0; i < len; i++) {
+		lpf += (buf[i] - lpf) * lpf_a;
+		hpf += (lpf - hpf) * hpf_a;
+		float o = lpf - hpf;
+		buf[i] = o;
+
+		amp += fabsf(o);
+		diff_amp += fabsf(o - po);
+		po = o;
+	}
+	ds->audio_lpf = lpf;
+	ds->audio_hpf = hpf;
+	ds->audio_po = po;
+
+	/* Update AGC values once per block, so most of the AGC code
+	 * runs at a lower sample rate. */
+	const float agc_attack = 0.1f, agc_decay = 0.01f;
+	float agc_amp = ds->agc_amp;
+	// Avoid NaN
+	if (agc_amp != agc_amp)
+		agc_amp = 0;
+
+	float d = amp - agc_amp;
+	if (d >= 0)
+		ds->agc_amp = agc_amp + d * agc_attack;
+	else
+		ds->agc_amp = agc_amp + d * agc_decay;
+}
+
+
+/*static inline*/ void demod_convert_audio(float *in, audio_out_t *out, unsigned len, float gain)
+{
+	unsigned i;
+	for (i = 0; i < len; i++) {
+		float f = gain * in[i] + (float)AUDIO_MID;
+		audio_out_t o;
+		if (f <= (float)AUDIO_MIN)
+			o = AUDIO_MIN;
+		else if(f >= (float)AUDIO_MAX)
+			o = AUDIO_MAX;
+		else
+			o = (audio_out_t)f;
+		out[i] = o;
+	}
+}
+
+
+struct demod demodstate;
+
+#define AUDIO_MAXLEN 32
 
 /* Function to convert received IQ to output audio */
 int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 {
-	if (out_len * RXBUFL != in_len)
+	if (out_len * 2 != in_len || out_len > AUDIO_MAXLEN)
 		return 0;
-	int i;
-	for (i = 0; i < out_len; i++) {
-		out[i] = dsp_process_rx_sample(in);
-		//out[i] = 200;
-		in += RXBUFL;
+
+	demod_store(in, in_len);
+
+	enum rig_mode mode = p.mode;
+	/* Reset state after mode change */
+	if (mode != demodstate.prev_mode) {
+		demod_reset(&demodstate);
+		demodstate.prev_mode = mode;
 	}
+
+	float audio[AUDIO_MAXLEN];
+	switch(mode) {
+	case MODE_FM:
+		demod_fm(&demodstate, in, audio, in_len);
+		break;
+	case MODE_AM:
+		demod_am(&demodstate, in, audio, in_len);
+		break;
+	case MODE_DSB:
+		demod_dsb(&demodstate, in, audio, in_len);
+		break;
+	default:
+		break;
+	}
+	demod_audio_filter(&demodstate, audio, out_len);
+	demod_convert_audio(audio, out, out_len, (10.0f * p.volume2) / demodstate.agc_amp);
+
 	return out_len;
 }
 

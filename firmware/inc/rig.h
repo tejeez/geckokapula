@@ -8,11 +8,13 @@
 #ifndef INC_RIG_H_
 #define INC_RIG_H_
 
+enum rig_mode { MODE_FM, MODE_AM, MODE_DSB, MODE_NONE };
+
 // parameters communicated from UI to RAIL and DSP parts
 typedef struct {
 	int channel;
 	char channel_changed, keyed;
-	enum { MODE_FM, MODE_AM, MODE_DSB, MODE_NONE } mode;
+	enum rig_mode mode;
 	uint32_t frequency;
 	uint8_t volume;
 	int volume2;
