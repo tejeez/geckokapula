@@ -8,6 +8,8 @@ typedef uint16_t audio_out_t;
 typedef uint16_t audio_in_t;
 typedef uint16_t fm_out_t;
 
+typedef float iq_float[2];
+
 #define AUDIO_MIN 0
 #define AUDIO_MAX 200
 #define AUDIO_MID 100

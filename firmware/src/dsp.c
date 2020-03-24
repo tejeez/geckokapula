@@ -23,6 +23,9 @@
 
 #include "dsp.h"
 
+#define AUDIO_MAXLEN 32
+#define IQ_MAXLEN (AUDIO_MAXLEN * 2)
+
 extern rig_parameters_t p;
 
 /* Waterfall FFT related things */
@@ -139,12 +142,70 @@ static inline audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
 #endif
 
 
+// State of a biquad filter
+struct biquad_state {
+	float s1_i, s1_q, s2_i, s2_q;
+};
+
+// Coefficients of a biquad filter
+struct biquad_coeff {
+	float a0, a1, a2, b1, b2;
+};
+
+/* Apply a biquad filter to a complex signal with real coefficients,
+ * i.e. run it separately for the I and Q parts.
+ * Write output back to the same buffer.
+ * The algorithm used is called transposed direct form II, or at least
+ * I tried to follow how it was drawn at
+ * https://www.earlevel.com/main/2003/02/28/biquads/ ...
+ * But in some other sources, a and b are named the other way around
+ * and the structure looks somehow different.
+ * I'm a bit confused now and have to read more on those...
+ *
+ * The code could possibly be optimized by unrolling a couple of times
+ * or by cascading multiple stages in a single loop.
+ * We'll need some benchmarks to test such ideas.
+ */
+void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_float *buf, unsigned len)
+{
+	unsigned i;
+	const float a0 = c->a0, a1 = c->a1, a2 = c->a2, b1 = c->b1, b2 = c->b2;
+
+	float
+	s1_i = s->s1_i,
+	s1_q = s->s1_q,
+	s2_i = s->s2_i,
+	s2_q = s->s2_q;
+
+	for (i = 0; i < len; i++) {
+		float in_i, in_q, out_i, out_q;
+		in_i = buf[i][0];
+		in_q = buf[i][1];
+		out_i = s1_i + a0 * in_i;
+		out_q = s1_q + a0 * in_q;
+		s1_i  = s2_i + a1 * in_i + b1 * out_i;
+		s1_q  = s2_q + a1 * in_q + b1 * out_q;
+		s2_i  =        a2 * in_i + b2 * out_i;
+		s2_q  =        a2 * in_q + b2 * out_q;
+		buf[i][0] = out_i;
+		buf[i][1] = out_q;
+	}
+
+	s->s1_i = s1_i;
+	s->s1_q = s1_q;
+	s->s1_i = s1_i;
+	s->s2_q = s2_q;
+}
+
 
 /* Demodulator state */
 struct demod {
 	float fm_prev_i, fm_prev_q;
+	float bfo_i, bfo_q;
+	float bfofreq_i, bfofreq_q;
 	float audio_lpf, audio_hpf, audio_po;
 	float agc_amp;
+	struct biquad_state bq1, bq2;
 	enum rig_mode prev_mode;
 };
 
@@ -154,6 +215,8 @@ static void demod_reset(struct demod *ds)
 	ds->fm_prev_i = ds->fm_prev_q = 0;
 	ds->audio_lpf = ds->audio_hpf = ds->audio_po = 0;
 	ds->agc_amp = 0;
+	ds->bfo_i = 1; ds->bfo_q = 0;
+	//TODO reset biquads too
 }
 
 
@@ -259,16 +322,70 @@ static void demod_store(iq_in_t *in, unsigned len)
 }
 
 
-/* Demodulate DSB.
- * Just decimate I by 2 and not much else. */
-void demod_dsb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
+/* Demodulate DSB with input in floating point format.
+ *
+ * Multiply the signal by a beat-frequency oscillator and take
+ * the real part of the result. Decimate it by 2.
+ *
+ * The oscillator is implemented by "rotating" a complex number on
+ * each sample by multiplying it with a value on the unit circle.
+ * The value is normalized once per block using formula from
+ * https://dspguru.com/dsp/howtos/how-to-create-oscillators-in-software/
+ *
+ * The previous and next oscillator values alternate between variables
+ * osc0 and osc1, and the loop is unrolled for 2 input samples.
+ * */
+void demod_dsb_f(struct demod *ds, iq_float *in, float *out, unsigned len)
 {
 	(void)ds;
 	unsigned i;
+	float osc1i, osc1q;
+	float osc0i = ds->bfo_i, osc0q = ds->bfo_q;
+	const float oscfi = ds->bfofreq_i, oscfq = ds->bfofreq_q;
 	for (i = 0; i < len; i+=2) {
-		out[i/2] = (float)in[i][0] + (float)in[i+1][0];
+		float o;
+		o = osc0i * in[i][0] - osc0q * in[i][1];
+		osc1i = osc0i * oscfi - osc0q * oscfq;
+		osc1q = osc0i * oscfq + osc0q * oscfi;
+
+		o += osc1i * in[i+1][0] - osc1q * in[i+1][1];
+		osc0i = osc1i * oscfi - osc1q * oscfq;
+		osc0q = osc1i * oscfq + osc1q * oscfi;
+
+		out[i/2] = o;
 	}
+	float ms = osc0i * osc0i + osc0q * osc0q;
+	ms = (3.0f - ms) * 0.5f;
+	ds->bfo_i = ms * osc0i;
+	ds->bfo_q = ms * osc0q;
 }
+
+
+static const struct biquad_coeff biquad1_ssb = { };//TODO
+
+/* Demodulate SSB.
+ * The Weaver method is used.
+ */
+void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
+{
+	iq_float buf[IQ_MAXLEN];
+	unsigned i;
+
+	/* Convert the buffer to float.
+	 * TODO: also mix with the first oscillator here. */
+	for (i = 0; i < len; i++) {
+		buf[i][0] = in[i][0];
+		buf[i][1] = in[i][1];
+	}
+
+	// Calculated for 1500 Hz at 57142 Hz sample rate
+	ds->bfofreq_i = 0.98642885096843314f;
+	ds->bfofreq_q = 0.16418928703510721f;
+
+	//biquad_filter(&ds->bq1, &biquad1_ssb, buf, len);
+	demod_dsb_f(ds, buf, out, len);
+}
+
 
 
 /* Apply some low-pass filtering to audio for de-emphasis
@@ -336,8 +453,6 @@ void demod_dsb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 
 struct demod demodstate;
 
-#define AUDIO_MAXLEN 32
-
 /* Function to convert received IQ to output audio */
 int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 {
@@ -362,8 +477,11 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 		demod_am(&demodstate, in, audio, in_len);
 		break;
 	case MODE_DSB:
-		demod_dsb(&demodstate, in, audio, in_len);
+		demod_ssb(&demodstate, in, audio, in_len);
 		break;
+	/*case MODE_SSB:
+		demod_ssb(&demodstate, in, audio, in_len);
+		break;*/
 	default:
 		break;
 	}
