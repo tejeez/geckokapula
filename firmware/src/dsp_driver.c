@@ -240,6 +240,7 @@ void fast_dsp_task(void *arg)
 {
 	(void)arg;
 	uint32_t cyc1, cyc2;
+	dsp_update_params();
 	cyc2 = DWT->CYCCNT;
 	for (;;) {
 		QueueHandle_t q;

@@ -22,6 +22,7 @@
 #include "ui_parameters.h"
 
 #include "dsp.h"
+#include <math.h>
 
 #define AUDIO_MAXLEN 32
 #define IQ_MAXLEN (AUDIO_MAXLEN * 2)
@@ -195,6 +196,9 @@ void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_floa
 
 /* Demodulator state */
 struct demod {
+	// Audio gain parameter
+	float audiogain;
+
 	/* Phase of the digital down-converter,
 	 * i.e. first oscillator used in SSB demodulation */
 	float ddc_i, ddc_q;
@@ -234,6 +238,7 @@ static void demod_reset(struct demod *ds)
 	ds->audio_lpf = ds->audio_hpf = ds->audio_po = 0;
 	ds->agc_amp = 0;
 	ds->bfo_i = 1; ds->bfo_q = 0;
+	ds->ddc_i = 1; ds->ddc_q = 0;
 	memset(&ds->bq1, 0, sizeof(ds->bq1));
 	memset(&ds->bq2, 0, sizeof(ds->bq2));
 }
@@ -350,10 +355,63 @@ void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
 }
 
 
+/* Digital down-conversion.
+ * This is the first mixer in the Weaver method SSB demodulator.
+ *
+ * Multiply the signal by a complex oscillator
+ * and decimate the result by 2.
+ *
+ * The oscillator is implemented by "rotating" a complex number on
+ * each sample by multiplying it with a value on the unit circle.
+ * The value is normalized once per block using formula from
+ * https://dspguru.com/dsp/howtos/how-to-create-oscillators-in-software/
+ *
+ * The previous and next oscillator values alternate between variables
+ * osc0 and osc1, and the loop is unrolled for 2 input samples.
+ * */
+void demod_ddc(struct demod *ds, iq_in_t *in, iq_float_t *out, unsigned len)
+{
+	(void)ds;
+	unsigned i;
+	float osc1i, osc1q;
+	float osc0i = ds->ddc_i, osc0q = ds->ddc_q;
+	const float oscfi = ds->ddcfreq_i, oscfq = ds->ddcfreq_q;
+	len /= 2;
+	for (i = 0; i < len; i++) {
+		float oi, oq, ii, iq;
+		ii = in->i;
+		iq = in->q;
+		in++;
+		oi    = osc0i * ii    - osc0q * iq;
+		oq    = osc0i * iq    + osc0q * ii;
+
+		osc1i = osc0i * oscfi - osc0q * oscfq;
+		osc1q = osc0i * oscfq + osc0q * oscfi;
+
+		ii = in->i;
+		iq = in->q;
+		in++;
+		oi   += osc1i * ii    - osc1q * iq;
+		oq   += osc1i * iq    + osc1q * ii;
+
+		osc0i = osc1i * oscfi - osc1q * oscfq;
+		osc0q = osc1i * oscfq + osc1q * oscfi;
+
+		out[i].i = oi;
+		out[i].q = oq;
+	}
+	float ms = osc0i * osc0i + osc0q * osc0q;
+	ms = (3.0f - ms) * 0.5f;
+	ds->ddc_i = ms * osc0i;
+	ds->ddc_q = ms * osc0q;
+}
+
+
 /* Demodulate DSB with input in floating point format.
+ * This is the second mixer in the Weaver SSB demodulator.
  *
  * Multiply the signal by a beat-frequency oscillator and take
- * the real part of the result. Decimate it by 2.
+ * the real part of the result.
  *
  * The oscillator is implemented by "rotating" a complex number on
  * each sample by multiplying it with a value on the unit circle.
@@ -371,16 +429,13 @@ void demod_dsb_f(struct demod *ds, iq_float_t *in, float *out, unsigned len)
 	float osc0i = ds->bfo_i, osc0q = ds->bfo_q;
 	const float oscfi = ds->bfofreq_i, oscfq = ds->bfofreq_q;
 	for (i = 0; i < len; i+=2) {
-		float o;
-		o = osc0i * in[i].i - osc0q * in[i].q;
+		out[i] = osc0i * in[i].i - osc0q * in[i].q;
 		osc1i = osc0i * oscfi - osc0q * oscfq;
 		osc1q = osc0i * oscfq + osc0q * oscfi;
 
-		o += osc1i * in[i+1].i - osc1q * in[i+1].q;
+		out[i+1] = osc1i * in[i+1].i - osc1q * in[i+1].q;
 		osc0i = osc1i * oscfi - osc1q * oscfq;
 		osc0q = osc1i * oscfq + osc1q * oscfi;
-
-		out[i/2] = o;
 	}
 	float ms = osc0i * osc0i + osc0q * osc0q;
 	ms = (3.0f - ms) * 0.5f;
@@ -390,15 +445,15 @@ void demod_dsb_f(struct demod *ds, iq_float_t *in, float *out, unsigned len)
 
 
 /* Coefficients from https://arachnoid.com/BiQuadDesigner/
- * with: 1000 Hz, sample rate 57142 Hz, Q 0.8.
+ * with: 1000 Hz, sample rate 28571 Hz, Q 0.8.
  * Now the same coefficients are used for two stages, but a better
  * response could be obtained by designing a proper 2-stage filter. */
 static const struct biquad_coeff biquad1_ssb = {
-	.a1 = -1.86033082,
-	.a2 = 0.87163404f,
-	.b0 = 0.00282581f,
-	.b1 = 0.00565161f,
-	.b2 = 0.00282581f
+	.a1 = -1.71764564f,
+	.a2 =  0.76003423f,
+	.b0 =  0.01059715f,
+	.b1 =  0.02119429f,
+	.b2 =  0.01059715f
 };
 
 /* Demodulate SSB.
@@ -407,19 +462,9 @@ static const struct biquad_coeff biquad1_ssb = {
 void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 {
 	iq_float_t buf[IQ_MAXLEN];
-	unsigned i;
 
-	/* Convert the buffer to float.
-	 * TODO: also mix with the first oscillator here. */
-	for (i = 0; i < len; i++) {
-		buf[i].i = in[i].i;
-		buf[i].q = in[i].q;
-	}
-
-	// Calculated for 1500 Hz at 57142 Hz sample rate
-	ds->bfofreq_i = 0.98642885096843314f;
-	ds->bfofreq_q = 0.16418928703510721f;
-
+	demod_ddc(ds, in, buf, len);
+	len /= 2;
 	biquad_filter(&ds->bq1, &biquad1_ssb, buf, len);
 	biquad_filter(&ds->bq2, &biquad1_ssb, buf, len);
 	demod_dsb_f(ds, buf, out, len);
@@ -501,12 +546,6 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 	demod_store(&demodstate, in, in_len);
 
 	enum rig_mode mode = p.mode;
-	/* Reset state after mode change */
-	if (mode != demodstate.prev_mode) {
-		demod_reset(&demodstate);
-		demodstate.prev_mode = mode;
-	}
-
 	float audio[AUDIO_MAXLEN];
 	switch(mode) {
 	case MODE_FM:
@@ -525,9 +564,34 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 		break;
 	}
 	demod_audio_filter(&demodstate, audio, out_len);
-	demod_convert_audio(audio, out, out_len, (10.0f * p.volume2) / demodstate.agc_amp);
+	demod_convert_audio(audio, out, out_len, demodstate.audiogain / demodstate.agc_amp);
 
 	return out_len;
+}
+
+
+void dsp_update_params(void)
+{
+	const float bfo_hz = 1200.0f;
+	float f;
+
+	f = (6.2831853f * 2.0f / RX_IQ_FS) * bfo_hz;
+	demodstate.bfofreq_i = cosf(f);
+	demodstate.bfofreq_q = sinf(f);
+
+	f = (-6.2831853f / RX_IQ_FS) * ((float)p.offset_freq + bfo_hz);
+	demodstate.ddcfreq_i = cosf(f);
+	demodstate.ddcfreq_q = sinf(f);
+
+	unsigned vola = p.volume;
+	demodstate.audiogain = ((vola&1) ? (3<<(vola/2)) : (2<<(vola/2))) * 10.0f;
+
+	enum rig_mode mode = p.mode;
+	/* Reset state after mode change */
+	if (mode != demodstate.prev_mode) {
+		demod_reset(&demodstate);
+		demodstate.prev_mode = mode;
+	}
 }
 
 

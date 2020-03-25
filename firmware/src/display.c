@@ -18,9 +18,6 @@
 #include "em_ldma.h"
 #include "em_timer.h"
 #include "InitDevice.h"
-#ifndef DISABLE_RAIL
-#include "rail.h"
-#endif
 
 // FreeRTOS
 #include "FreeRTOS.h"
@@ -122,7 +119,7 @@ void LDMA_IRQHandler(void)
 	}
 }
 
-void display_transfer(uint8_t *dmadata, int dmalen)
+void display_transfer(const uint8_t *dmadata, int dmalen)
 {
 	LDMA_TransferCfg_t tr =
 			LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART1_TXBL);
@@ -167,14 +164,14 @@ int display_ready()
 const uint16_t display_init_commands[] = {
 		CMD(0x01), CMD(0x01), CMD(0x11), CMD(0x11), CMD(0x29), CMD(0x29),
 		CMD(0x33), // vertical scrolling definition
-			0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 0,
+			0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 159-FFT_ROW2,
 		INIT_LIST_END
 };
 
 int display_init(void)
 {
 	display_initialized = 0;
-	unsigned i, c;
+	unsigned i;
 	for (i = 0;; i++) {
 		unsigned c = display_init_commands[i];
 		if (c == INIT_LIST_END)

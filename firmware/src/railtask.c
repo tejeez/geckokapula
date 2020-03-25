@@ -22,9 +22,6 @@
 #define CHANNELSPACING 147 // 38.4 MHz / 2^18
 #define MIDDLECHANNEL 32
 
-rig_parameters_t p = {MIDDLECHANNEL,1,0, 0, 2400000000, 11, 96, 5, 29 };
-rig_status_t rs = {0};
-
 #ifndef DISABLE_RAIL
 RAIL_Handle_t rail;
 
@@ -143,7 +140,7 @@ void rail_task() {
 		if(keyed && ((rs & RAIL_RF_STATE_TX) == 0 || p.channel_changed)) {
 			p.channel_changed = 0;
 			RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
-			r = RAIL_StartTxStream(rail, p.channel, RAIL_STREAM_CARRIER_WAVE);
+			r = RAIL_StartTxStream(rail, MIDDLECHANNEL, RAIL_STREAM_CARRIER_WAVE);
 			printf("RAIL_StartTxStream: %u\n", r);
 			start_tx_dsp(rail);
 		}
