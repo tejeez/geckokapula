@@ -445,15 +445,15 @@ void demod_dsb_f(struct demod *ds, iq_float_t *in, float *out, unsigned len)
 
 
 /* Coefficients from https://arachnoid.com/BiQuadDesigner/
- * with: 1000 Hz, sample rate 28571 Hz, Q 0.8.
+ * with: 1000 Hz, sample rate 24000 Hz, Q 0.8.
  * Now the same coefficients are used for two stages, but a better
  * response could be obtained by designing a proper 2-stage filter. */
 static const struct biquad_coeff biquad1_ssb = {
-	.a1 = -1.71764564f,
-	.a2 =  0.76003423f,
-	.b0 =  0.01059715f,
-	.b1 =  0.02119429f,
-	.b2 =  0.01059715f
+	.a1 = -1.66286366f,
+	.a2 =  0.72152314f,
+	.b0 =  0.01466487f,
+	.b1 =  0.02932974f,
+	.b2 =  0.01466487f
 };
 
 /* Demodulate SSB.

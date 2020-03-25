@@ -1,0 +1,48 @@
+// Copyright 2020 Silicon Laboratories, Inc.
+//
+//
+
+
+API version: 5.0.1
+
+- Informational data:
+Preamble Binary Pattern = 01 
+Sync Word Binary Pattern = 01 
+Actual Bandwidth = 12624 
+Desired baudrate = 16000 
+Actual sample frequency = 48000.0 
+Antenna diversity mode = 0 
+Disable repeated measurement of first antenna when Select-Best algorithm is used = 0 
+FEC enabled flag = 0 
+
+- Calculated and corrected values:
+Timing Detection Threshold = 3 
+Timing Samples Threshold = 10 
+Frequency Offset Compensation (AFC) Limit = 0 Hz
+Channel Bandwidth = 12700 Hz
+IF Frequency = 300000 Hz
+PLL Bandwidth in TX mode = 0 
+PLL Bandwidth in RX mode = 2 
+Number of Symbols in Timing Window = 0 
+Number of Errors Allowed in a Timing Window = 0 
+Number of Timing Windows to Detect = 1 
+Signal Quality Indicator Threshold = 0 
+Timing Resync Period = 2 
+Frequency Offset Period = 0 
+Frequency Offset Compensation (AFC) Period = 0 
+AGC Power Target = -2 dBm
+RSSI Update Period = 3 
+AGC Hysteresis = 3 dB
+AGC Settling Delay = 23 
+Frequency Offset Compensation (AFC) Step Scale = 1.0 
+AGC Period = 1 
+RX Baudrate offset = 0 Hz
+AGC Speed = 0 
+Frequency Compensation Mode = 0 
+OOK slicer level = 3 
+Common RX/TX circuit = 0 
+IR cal power level (amplitude) = 0 codes
+Byte position of dynamic length byte = 0 
+First word in frame contains (BITSPERWORD+1) bits. In most cases, set to 7. = 7 bytes
+Preamble on the air: 01
+Syncword 0 on the air: 01

@@ -7,7 +7,7 @@
 // RAIL
 #ifndef DISABLE_RAIL
 #include "rail.h"
-#include "rail_config.h"
+#include "../railconfig/rail_config.h"
 #endif
 
 // FreeRTOS
@@ -29,14 +29,12 @@ int start_rx_dsp(RAIL_Handle_t rail);
 int start_tx_dsp(RAIL_Handle_t rail);
 
 
-RAIL_ChannelConfigEntryAttr_t generated_entryAttr = {
-  { 0xFFFFFFFFUL }
-};
+extern RAIL_ChannelConfigEntryAttr_t generated_entryAttr;
 
 RAIL_ChannelConfigEntry_t channelconfig_entry[] = {
 	{
 		.phyConfigDeltaAdd = NULL,
-		.baseFrequency = 2395000000UL,
+		.baseFrequency = 2400000000UL,
 		.channelSpacing = CHANNELSPACING,
 		.physicalChannelOffset = 0,
 		.channelNumberStart = 0,
@@ -127,9 +125,6 @@ void rail_task() {
 	for(;;) {
 		unsigned keyed = p.keyed;
 		rail_watchdog = 0;
-		/* Changing channel configuration here seems to break something,
-		 * so don't call it for now. Maybe events or data have to be
-		 * reconfigured after it. */
 		if(p.channel_changed) {
 			config_channel();
 		}

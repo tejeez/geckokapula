@@ -170,7 +170,7 @@ static void ui_knob_turned(int cursor, int diff) {
 		p.squelch = wrap(p.squelch + diff, 100);
 		dsp_update_params();
 	} else if(cursor >= 15 && cursor <= 18) {
-		p.offset_freq = wrap_signed(p.offset_freq + ui_steps[18-cursor] * diff, 20000);
+		p.offset_freq = wrap_signed(p.offset_freq + ui_steps[18-cursor] * diff, 10000);
 		dsp_update_params();
 	}
 }
