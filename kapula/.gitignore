@@ -3,3 +3,6 @@
 *.kicad_pcb-bak
 *.pdf
 gerber
+*-cache.lib
+fp-info-cache
+*.sch-bak
