@@ -1,4 +1,4 @@
-update=ti 26. toukokuuta 2020 22.56.39
+update=ke 27. toukokuuta 2020 02.34.50
 version=1
 last_client=kicad
 [general]
@@ -232,6 +232,17 @@ Enabled=0
 Name=Default
 Clearance=0.2
 TrackWidth=0.3
+ViaDiameter=0.8
+ViaDrill=0.4
+uViaDiameter=0.3
+uViaDrill=0.1
+dPairWidth=0.2
+dPairGap=0.25
+dPairViaGap=0.25
+[pcbnew/Netclasses/1]
+Name=BAT
+Clearance=1
+TrackWidth=1
 ViaDiameter=0.8
 ViaDrill=0.4
 uViaDiameter=0.3
