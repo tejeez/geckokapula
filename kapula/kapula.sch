@@ -3536,19 +3536,19 @@ SPK2+
 Wire Wire Line
 	9400 9850 9500 9850
 Connection ~ 9500 9850
-Text Label 8000 9350 3    50   ~ 0
-SPK-
 Text Label 8100 9350 3    50   ~ 0
+SPK-
+Text Label 8000 9350 3    50   ~ 0
 SPK+
 Text Label 8200 9350 3    50   ~ 0
 SPK2+
 $Comp
-L Connector_Generic:Conn_01x04 J7
+L Connector_Generic:Conn_01x03 J7
 U 1 1 5F00DC55
 P 8100 9150
 F 0 "J7" V 8018 8862 50  0000 R CNN
 F 1 "~" V 7973 8862 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 8100 9150 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 8100 9150 50  0001 C CNN
 F 3 "~" H 8100 9150 50  0001 C CNN
 	1    8100 9150
 	0    -1   -1   0   
@@ -3611,8 +3611,6 @@ Wire Wire Line
 	2100 1050 2100 1150
 Wire Wire Line
 	2100 1050 2600 1050
-Text Label 8300 9350 3    50   ~ 0
-SPK-
 Text Label 13150 8950 0    50   ~ 0
 RESET
 $Comp
@@ -3904,4 +3902,6 @@ F 3 "~" H 7300 1950 50  0001 C CNN
 	1    7100 1950
 	-1   0    0    1   
 $EndComp
+Text Label 7850 9850 0    50   ~ 0
+SPKO
 $EndSCHEMATC
