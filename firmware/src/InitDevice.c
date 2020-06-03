@@ -4,6 +4,10 @@
 // This file will be regenerated when saving a document.
 // leave the sections inside the "$[...]" comment tags alone
 // or they will be overwritten!
+//
+// Note that this file has been manually modified after generating it.
+// I don't really like the idea of doing it, but the configurator
+// no longer works in new versions.
 //=========================================================
 
 // USER INCLUDES
@@ -99,7 +103,11 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 
 	// $[High Frequency Clock Setup]
 	/* Initializing HFXO */
+#if KAPULA == v2
+	CMU_HFXOInit_TypeDef hfxoInit = CMU_HFXOINIT_EXTERNAL_CLOCK;
+#else
 	CMU_HFXOInit_TypeDef hfxoInit = CMU_HFXOINIT_DEFAULT;
+#endif
 
 	CMU_HFXOInit(&hfxoInit);
 
@@ -206,7 +214,7 @@ extern void ADC0_enter_DefaultMode_from_RESET(void) {
 	ADC0_init_single.prsSel = adcPRSSELCh0;
 	/* Input(s) */
 	ADC0_init_single.diff = 0;
-	ADC0_init_single.posSel = adcPosSelAPORT4XCH7;
+	ADC0_init_single.posSel = MIC_APORT;
 	ADC0_init_single.negSel = adcNegSelVSS;
 	ADC0_init_single.reference = adcRef1V25;
 	/* Generic conversion settings */
@@ -511,9 +519,9 @@ extern void LDMA_enter_DefaultMode_from_RESET(void) {
 extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 
 	// $[TIMER0 I/O setup]
-	/* Set up CC0 */
+	/* Set up CC0 (audio PWM output) */
 	TIMER0->ROUTELOC0 = (TIMER0->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC0LOC_MASK))
-			| TIMER_ROUTELOC0_CC0LOC_LOC18;
+			| PWM_TIM0_CC0;
 	TIMER0->ROUTEPEN = TIMER0->ROUTEPEN | TIMER_ROUTEPEN_CC0PEN;
 	/* Set up CC1 */
 	TIMER0->ROUTELOC0 = (TIMER0->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC1LOC_MASK))
@@ -639,13 +647,13 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 extern void TIMER1_enter_DefaultMode_from_RESET(void) {
 
 	// $[TIMER1 I/O setup]
-	/* Set up CC0 */
+	/* Set up CC0 (Encoder input) */
 	TIMER1->ROUTELOC0 = (TIMER1->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC0LOC_MASK))
-			| TIMER_ROUTELOC0_CC0LOC_LOC19;
+			| ENC1_TIM1_CC0;
 	TIMER1->ROUTEPEN = TIMER1->ROUTEPEN | TIMER_ROUTEPEN_CC0PEN;
-	/* Set up CC1 */
+	/* Set up CC1 (Encoder input) */
 	TIMER1->ROUTELOC0 = (TIMER1->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC1LOC_MASK))
-			| TIMER_ROUTELOC0_CC1LOC_LOC19;
+			| ENC2_TIM1_CC1;
 	TIMER1->ROUTEPEN = TIMER1->ROUTEPEN | TIMER_ROUTEPEN_CC1PEN;
 	/* Set up CC2 */
 	TIMER1->ROUTELOC0 = (TIMER1->ROUTELOC0 & (~_TIMER_ROUTELOC0_CC2LOC_MASK))
@@ -806,55 +814,38 @@ extern void PRS_enter_DefaultMode_from_RESET(void) {
 //================================================================================
 extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
-	// $[Port A Configuration]
+	// UART pins
 
-	/* Pin PA0 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortA, 0, gpioModePushPull, 0);
+	GPIO_PinModeSet(gpioPortA, 0, gpioModePushPull, 1);
+	GPIO_PinModeSet(gpioPortA, 1, gpioModeInputPull, 1);
 
-	/* Pin PA1 is configured to Input enabled with filter */
-	GPIO_PinModeSet(gpioPortA, 1, gpioModeInput, 1);
-	// [Port A Configuration]$
 
-	// $[Port B Configuration]
-	// [Port B Configuration]$
+	// Display pins
 
-	// $[Port C Configuration]
+	GPIO_PinModeSet(TFT_EN_PORT,  TFT_EN_PIN,  gpioModePushPull, 0);
+	GPIO_PinModeSet(gpioPortC,    6,           gpioModePushPull, 0);
+	GPIO_PinModeSet(TFT_CS_PORT,  TFT_CS_PIN,  gpioModePushPull, 1);
+	GPIO_PinModeSet(gpioPortC,    8,           gpioModePushPull, 0);
+	GPIO_PinModeSet(TFT_DC_PORT,  TFT_DC_PIN,  gpioModePushPull, 0);
+	GPIO_PinModeSet(TFT_LED_PORT, TFT_LED_PIN, gpioModePushPull, 1);
 
-	/* Pin PC6 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortC, 6, gpioModePushPull, 0);
 
-	/* Pin PC7 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortC, 7, gpioModePushPull, 1);
+	// Encoder and button pins
 
-	/* Pin PC8 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortC, 8, gpioModePushPull, 0);
+	GPIO_PinModeSet(ENC1_PIN, ENC1_PORT, gpioModeInputPull, 1);
+	GPIO_PinModeSet(ENC2_PIN, ENC2_PORT, gpioModeInputPull, 1);
+	GPIO_PinModeSet(ENCP_PIN, ENCP_PORT, gpioModeInputPull, 1);
+	GPIO_PinModeSet( PTT_PIN,  PTT_PORT, gpioModeInputPull, 1);
 
-	/* Pin PC9 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortC, 9, gpioModePushPull, 0);
 
-	/* Pin PC10 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortC, 10, gpioModePushPull, 1);
-	// [Port C Configuration]$
+	// Various pins
 
-	// $[Port D Configuration]
+	GPIO_PinModeSet(PWM_PORT, PWM_PIN, gpioModePushPull, 0);
 
-	/* Pin PD10 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortD, 10, gpioModePushPull, 0);
 
-	/* Pin PD11 is configured to Input enabled with pull-up */
-	GPIO_PinModeSet(gpioPortD, 11, gpioModeInputPull, 1);
-
-	/* Pin PD12 is configured to Input enabled with pull-up */
-	GPIO_PinModeSet(gpioPortD, 12, gpioModeInputPull, 1);
-
-	/* Pin PD13 is configured to Input enabled with pull-up */
-	GPIO_PinModeSet(gpioPortD, 13, gpioModeInputPull, 1);
-	// [Port D Configuration]$
-
-	// $[Port E Configuration]
-	// [Port E Configuration]$
-
-	// $[Port F Configuration]
+#if KAPULA == eka
+	// I'm not sure what are these.
+	// Some radio module related things maybe
 
 	/* Pin PF3 is configured to Input disabled with pull-up */
 	GPIO_PinModeSet(gpioPortF, 3, gpioModeDisabled, 1);
@@ -864,10 +855,5 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	/* Pin PF5 is configured to Push-pull */
 	GPIO_PinModeSet(gpioPortF, 5, gpioModePushPull, 1);
-
-	/* Pin PF6 is configured to Input enabled with pull-up */
-	GPIO_PinModeSet(gpioPortF, 6, gpioModeInputPull, 1);
-	// [Port F Configuration]$
-
+#endif
 }
-

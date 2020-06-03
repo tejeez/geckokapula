@@ -42,20 +42,51 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
-#define ENC1_PIN            (11)
-#define ENC1_PORT           (gpioPortD)
+#if KAPULA != v2
+	#define ENC1_PIN            (11)
+	#define ENC1_PORT           (gpioPortD)
+	#define ENC1_TIM1_CC0       TIMER_ROUTELOC0_CC0LOC_LOC19
 
-#define ENC2_PIN            (12)
-#define ENC2_PORT           (gpioPortD)
+	#define ENC2_PIN            (12)
+	#define ENC2_PORT           (gpioPortD)
+	#define ENC2_TIM1_CC1       TIMER_ROUTELOC0_CC1LOC_LOC19
 
-#define ENCP_PIN            (13)
-#define ENCP_PORT           (gpioPortD)
+	#define ENCP_PIN            (13)
+	#define ENCP_PORT           (gpioPortD)
 
-#define PTT_PIN             (6)
-#define PTT_PORT            (gpioPortF)
+	#define PTT_PIN             (6)
+	#define PTT_PORT            (gpioPortF)
 
-#define PWM_PIN             (10)
-#define PWM_PORT            (gpioPortD)
+	#define PWM_PIN             (10)
+	#define PWM_PORT            (gpioPortD)
+	#define PWM_TIM0_CC0        TIMER_ROUTELOC0_CC0LOC_LOC18
+
+	#define MIC_APORT           adcPosSelAPORT4XCH7 // PD15
+
+#else
+	#define ENC1_PIN            (5)
+	#define ENC1_PORT           (gpioPortF)
+	#define ENC1_TIM1_CC0       TIMER_ROUTELOC0_CC0LOC_LOC29
+
+	#define ENC2_PIN            (6)
+	#define ENC2_PORT           (gpioPortF)
+	#define ENC2_TIM1_CC1       TIMER_ROUTELOC0_CC1LOC_LOC29
+
+	#define ENCP_PIN            (7)
+	#define ENCP_PORT           (gpioPortF)
+
+	#define PTT_PIN             (14)
+	#define PTT_PORT            (gpioPortD)
+
+	#define PWM_PIN             (14)
+	#define PWM_PORT            (gpioPortB)
+	#define PWM_TIM0_CC0        TIMER_ROUTELOC0_CC0LOC_LOC9
+
+	#define MIC_APORT           adcPosSelAPORT3XCH10 // PA2
+
+#endif
+
+
 
 #define TFT_CS_PIN          (7)
 #define TFT_CS_PORT         (gpioPortC)
@@ -65,6 +96,9 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 #define TFT_LED_PIN         (10)
 #define TFT_LED_PORT        (gpioPortC)
+
+#define TFT_EN_PIN          (11)
+#define TFT_EN_PORT         (gpioPortC)
 
 // [User-defined pin name abstraction]$
 

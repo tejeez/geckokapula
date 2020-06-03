@@ -4,10 +4,13 @@
 # Project configuration
 #######################################
 
+# Default Gekkokapula model
+KAPULA ?= eka
+
 # Name of the binary
 TARGET = gekkofirmis
 
-BUILD_DIR = build
+BUILD_DIR = build_$(KAPULA)
 
 # Optimization flags
 OPT = -O2
@@ -23,7 +26,7 @@ C_SOURCES += $(wildcard freertos/*.c)
 C_INCLUDES = -I. -Iinc -Ifreertos
 
 # C defines
-C_DEFS =
+C_DEFS = -DKAPULA=$(KAPULA)
 
 # Other C flags
 C_FLAGS = -std=gnu11 -Wall -Wextra -fdata-sections -ffunction-sections
@@ -83,18 +86,42 @@ C_INCLUDES += -I$(GECKOSDK)/platform/emlib/inc
 # EFR32 chip specific parts
 #######################################
 
-# Define for part number
-C_DEFS += -DEFR32MG1P232F256GM48
+# The following variables depend on the model:
+### C_DEFS: Define for the EFR32 part number
+### C_INCLUDES: Include paths for for the Gecko SDK
+### ASM_SOURCES, C_SOURCES: Startup and system code for the EFR32
+### LDSCRIPT: Linker script for memory map of the EFR32
 
-# Include paths
-C_INCLUDES += -I$(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Include
+ifeq ($(KAPULA), eka)
+  # First hardware version built from a radio module
+  C_DEFS += -DEFR32MG1P232F256GM48
 
-# Startup and system code
-ASM_SOURCES += $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/GCC/startup_efr32mg1p.S
-C_SOURCES += $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/system_efr32mg1p.c
+  C_INCLUDES  += -I$(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Include
+  ASM_SOURCES +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/GCC/startup_efr32mg1p.S
+  C_SOURCES   +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/system_efr32mg1p.c
+  LDSCRIPT     =   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/GCC/efr32mg1p.ld
 
-# Linker script
-LDSCRIPT ?= $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/GCC/efr32mg1p.ld
+else ifeq ($(KAPULA), bgm)
+  # BGM Bluetooth module (just an idea, not built yet)
+  C_DEFS += -DBGM111A256V2
+
+  C_INCLUDES  += -I$(GECKOSDK)/platform/Device/SiliconLabs/BGM1/Include
+  ASM_SOURCES +=   $(GECKOSDK)/platform/Device/SiliconLabs/BGM1/Source/GCC/startup_bgm1.S
+  C_SOURCES   +=   $(GECKOSDK)/platform/Device/SiliconLabs/BGM1/Source/system_bgm1.c
+  LDSCRIPT     =   $(GECKOSDK)/platform/Device/SiliconLabs/BGM1/Source/GCC/bgm1.ld
+
+else ifeq ($(KAPULA), v2)
+  # Dual-band model with a custom PCB (work in progress)
+  C_DEFS += -DEFR32FG14P233F256GM48
+
+  C_INCLUDES  += -I$(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Include
+  ASM_SOURCES +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/GCC/startup_efr32fg14p.S
+  C_SOURCES   +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/system_efr32fg14p.c
+  LDSCRIPT     =   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/GCC/efr32fg14p.ld
+
+else
+  $(error Unknown Gekkokapula model $(KAPULA))
+endif
 
 # RAIL library
 C_INCLUDES += -I$(GECKOSDK)/platform/radio/rail_lib/common
