@@ -58,7 +58,7 @@
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
 	</storageModule>
-	<storageModule generalProj.esf.protocolIds="null" generalProj.esf.protocolNames="efr32-standalone-radio-config" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="53" projectCommon.boardIds="com.silabs.board.none:0.0.0" projectCommon.importModeId="LINK_LIBRARIES" projectCommon.partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" projectCommon.sdkId="com.silabs.stack.external.stackless:1.0.0._1234321"/>
+	<storageModule generalProj.esf.protocolIds="null" generalProj.esf.protocolNames="efr32-standalone-radio-config" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="60" projectCommon.boardIds="com.silabs.board.none:0.0.0" projectCommon.importModeId="LINK_LIBRARIES" projectCommon.partId="mcu.arm.efr32.mg1.efr32mg1p232f256gm48" projectCommon.sdkId="com.silabs.stack.external.stackless:1.0.0._1234321"/>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="railconfig.com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType.733874473" name="SLS CDT Project" projectType="com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType"/>
 	</storageModule>

@@ -103,7 +103,7 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 
 	// $[High Frequency Clock Setup]
 	/* Initializing HFXO */
-#if KAPULA == v2
+#if KAPULA_v2
 	CMU_HFXOInit_TypeDef hfxoInit = CMU_HFXOINIT_EXTERNAL_CLOCK;
 #else
 	CMU_HFXOInit_TypeDef hfxoInit = CMU_HFXOINIT_DEFAULT;
@@ -832,28 +832,18 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// Encoder and button pins
 
-	GPIO_PinModeSet(ENC1_PIN, ENC1_PORT, gpioModeInputPull, 1);
-	GPIO_PinModeSet(ENC2_PIN, ENC2_PORT, gpioModeInputPull, 1);
-	GPIO_PinModeSet(ENCP_PIN, ENCP_PORT, gpioModeInputPull, 1);
-	GPIO_PinModeSet( PTT_PIN,  PTT_PORT, gpioModeInputPull, 1);
+	GPIO_PinModeSet(ENC1_PORT, ENC1_PIN, gpioModeInputPull, 1);
+	GPIO_PinModeSet(ENC2_PORT, ENC2_PIN, gpioModeInputPull, 1);
+	GPIO_PinModeSet(ENCP_PORT, ENCP_PIN, gpioModeInputPull, 1);
+	GPIO_PinModeSet( PTT_PORT,  PTT_PIN, gpioModeInputPull, 1);
 
 
 	// Various pins
 
 	GPIO_PinModeSet(PWM_PORT, PWM_PIN, gpioModePushPull, 0);
 
-
-#if KAPULA == eka
-	// I'm not sure what are these.
-	// Some radio module related things maybe
-
-	/* Pin PF3 is configured to Input disabled with pull-up */
-	GPIO_PinModeSet(gpioPortF, 3, gpioModeDisabled, 1);
-
-	/* Pin PF4 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortF, 4, gpioModePushPull, 0);
-
-	/* Pin PF5 is configured to Push-pull */
-	GPIO_PinModeSet(gpioPortF, 5, gpioModePushPull, 1);
+#ifdef MIC_EN_PIN
+	GPIO_PinModeSet(MIC_EN_PORT, MIC_EN_PIN, gpioModePushPull, 0);
 #endif
+
 }

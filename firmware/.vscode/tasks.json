@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "label": "Build",
+        "label": "Build for v2",
         "type": "shell",
-        "command": "make -j4",
+        "command": "make KAPULA=v2 -j4",
         "group": {
             "kind": "build",
             "isDefault": true,

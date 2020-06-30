@@ -7,7 +7,7 @@
 // RAIL
 #ifndef DISABLE_RAIL
 #include "rail.h"
-#include "../railconfig/rail_config.h"
+#include "rail_config.h"
 #endif
 
 // FreeRTOS

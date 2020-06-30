@@ -19,14 +19,13 @@ DEBUG = 1
 
 # C sources
 C_SOURCES = $(wildcard src/*.c)
-C_SOURCES += ../railconfig/rail_config.c
 C_SOURCES += $(wildcard freertos/*.c)
 
 # C include paths
 C_INCLUDES = -I. -Iinc -Ifreertos
 
 # C defines
-C_DEFS = -DKAPULA=$(KAPULA)
+C_DEFS = -DKAPULA_$(KAPULA)=1
 
 # Other C flags
 C_FLAGS = -std=gnu11 -Wall -Wextra -fdata-sections -ffunction-sections
@@ -101,6 +100,9 @@ ifeq ($(KAPULA), eka)
   C_SOURCES   +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/system_efr32mg1p.c
   LDSCRIPT     =   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/GCC/efr32mg1p.ld
 
+ C_SOURCES += ../railconfig/rail_config.c
+ C_INCLUDES += -I../railconfig
+
 else ifeq ($(KAPULA), bgm)
   # BGM Bluetooth module (just an idea, not built yet)
   C_DEFS += -DBGM111A256V2
@@ -118,6 +120,9 @@ else ifeq ($(KAPULA), v2)
   ASM_SOURCES +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/GCC/startup_efr32fg14p.S
   C_SOURCES   +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/system_efr32fg14p.c
   LDSCRIPT     =   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/GCC/efr32fg14p.ld
+
+ C_SOURCES += ../railconfig_v2/rail_config.c
+ C_INCLUDES += -I../railconfig_v2
 
 else
   $(error Unknown Gekkokapula model $(KAPULA))
@@ -208,7 +213,10 @@ $(BUILD_DIR):
 clean:
 	-rm -fR $(BUILD_DIR)
 
-.PHONY: all clean
+flash: $(BUILD_DIR)/$(TARGET).elf
+	openocd -f board/efm32.cfg -c 'program "$(BUILD_DIR)/$(TARGET).elf" verify reset'
+
+.PHONY: all clean flash
 
 # Dependencies
 -include $(wildcard $(BUILD_DIR)/*.d)

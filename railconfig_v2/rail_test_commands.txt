@@ -1,0 +1,96 @@
+// Copyright 2020 Silicon Laboratories, Inc.
+//
+//
+
+rx 0
+writeRmrStructure 0 0 8 5 0 0 0 232 180 1 0
+writeRmrStructure 0 20 8 0 0 0 0 0 207 153 0
+writeRmrStructure 0 28 8 0 240 73 2 128 62 0 0
+writeRmrStructure 0 36 8 1 1 0 0 180 11 0 2
+updateConfigurationPointer 0 2 255
+updateConfigurationPointer 0 3 1
+updateConfigurationPointer 0 4 255
+writeRmrStructure 1 0 1 25
+writeRmrStructure 1 1 8 63 1 6 4 16 1 0 0
+writeRmrStructure 1 9 8 1 1 6 0 16 39 0 0
+writeRmrStructure 1 17 8 5 0 1 1 0 0 0 0
+writeRmrStructure 1 25 1 0
+writeRmrStructure 2 0 8 240 31 4 1 63 0 55 0
+writeRmrStructure 2 8 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 16 8 0 0 0 0 4 0 2 0
+writeRmrStructure 2 24 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 32 8 24 0 2 0 15 0 0 0
+writeRmrStructure 2 40 8 0 0 0 0 40 0 7 0
+writeRmrStructure 2 48 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 56 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 64 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 72 8 0 7 0 0 72 0 1 0
+writeRmrStructure 2 80 8 0 0 0 0 84 0 2 0
+writeRmrStructure 2 88 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 96 8 160 0 4 0 255 64 0 0
+writeRmrStructure 2 104 8 0 0 0 0 255 65 0 0
+writeRmrStructure 2 112 8 0 0 0 0 0 32 1 0
+writeRmrStructure 2 120 8 0 7 0 0 16 32 1 0
+writeRmrStructure 2 128 8 0 0 0 0 24 32 1 0
+writeRmrStructure 2 136 8 0 0 0 0 8 48 1 0
+writeRmrStructure 2 144 8 19 172 0 1 48 48 2 0
+writeRmrStructure 2 152 8 180 11 16 0 1 0 0 0
+writeRmrStructure 2 160 8 64 48 1 0 0 0 0 0
+writeRmrStructure 2 168 8 160 64 1 0 122 39 0 15
+writeRmrStructure 2 176 8 184 64 1 0 0 192 35 0
+writeRmrStructure 2 184 8 244 64 1 0 32 16 0 0
+writeRmrStructure 2 192 8 52 65 2 0 128 8 0 0
+writeRmrStructure 2 200 8 230 135 0 0 64 65 2 0
+writeRmrStructure 2 208 8 32 0 136 0 193 230 82 77
+writeRmrStructure 2 216 8 96 65 4 0 0 0 0 0
+writeRmrStructure 2 224 8 0 0 0 0 6 0 0 0
+writeRmrStructure 2 232 8 6 0 0 0 20 96 8 0
+writeRmrStructure 2 240 8 16 0 0 0 0 0 0 4
+writeRmrStructure 2 248 8 1 0 2 0 0 16 0 0
+writeRmrStructure 2 256 8 0 208 10 0 0 0 0 3
+writeRmrStructure 2 264 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 272 8 80 96 6 0 188 127 109 0
+writeRmrStructure 2 280 8 65 4 0 0 28 3 0 0
+writeRmrStructure 2 288 8 18 0 1 0 2 0 0 0
+writeRmrStructure 2 296 8 0 0 0 0 120 96 12 0
+writeRmrStructure 2 304 8 3 0 108 4 0 0 0 0
+writeRmrStructure 2 312 8 21 3 52 0 0 0 0 0
+writeRmrStructure 2 320 8 0 0 0 0 4 10 20 34
+writeRmrStructure 2 328 8 50 65 74 79 0 0 0 0
+writeRmrStructure 2 336 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 344 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 352 8 228 96 7 0 128 0 0 132
+writeRmrStructure 2 360 8 0 0 0 0 100 4 131 7
+writeRmrStructure 2 368 8 136 19 200 58 144 32 10 0
+writeRmrStructure 2 376 8 0 97 32 0 183 86 53 18
+writeRmrStructure 2 384 8 4 97 3 0 63 187 16 0
+writeRmrStructure 2 392 8 32 48 4 41 136 187 64 0
+writeRmrStructure 2 400 8 32 97 1 0 0 0 0 0
+writeRmrStructure 2 408 8 40 97 1 0 100 6 102 12
+writeRmrStructure 2 416 8 48 97 12 0 232 83 250 0
+writeRmrStructure 2 424 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 432 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 440 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 448 8 1 0 0 0 0 0 0 0
+writeRmrStructure 2 456 8 0 0 0 0 0 0 0 0
+writeRmrStructure 2 464 8 0 0 0 0 20 112 7 0
+writeRmrStructure 2 472 8 254 112 2 0 0 19 0 0
+writeRmrStructure 2 480 8 96 0 234 130 0 0 0 0
+writeRmrStructure 2 488 8 130 0 0 0 0 0 128 1
+writeRmrStructure 2 496 8 213 0 0 0 72 112 2 0
+writeRmrStructure 2 504 8 60 61 0 0 188 25 0 0
+writeRmrStructure 2 512 8 112 112 3 0 3 1 18 0
+writeRmrStructure 2 520 8 45 48 8 0 0 35 85 0
+writeRmrStructure 2 528 4 255 255 255 255
+writeRmrStructure 6 0 4 255 255 255 255
+writeRmrStructure 7 4 8 0 24 13 143 100 0 0 0
+writeRmrStructure 7 12 8 0 0 0 0 20 0 255 127
+updateConfigurationPointer 2 3 0
+reconfigureModem
+getRadioState
+
+//        _  _                          
+//       | )/ )         Wireless        
+//    \\ |//,' __       Application     
+//    (")(_)-"()))=-    Software        
+//       (\\            Platform        

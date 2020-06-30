@@ -1,5 +1,7 @@
 #include "em_timer.h"
 #include "em_adc.h"
+#include "em_gpio.h"
+#include "InitDevice.h"
 
 #include "rail.h"
 
@@ -204,6 +206,9 @@ int start_rx_dsp(RAIL_Handle_t rail)
 {
 	// TODO clear the audio buffer for first round
 	unsigned r;
+#ifdef MIC_EN_PIN
+	GPIO_PinOutClear(MIC_EN_PORT, MIC_EN_PIN);
+#endif
 	ADC_IntDisable(ADC0, ADC_IF_SINGLE);
 	RAIL_ResetFifo(rail, false, true);
 	RAIL_SetRxFifoThreshold(rail, sizeof(iq_in_t) * RX_SAMPLE_RATIO);
@@ -217,6 +222,9 @@ int start_tx_dsp(RAIL_Handle_t rail)
 {
 	(void)rail;
 	// TODO clear the FM buffer for first round
+#ifdef MIC_EN_PIN
+	GPIO_PinOutSet(MIC_EN_PORT, MIC_EN_PIN);
+#endif
 	NVIC_EnableIRQ(ADC0_IRQn);
 	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
 	ADC_Start(ADC0, adcStartSingle);

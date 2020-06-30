@@ -42,7 +42,7 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
-#if KAPULA != v2
+#if KAPULA_eka
 	#define ENC1_PIN            (11)
 	#define ENC1_PORT           (gpioPortD)
 	#define ENC1_TIM1_CC0       TIMER_ROUTELOC0_CC0LOC_LOC19
@@ -63,7 +63,7 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 	#define MIC_APORT           adcPosSelAPORT4XCH7 // PD15
 
-#else
+#elif KAPULA_v2
 	#define ENC1_PIN            (5)
 	#define ENC1_PORT           (gpioPortF)
 	#define ENC1_TIM1_CC0       TIMER_ROUTELOC0_CC0LOC_LOC29
@@ -84,6 +84,10 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 	#define MIC_APORT           adcPosSelAPORT3XCH10 // PA2
 
+	#define MIC_EN_PIN          (3)
+	#define MIC_EN_PORT         (gpioPortA)
+#else
+	#error "Unsupported or missing KAPULA_model"
 #endif
 
 

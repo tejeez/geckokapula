@@ -4,7 +4,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/gekkofirmis.elf",
+            "executable": "./build_v2/gekkofirmis.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
