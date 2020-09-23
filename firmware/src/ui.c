@@ -185,9 +185,9 @@ static void ui_knob_turned(int cursor, int diff) {
 void ui_check_buttons(void)
 {
 	static unsigned pos_prev;
+	static unsigned char ptt_prev;
 	int pos_now, pos_diff;
-	char button = get_encoder_button();
-	p.keyed = ui_keyed ? 1 : get_ptt();
+	char button = get_encoder_button(), ptt = get_ptt();
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
 	pos_diff = pos_now - pos_prev;
 	if(button)
@@ -204,6 +204,9 @@ void ui_check_buttons(void)
 			ui_knob_turned(ui_cursor, pos_diff);
 		}
 		backlight_timer = 0;
+	}
+	if (pos_diff != 0 || ptt != ptt_prev) {
+		p.keyed = ui_keyed ? 1 : ptt;
 
 		/* Something on the display may have changed at this point,
 		 * so make the display task check for that. */
@@ -212,6 +215,7 @@ void ui_check_buttons(void)
 	}
 
 	pos_prev = pos_now;
+	ptt_prev = ptt;
 }
 
 

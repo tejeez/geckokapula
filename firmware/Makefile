@@ -100,8 +100,9 @@ ifeq ($(KAPULA), eka)
   C_SOURCES   +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/system_efr32mg1p.c
   LDSCRIPT     =   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32MG1P/Source/GCC/efr32mg1p.ld
 
- C_SOURCES += ../railconfig/rail_config.c
- C_INCLUDES += -I../railconfig
+  LIBS += -lrail_efr32xg1_gcc_release
+  C_SOURCES += ../railconfig/rail_config.c
+  C_INCLUDES += -I../railconfig
 
 else ifeq ($(KAPULA), bgm)
   # BGM Bluetooth module (just an idea, not built yet)
@@ -121,8 +122,9 @@ else ifeq ($(KAPULA), v2)
   C_SOURCES   +=   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/system_efr32fg14p.c
   LDSCRIPT     =   $(GECKOSDK)/platform/Device/SiliconLabs/EFR32FG14P/Source/GCC/efr32fg14p.ld
 
- C_SOURCES += ../railconfig_v2/rail_config.c
- C_INCLUDES += -I../railconfig_v2
+  LIBS += -lrail_efr32xg14_gcc_release
+  C_SOURCES += ../railconfig_v2/rail_config.c
+  C_INCLUDES += -I../railconfig_v2
 
 else
   $(error Unknown Gekkokapula model $(KAPULA))
@@ -132,7 +134,6 @@ endif
 C_INCLUDES += -I$(GECKOSDK)/platform/radio/rail_lib/common
 C_INCLUDES += -I$(GECKOSDK)/platform/radio/rail_lib/chip/efr32/efr32xg1x
 LIBDIR += -L$(GECKOSDK)/platform/radio/rail_lib/autogen/librail_release
-LIBS += -lrail_efr32xg1_gcc_release
 
 # Processor core
 MCU = -mcpu=cortex-m4 -mthumb
