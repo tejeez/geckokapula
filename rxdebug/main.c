@@ -25,17 +25,19 @@ static RAIL_Config_t railCfg = {
 	.eventsCallback = rail_callback,
 };
 
+
 /* Return values for all calls, so that they are easier
  * to check with a debugger. */
 struct retvals {
 	RAIL_Status_t ConfigCal, ConfigTxPower, SetTxPower, ConfigEvents;
 	RAIL_Status_t ConfigChannels, ConfigData;
+	RAIL_Status_t SetRxFifo;
 	uint16_t SetRxFifoThreshold;
 	RAIL_Status_t StartRx;
 	RAIL_Status_t DelayUs1, DelayUs2;
 	RAIL_RadioState_t GetRadioState;
 	uint16_t fifo1, fifo2, fifo3;
-	int done;
+	int done, SetupRxFifo_called;
 };
 struct retvals ret;
 
@@ -45,6 +47,10 @@ void experiments(void)
 	rail = RAIL_Init(&railCfg, NULL);
 	ret.ConfigCal = RAIL_ConfigCal(rail, RAIL_CAL_ALL);
 
+	/* Channel configuration.
+	 * Unlike v2 firmware, this now uses the generated config as is */
+	ret.ConfigChannels = RAIL_ConfigChannels(rail, channelConfigs[0], NULL);
+
 	RAIL_TxPowerConfig_t txPowerConfig = {
 		.mode = RAIL_TX_POWER_MODE_2P4GIG_HP,
 		.voltage = 3300,
@@ -52,18 +58,14 @@ void experiments(void)
 	};
 	ret.ConfigTxPower = RAIL_ConfigTxPower(rail, &txPowerConfig);
 	ret.SetTxPower = RAIL_SetTxPower(rail, RAIL_TX_POWER_LEVEL_HP_MAX);
-	ret.ConfigEvents = RAIL_ConfigEvents(rail, RAIL_EVENTS_ALL, RAIL_EVENT_RX_FIFO_ALMOST_FULL);
 
+	//ret.ConfigEvents = RAIL_ConfigEvents(rail, RAIL_EVENTS_ALL, RAIL_EVENT_RX_FIFO_ALMOST_FULL);
 
-	/* Channel configuration.
-	 * Unlike v2 firmware, this now uses the generated config as is */
-	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
-	ret.ConfigChannels = RAIL_ConfigChannels(rail, channelConfigs[0], NULL);
 	RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, FIFO_MODE, FIFO_MODE };
 	ret.ConfigData = RAIL_ConfigData(rail, &dataConfig);
 
 	/* Start reception. */
-	ret.SetRxFifoThreshold = RAIL_SetRxFifoThreshold(rail, 64);
+	ret.SetRxFifoThreshold = RAIL_SetRxFifoThreshold(rail, 32);
 	ret.StartRx = RAIL_StartRx(rail, 0, NULL);
 
 	/* Check whether the FIFO fills up at all */
@@ -81,6 +83,26 @@ void experiments(void)
 	}
 
 }
+
+
+#if 0
+/* Example from:
+ * https://docs.silabs.com/rail/latest/group-data-management#gac4b90d064ca53c93a16f95dcdaba87b3 */
+#define RX_FIFO_SIZE 1024
+static uint8_t rxFifo[RX_FIFO_SIZE];
+
+RAIL_Status_t RAILCb_SetupRxFifo(RAIL_Handle_t handle)
+{
+	(void)handle;
+	ret.SetupRxFifo_called = 1;
+
+	uint16_t rxFifoSize = RX_FIFO_SIZE;
+	ret.SetRxFifo = RAIL_SetRxFifo(handle, rxFifo, &rxFifoSize);
+
+	return RAIL_STATUS_NO_ERROR;
+}
+#endif
+
 
 void init(void)
 {
