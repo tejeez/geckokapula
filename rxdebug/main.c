@@ -1,5 +1,6 @@
 #include "em_system.h"
 #include "em_chip.h"
+#include "em_emu.h"
 #include "em_cmu.h"
 #include "rail.h"
 #include "rail_config.h"
@@ -83,15 +84,13 @@ void experiments(void)
 
 void init(void)
 {
-	/* Initialization code, copied from v2 firmware and simplified */
     CHIP_Init();
+	EMU_DCDCInit_TypeDef dcdcInit = EMU_DCDCINIT_DEFAULT;
 	CMU_HFXOInit_TypeDef hfxoInit = CMU_HFXOINIT_EXTERNAL_CLOCK;
+	EMU_DCDCInit(&dcdcInit);
 	CMU_HFXOInit(&hfxoInit);
-	SystemHFXOClockSet(38400000);
-	CMU_OscillatorEnable(cmuOsc_HFXO, true, true);
 	CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
 	CMU_OscillatorEnable(cmuOsc_HFRCO, false, false);
-	CMU_HFXOAutostartEnable(0, false, false);
 }
 
 int main()
