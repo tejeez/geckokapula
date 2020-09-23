@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+			"name": "EFR32",
+			"defines": [
+                "EFR32FG14P233F256GM48"
+			],
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/../railconfig_v2",
+				"${env:HOME}/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.7/platform/emlib/inc",
+				"${env:HOME}/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.7/platform/Device/SiliconLabs/EFR32MG1P/Include",
+				"${env:HOME}/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.7/platform/CMSIS/Include",
+				"${env:HOME}/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.7/platform/radio/rail_lib/common",
+                "${env:HOME}/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.7/platform/radio/rail_lib/chip/efr32/efr32xg1x"
+            ],
+            "intelliSenseMode": "gcc-x86",
+            "compilerPath": "${config:arm-none-eabi.bin}/arm-none-eabi-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}

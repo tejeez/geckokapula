@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "./build_v2/rxdebug.elf",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "device": "EFR32FG14P233F256GM48",
+            "configFiles": [
+                "board/efm32.cfg"
+            ],
+
+            /* The following path is needed if the ARM toolchain
+             * is installed as a VS Code extension.
+             * If arm-none-eabi-gdb is installed elsewhere,
+             * comment it out. */
+            "armToolchainPath": "${config:arm-none-eabi.bin}"
+        }
+    ]
+}
