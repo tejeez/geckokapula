@@ -206,10 +206,14 @@ int start_rx_dsp(RAIL_Handle_t rail)
 {
 	// TODO clear the audio buffer for first round
 	unsigned r;
+	ADC_IntDisable(ADC0, ADC_IF_SINGLE);
 #ifdef MIC_EN_PIN
 	GPIO_PinOutClear(MIC_EN_PORT, MIC_EN_PIN);
 #endif
-	ADC_IntDisable(ADC0, ADC_IF_SINGLE);
+#ifdef RX_EN_PIN
+	GPIO_PinOutClear(TX_EN_PORT, TX_EN_PIN);
+	GPIO_PinOutSet(RX_EN_PORT, RX_EN_PIN);
+#endif
 	RAIL_ResetFifo(rail, false, true);
 	RAIL_SetRxFifoThreshold(rail, sizeof(iq_in_t) * RX_SAMPLE_RATIO);
 	r = RAIL_StartRx(rail, 32, NULL);
@@ -224,6 +228,10 @@ int start_tx_dsp(RAIL_Handle_t rail)
 	// TODO clear the FM buffer for first round
 #ifdef MIC_EN_PIN
 	GPIO_PinOutSet(MIC_EN_PORT, MIC_EN_PIN);
+#endif
+#ifdef RX_EN_PIN
+	GPIO_PinOutClear(RX_EN_PORT, RX_EN_PIN);
+	GPIO_PinOutSet(TX_EN_PORT, TX_EN_PIN);
 #endif
 	NVIC_EnableIRQ(ADC0_IRQn);
 	ADC_IntEnable(ADC0, ADC_IF_SINGLE);

@@ -27,9 +27,9 @@ rig_parameters_t p = {
 	.channel_changed = 1,
 	.keyed = 0,
 	.mode = MODE_FM,
-	.frequency = 2400000000UL,
+	.frequency = 434000000UL,
 	.offset_freq = 0UL,
-	.volume = 11,
+	.volume = 4,
 	.waterfall_averages = 5,
 	.squelch = 29
 };

@@ -34,7 +34,7 @@ extern RAIL_ChannelConfigEntryAttr_t generated_entryAttr;
 RAIL_ChannelConfigEntry_t channelconfig_entry[] = {
 	{
 		.phyConfigDeltaAdd = NULL,
-		.baseFrequency = 2400000000UL,
+		.baseFrequency = 434000000UL,
 		.channelSpacing = CHANNELSPACING,
 		.physicalChannelOffset = 0,
 		.channelNumberStart = 0,
@@ -81,7 +81,8 @@ void initRadio() {
 	printf("RAIL_ConfigCal: %u\n", r);
 
 	RAIL_TxPowerConfig_t txPowerConfig = {
-		.mode = RAIL_TX_POWER_MODE_2P4GIG_HP,
+		//.mode = RAIL_TX_POWER_MODE_2P4GIG_HP,
+		.mode = RAIL_TX_POWER_MODE_SUBGIG,
 		.voltage = 3300,
 		.rampTime = 10,
 	};

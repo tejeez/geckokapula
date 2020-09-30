@@ -3,7 +3,7 @@
 //
 
 
-API version: 5.0.1
+API version: 5.6.0
 
 - Informational data:
 Preamble Binary Pattern = 01 
@@ -19,7 +19,7 @@ FEC enabled flag = 0
 Timing Detection Threshold = 3 
 Timing Samples Threshold = 10 
 Frequency Offset Compensation (AFC) Limit = 0 Hz
-Channel Bandwidth = 12600 Hz
+Acquistion Channel Bandwidth = 12600 Hz
 IF Frequency = 219450 Hz
 PLL Bandwidth in TX mode = 2 
 PLL Bandwidth in RX mode = 0 
