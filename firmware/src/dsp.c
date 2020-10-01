@@ -36,112 +36,6 @@ int16_t signalbuf[2*SIGNALBUFLEN];
 QueueHandle_t fft_queue;
 
 
-/* TODO: Reimplement S-meter and squelch */
-
-#if 0
-#define RXBUFL 2
-
-/* Process some IQ samples and return one audio sample.
- * The plan is to allow processing in bigger blocks, but for now
- * this is an intermediate step in the ongoing refactoring. */
-static inline audio_out_t dsp_process_rx_sample(iq_in_t *rxbuf)
-{
-	unsigned nread, i;
-	static int psi=0, psq=0;
-	static int agc_level=0;
-	static int audioout_prev=0, squelchlpf=0;
-	int ssi=0, ssq=0, audioout = 0;
-	static unsigned smeter_count = 0;
-	static uint64_t smeter_acc = 0;
-	static int audio_lpf = 0, audio_hpf = 0;
-
-	nread = RXBUFL;
-	for (i=0; i < nread; i++) {
-		int si=rxbuf[i][1], sq=rxbuf[i][0]; // I and Q swapped
-		int fi, fq;
-		switch(p.mode) {
-		case MODE_FM: {
-			int fm;
-			// multiply by conjugate
-			fi = si * psi + sq * psq;
-			fq = sq * psi - si * psq;
-			/* Scale maximum absolute value to 0x7FFF.
-			 * This can be done because FM demod doesn't care about amplitude.
-			 */
-			while(fi > 0x7FFF || fi < -0x7FFF || fq > 0x7FFF || fq < -0x7FFF) {
-				fi /= 0x100; fq /= 0x100;
-			}
-			// very crude approximation...
-			fm = 0x8000 * fq / ((fi>=0?fi:-fi) + (fq>=0?fq:-fq));
-			audio_lpf += (fm*128 - audio_lpf)/16;
-			audioout = audio_lpf/128;
-			break; }
-		case MODE_AM:
-		case MODE_DSB: {
-			int agc_1, agc_diff;
-			int raw_audio;
-			if(p.mode == MODE_AM)
-				raw_audio = abs(si) + abs(sq);
-			else
-				raw_audio = si*2;
-			audio_lpf += (raw_audio*64 - audio_lpf)/16;
-			audio_hpf += (audio_lpf - audio_hpf) / 512; // DC block
-			fi = (audio_lpf-audio_hpf)/128; // TODO: SSB filter
-
-			// AGC
-			agc_1 = abs(fi) * 0x100; // rectify
-			agc_diff = agc_1 - agc_level;
-			if(agc_diff > 0)
-				agc_level += agc_diff/256;
-			else
-				agc_level += agc_diff/2048;
-
-			audioout += 0x1000 * fi / (agc_level/0x100);
-
-			break; }
-		default: {
-			audioout = 0;
-			break;
-		}
-		}
-
-		psi = si; psq = sq;
-		ssi += si; ssq += sq;
-
-		smeter_acc += si*si + sq*sq;
-	}
-
-	int fp = signalbufp;
-	signalbuf[fp]   = ssi;
-	signalbuf[fp+1] = ssq;
-	fp+=2;
-	if(fp >= SIGNALBUFLEN) fp = 0;
-	signalbufp = fp;
-	if (fp == 0 || fp == 171 || fp == 341)
-		xSemaphoreGive(fft_sem);
-
-	squelchlpf += (0x100*abs(audioout - audioout_prev) - squelchlpf) / 0x800;
-	audioout_prev = audioout;
-
-	if(squelchlpf < 0x2000*p.squelch) {
-		audioout = (p.volume2 * audioout / 0x1000) + 100;
-		if(audioout < 0) audioout = 0;
-		if(audioout > 200) audioout = 200;
-	} else {
-		audioout = 100;
-	}
-
-	smeter_count += nread;
-	if(smeter_count >= 0x4000) {
-		rs.smeter = smeter_acc / 0x4000;
-		smeter_acc = 0;
-		smeter_count = 0;
-	}
-	return audioout;
-}
-#endif
-
-
 // State of a biquad filter
 struct biquad_state {
 	float s1_i, s1_q, s2_i, s2_q;
@@ -219,6 +113,9 @@ struct demod {
 	// AGC state
 	float agc_amp;
 
+	// Squelch state
+	float diff_avg, squelch;
+
 	// S-meter state
 	uint64_t smeter_acc;
 	unsigned smeter_count;
@@ -237,6 +134,7 @@ static void demod_reset(struct demod *ds)
 	ds->fm_prev_i = ds->fm_prev_q = 0;
 	ds->audio_lpf = ds->audio_hpf = ds->audio_po = 0;
 	ds->agc_amp = 0;
+	ds->diff_avg = 0;
 	ds->bfo_i = 1; ds->bfo_q = 0;
 	ds->ddc_i = 1; ds->ddc_q = 0;
 	memset(&ds->bq1, 0, sizeof(ds->bq1));
@@ -299,6 +197,8 @@ void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
  * another variable.
  * Also, the audio output gets decimated by two by just
  * "integrate and dump". Again, sounds good enough given the oversampling.
+ *
+ * Average amplitude of differentiated signal is used for squelch.
  */
 /*static inline*/ void demod_fm(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 {
@@ -306,6 +206,9 @@ void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
 	float s0i, s0q, s1i, s1q;
 	s0i = ds->fm_prev_i;
 	s0q = ds->fm_prev_q;
+
+	float prev_fm = ds->audio_po, diff_amp = 0;
+
 	for (i = 0; i < len; i+=2) {
 		float fi, fq, fm;
 		s1i = in[i].i;
@@ -325,9 +228,16 @@ void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
 			fm = 0;
 
 		out[i/2] = fm;
+		diff_amp += fabsf(fm - prev_fm);
+		prev_fm = fm;
 	}
 	ds->fm_prev_i = s0i;
 	ds->fm_prev_q = s0q;
+
+	ds->audio_po = prev_fm;
+	float diff_avg = ds->diff_avg;
+	if (diff_avg != diff_avg) diff_avg = 0;
+	ds->diff_avg = diff_avg + (diff_amp - diff_avg) * .02f;
 }
 
 
@@ -477,7 +387,6 @@ void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
  * Store the result in the same buffer.
  *
  * Also calculate the average amplitude which is used for AGC.
- * Average amplitude of differentiated signal is used for squelch.
  */
 /*static inline*/ void demod_audio_filter(struct demod *ds, float *buf, unsigned len)
 {
@@ -485,9 +394,8 @@ void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 	const float lpf_a = 0.1f, hpf_a = 0.001f;
 	float
 	lpf = ds->audio_lpf,
-	hpf = ds->audio_hpf,
-	po  = ds->audio_po;
-	float amp = 0, diff_amp = 0;
+	hpf = ds->audio_hpf;
+	float amp = 0;
 	for (i = 0; i < len; i++) {
 		lpf += (buf[i] - lpf) * lpf_a;
 		hpf += (lpf - hpf) * hpf_a;
@@ -495,12 +403,9 @@ void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 		buf[i] = o;
 
 		amp += fabsf(o);
-		diff_amp += fabsf(o - po);
-		po = o;
 	}
 	ds->audio_lpf = lpf;
 	ds->audio_hpf = hpf;
-	ds->audio_po = po;
 
 	/* Update AGC values once per block, so most of the AGC code
 	 * runs at a lower sample rate. */
@@ -563,8 +468,17 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 	default:
 		break;
 	}
-	demod_audio_filter(&demodstate, audio, out_len);
-	demod_convert_audio(audio, out, out_len, demodstate.audiogain / demodstate.agc_amp);
+
+	if (demodstate.diff_avg < demodstate.squelch) {
+		// Squelch open
+		demod_audio_filter(&demodstate, audio, out_len);
+		demod_convert_audio(audio, out, out_len, demodstate.audiogain / demodstate.agc_amp);
+	} else {
+		// Squelch closed
+		unsigned i;
+		for (i = 0; i < out_len; i++)
+			out[i] = AUDIO_MID;
+	}
 
 	return out_len;
 }
@@ -586,6 +500,8 @@ void dsp_update_params(void)
 	unsigned vola = p.volume;
 	demodstate.audiogain = ((vola&1) ? (3<<(vola/2)) : (2<<(vola/2))) * 10.0f;
 
+	demodstate.squelch = 1.0f * p.squelch;
+
 	enum rig_mode mode = p.mode;
 	/* Reset state after mode change */
 	if (mode != demodstate.prev_mode) {
@@ -595,42 +511,51 @@ void dsp_update_params(void)
 }
 
 
-/* Process one transmit sample */
-static inline fm_out_t dsp_process_tx_sample(audio_in_t audioin)
-{
-	int audioout;
-	static int hpf, lpf, agc_level=0;
+/* Modulator state */
+struct modstate {
+	float lpf, hpf, agc_amp;
+};
 
-	// DC block / HPF:
-	hpf += (audioin - hpf) / 4;
-	audioin -= hpf;
-	// lowpass
-	lpf += (audioin - lpf) / 2;
-	audioin = lpf;
-
-	// Just copied AGC code from RX for now
-	int agc_1, agc_diff;
-	agc_1 = abs(audioin) * 0x100; // rectify
-	agc_diff = agc_1 - agc_level;
-	if(agc_diff > 0)
-		agc_level += agc_diff/0x100;
-	else
-		agc_level += agc_diff/0x1000;
-
-	audioout = 32 + 30 * audioin / (agc_level/0x100);
-	if(audioout <= 0) audioout = 0;
-	if(audioout >= 63) audioout = 63;
-	return audioout;
-}
+struct modstate modstate;
 
 
 /* Function to convert input audio to transmit frequency modulation */
 int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 {
+	float hpf = modstate.hpf, lpf = modstate.lpf;
+	float agc_amp = modstate.agc_amp;
+
 	int i;
 	for (i = 0; i < len; i++) {
-		out[i] = dsp_process_tx_sample(in[i]);
+		float audioin = in[i];
+		// DC block, highpass for pre-emphasis
+		hpf += (audioin - hpf) * .1f;
+		audioin -= hpf;
+		// lowpass
+		lpf += (audioin - lpf) * .2f;
+
+		float amp = fabsf(audioin);
+
+		const float agc_attack = 0.05f, agc_decay = 0.0003f;
+		// Avoid NaN, clamp to a minimum value
+		if (agc_amp != agc_amp || agc_amp < .01f)
+			agc_amp = .01f;
+
+		float d = amp - agc_amp;
+		if (d >= 0)
+			agc_amp = agc_amp + d * agc_attack;
+		else
+			agc_amp = agc_amp + d * agc_decay;
+
+		int32_t audioout = audioin * (15.0f / agc_amp) + 32.0f;
+		if(audioout <= 10) audioout = 10;
+		if(audioout >= 53) audioout = 53;
+		out[i] = audioout;
 	}
+
+	modstate.lpf = lpf;
+	modstate.hpf = hpf;
+	modstate.agc_amp = agc_amp;
 	return len;
 }
 
