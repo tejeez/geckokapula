@@ -22,7 +22,6 @@
 #define CHANNELSPACING 147 // 38.4 MHz / 2^18
 #define MIDDLECHANNEL 32
 
-#ifndef DISABLE_RAIL
 RAIL_Handle_t rail;
 
 int start_rx_dsp(RAIL_Handle_t rail);
@@ -34,7 +33,7 @@ extern RAIL_ChannelConfigEntryAttr_t generated_entryAttr;
 RAIL_ChannelConfigEntry_t channelconfig_entry[] = {
 	{
 		.phyConfigDeltaAdd = NULL,
-		.baseFrequency = 434000000UL,
+		.baseFrequency = RIG_DEFAULT_FREQUENCY,
 		.channelSpacing = CHANNELSPACING,
 		.physicalChannelOffset = 0,
 		.channelNumberStart = 0,
@@ -81,8 +80,11 @@ void initRadio() {
 	printf("RAIL_ConfigCal: %u\n", r);
 
 	RAIL_TxPowerConfig_t txPowerConfig = {
-		//.mode = RAIL_TX_POWER_MODE_2P4GIG_HP,
+#if RIG_DEFAULT_FREQUENCY < 2000000000UL
 		.mode = RAIL_TX_POWER_MODE_SUBGIG,
+#else
+		.mode = RAIL_TX_POWER_MODE_2P4GIG_HP,
+#endif
 		.voltage = 3300,
 		.rampTime = 10,
 	};
@@ -153,11 +155,3 @@ void rail_task() {
 		vTaskDelay(200);
 	}
 }
-#else
-char rail_watchdog = 0;
-void rail_task(void)
-{
-	for (;;)
-		vTaskDelay(1000);
-}
-#endif

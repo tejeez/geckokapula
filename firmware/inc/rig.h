@@ -31,4 +31,10 @@ typedef struct {
 extern rig_status_t rs;
 #define FFTLEN 256
 
+#if KAPULA_v2
+#define RIG_DEFAULT_FREQUENCY 433550000UL
+#else
+#define RIG_DEFAULT_FREQUENCY 2397500000UL
+#endif
+
 #endif /* INC_RIG_H_ */
