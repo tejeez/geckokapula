@@ -829,6 +829,10 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	GPIO_PinModeSet(TFT_DC_PORT,  TFT_DC_PIN,  gpioModePushPull, 0);
 	GPIO_PinModeSet(TFT_LED_PORT, TFT_LED_PIN, gpioModePushPull, 1);
 
+	// Limit slew rate of display pins to reduce interference
+	GPIO_SlewrateSet(gpioPortC, 2, 2);
+	GPIO_DriveStrengthSet(gpioPortC, gpioDriveStrengthWeakAlternateWeak);
+
 
 	// Encoder and button pins
 
@@ -841,8 +845,10 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// Various pins
 
 	GPIO_PinModeSet(PWM_PORT, PWM_PIN, gpioModePushPull, 0);
+#ifdef RX_EN_PIN
 	GPIO_PinModeSet(RX_EN_PORT, RX_EN_PIN, gpioModePushPull, 0);
 	GPIO_PinModeSet(TX_EN_PORT, TX_EN_PIN, gpioModePushPull, 0);
+#endif
 
 #ifdef MIC_EN_PIN
 	GPIO_PinModeSet(MIC_EN_PORT, MIC_EN_PIN, gpioModePushPull, 0);

@@ -2,12 +2,55 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "label": "Build for v2",
+        "label": "Build for v2 model",
         "type": "shell",
         "command": "make KAPULA=v2 -j4",
         "group": {
             "kind": "build",
             "isDefault": true,
+          },
+        "problemMatcher": "$gcc",
+
+        /* The following options are needed if the ARM toolchain
+          * is installed as a VS Code extension.
+          * If you want to use a toolchain installed somewhere else,
+          * comment the options out. */
+        "options": {
+          "env": {
+            "INCLUDE": "${config:arm-none-eabi.include}",
+            "LIB": "${config:arm-none-eabi.lib}",
+            "LIBGCC": "${config:arm-none-eabi.libgcc}/thumb/v6-m/libgcc.a",
+          }
+        },
+        "osx": {
+          "options": {
+            "env": {
+              "PATH": "${config:arm-none-eabi.bin}:${env:PATH}",
+            }
+          },
+        },
+        "linux": {
+          "options": {
+            "env": {
+              "PATH": "${config:arm-none-eabi.bin}:${env:PATH}",
+            }
+          },
+        },
+        "windows": {
+          "options": {
+            "env": {
+              "PATH": "${config:arm-none-eabi.bin};${env:PATH}",
+            }
+          },
+        },
+      },
+      {
+        "label": "Build for v1 model",
+        "type": "shell",
+        "command": "make KAPULA=eka -j4",
+        "group": {
+            "kind": "build",
+            "isDefault": false,
           },
         "problemMatcher": "$gcc",
 
