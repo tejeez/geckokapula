@@ -43,7 +43,7 @@ RAIL_ChannelConfigEntry_t channelconfig_entry[] = {
 	}
 };
 
-extern const uint32_t generated[];
+extern uint32_t generated[];
 const RAIL_ChannelConfig_t channelConfig = {
 	generated,
 	NULL,
@@ -53,11 +53,52 @@ const RAIL_ChannelConfig_t channelConfig = {
 };
 
 
+/* Find suitable VCO frequency dividers for a given frequency.
+ * Return 0 if no possible combination was found. */
+uint32_t find_divider(uint32_t f)
+{
+	uint32_t d1, d2, d3;
+	// Try all the possible combinations
+	for (d1 = 1; d1 <= 5; d1++) {
+		for (d2 = 1; d2 <= 5; d2++) {
+			for (d3 = 1; d3 <= 5; d3++) {
+				// VCO frequency with these divider values
+				uint64_t vco = (uint64_t)f * d1 * d2 * d3;
+				// RAIL only accepts VCO frequencies in the range 2.3-2.9 GHz.
+				// If it's within the range, use this combination of dividers.
+				// Use goto to break from all 3 nested loops.
+				if (vco > 2300000000ULL && vco < 2900000000ULL)
+					goto divider_found;
+			}
+		}
+	}
+	// Divider combination not found
+	return 0;
+divider_found:
+	if (d1 == 1) d1 = 0;
+	if (d2 == 1) d2 = 0;
+	return (d1 << 6) | (d2 << 3) | d3;
+}
+
+
+char frequency_ok;
 void config_channel() {
 	unsigned r;
 	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
 
-	channelconfig_entry[0].baseFrequency = p.frequency - MIDDLECHANNEL*CHANNELSPACING;
+	uint32_t basefreq = p.frequency - MIDDLECHANNEL*CHANNELSPACING;
+
+	uint32_t divider = find_divider(basefreq);
+	if (!divider) {
+		// This frequency isn't possible.
+		frequency_ok = 0;
+		return;
+	}
+	frequency_ok = 1;
+	// Modify the frequency divider register in radio configuration
+	generated[39] = divider;
+
+	channelconfig_entry[0].baseFrequency = basefreq;
 	r = RAIL_ConfigChannels(rail, &channelConfig, NULL);
 	printf("RAIL_ConfigChannels (2): %u\n", r);
 
@@ -135,14 +176,14 @@ void rail_task() {
 		unsigned r;
 		RAIL_RadioState_t rs = RAIL_GetRadioState(rail);
 		//printf("RAIL_GetRadioState: %08x\n", rs);
-		if(keyed && ((rs & RAIL_RF_STATE_TX) == 0 || p.channel_changed)) {
+		if(keyed && ((rs & RAIL_RF_STATE_TX) == 0 || p.channel_changed) && frequency_ok) {
 			p.channel_changed = 0;
 			RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
 			r = RAIL_StartTxStream(rail, MIDDLECHANNEL, RAIL_STREAM_CARRIER_WAVE);
 			printf("RAIL_StartTxStream: %u\n", r);
 			start_tx_dsp(rail);
 		}
-		if((!keyed) && ((rs & RAIL_RF_STATE_RX) == 0 || p.channel_changed)) {
+		if((!keyed) && ((rs & RAIL_RF_STATE_RX) == 0 || p.channel_changed) && frequency_ok) {
 			p.channel_changed = 0;
 			if (rs & RAIL_RF_STATE_TX)
 				RAIL_StopTxStream(rail);

@@ -79,7 +79,7 @@ static const uint32_t generated_phyInfo[] = {
   0x0C004639UL,
 };
 
-const uint32_t generated[] = {
+uint32_t generated[] = {
   0x01041FF0UL, 0x003F003FUL,
      /* 1FF4 */ 0x00000000UL,
      /* 1FF8 */ (uint32_t) &generated_phyInfo,
