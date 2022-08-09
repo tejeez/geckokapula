@@ -1,47 +1,4 @@
-# Geckokapula
-Silicon Labs EFR32 transceivers give access to filtered IQ samples on receive,
-so it's possible to make an all-mode handheld receiver on them.
-
-Currently it has a crude spectrogram display, FM, AM and DSB demodulators
-and FM transmitter.
-
-There's a simple user interface:
-Rotate encoder to change the value under the cursor.
-Push the encoder while rotating it to move the cursor.
-
-# Construction
-BRD4151A radio board (with EFR32MG1P232F256GM48)
-is connected to a display and a speaker.
-
-The display is something like this: https://www.ebay.com/itm/232327157750
-
-Speaker is driven from a PWM output through a series capacitor and a resistor.
-
-| Board pin | EFR32 pin | Connection   |
-|-----------|-----------|--------------|
-|   GND     |           | Ground plane |
-| VMCU\_IN  |           | +3.3 V       |
-|   P1      |   PC6     | Display SDA  |
-|   P3      |   PC7     | Display CS   |
-|   P5      |   PC8     | Display SCK  |
-|   P7      |   PC9     | Display AO   |
-|   P12     |   PC10    | Display LED  |
-|   P9      |   PA0     | Debug UART TX (currently not used) |
-|   P11     |   PA1     | Debug UART RX (currently not used) |
-|   P34     |   PF6     | PTT or CW key (switch to GND) (optional) |
-|   P4      |   PD10    | PWM Audio out |
-|   P6      |   PD11    | Encoder A (switch to GND) |
-|   P8      |   PD12    | Encoder B (switch to GND) |
-|   P31/F18 |   PD13    | Encoder push button (switch to GND) |
-|   F14     |   PD15    | Audio in, biased around 0.625 V |
-|   P24     |   PF0     | J-link SWCLK |
-|   P26     |   PF1     | J-link SWDIO |
-
-VCC and RESET pins on display are connected to +3.3 V.
-
-If you push wires straight to the radio board headers, reading pinout from the
-datasheet is prone to mistakes as you are looking at it mirrored.
-Here's a mirrored pinout to help: http://oh2eat.dy.fi/brd4151a-pinout.png
+# Gekkokapula firmware
 
 # Files in the project
 The project was originally made in Simplicity Studio.
@@ -68,8 +25,15 @@ Font is from https://github.com/dhepper/font8x8/
 # Compiling and flashing
 See https://github.com/tejeez/efr32-template/ for instructions.
 
-Programming with openocd sometimes doesn't work.
-Try programming with Simplicity Commander in that case.
-
 To read debug prints, use
 https://gist.github.com/tejeez/ccdf3d03740bdffaf93b992b114aeb51
+
+The first version has some problems with flashing using OpenOCD.
+Halting the program and erasing the whole flash first seems to help.
+Try something like:
+
+    openocd -f board/efm32.cfg -c "reset_config none" -c init -c halt -c "flash erase_address 0 262144" -c "program gekkofirmis.elf" -c reset
+
+Try repeating it a couple of times if it doesn't work the first time.
+You can also try using Simplicity Commander (from Simplicity Studio)
+in case OpenOCD doesn't work at all.

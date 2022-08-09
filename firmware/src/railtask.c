@@ -61,7 +61,9 @@ uint32_t find_divider(uint32_t f)
 	// Try all the possible combinations
 	for (d1 = 1; d1 <= 5; d1++) {
 		for (d2 = 1; d2 <= 5; d2++) {
-			for (d3 = 1; d3 <= 5; d3++) {
+			// Try values 1, 2, 3, 4, 5, 7 for d3
+			for (d3 = 1; d3 <= 6; d3++) {
+				if (d3 == 6) d3 = 7;
 				// VCO frequency with these divider values
 				uint64_t vco = (uint64_t)f * d1 * d2 * d3;
 				// RAIL only accepts VCO frequencies in the range 2.3-2.9 GHz.
