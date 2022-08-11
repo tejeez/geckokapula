@@ -1,3 +1,4 @@
 (sym_lib_table
-  (lib (name kapula)(type Legacy)(uri ${KIPRJMOD}/kapula.lib)(options "")(descr ""))
+  (lib (name "kapula")(type "Legacy")(uri "${KIPRJMOD}/kapula.lib")(options "")(descr ""))
+  (lib (name "kapula-rescue")(type "Legacy")(uri "${KIPRJMOD}/kapula-rescue.lib")(options "")(descr ""))
 )
