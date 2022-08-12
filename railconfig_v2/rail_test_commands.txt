@@ -1,4 +1,4 @@
-// Copyright 2020 Silicon Laboratories, Inc.
+// Copyright 2022 Silicon Laboratories, Inc.
 //
 //
 
@@ -6,7 +6,7 @@ rx 0
 writeRmrStructure 0 0 8 5 0 0 0 112 61 10 0
 writeRmrStructure 0 20 8 0 0 0 0 0 207 153 0
 writeRmrStructure 0 28 8 0 240 73 2 128 62 0 0
-writeRmrStructure 0 36 8 1 1 0 0 57 70 0 12
+writeRmrStructure 0 36 8 1 1 0 0 0 48 0 12
 updateConfigurationPointer 0 2 255
 updateConfigurationPointer 0 3 1
 updateConfigurationPointer 0 4 255
@@ -34,7 +34,7 @@ writeRmrStructure 2 120 8 0 7 0 0 16 32 1 0
 writeRmrStructure 2 128 8 0 0 0 0 24 32 1 0
 writeRmrStructure 2 136 8 0 0 0 0 8 48 1 0
 writeRmrStructure 2 144 8 19 172 0 1 48 48 2 0
-writeRmrStructure 2 152 8 57 70 16 0 19 0 0 0
+writeRmrStructure 2 152 8 0 48 16 0 19 0 0 0
 writeRmrStructure 2 160 8 64 48 1 0 0 0 0 0
 writeRmrStructure 2 168 8 160 64 1 0 170 39 0 15
 writeRmrStructure 2 176 8 184 64 1 0 0 192 35 0
@@ -63,7 +63,7 @@ writeRmrStructure 2 352 8 228 96 7 0 128 0 0 132
 writeRmrStructure 2 360 8 0 0 0 0 100 4 131 7
 writeRmrStructure 2 368 8 136 19 200 58 144 32 10 0
 writeRmrStructure 2 376 8 0 97 32 0 183 86 53 18
-writeRmrStructure 2 384 8 4 97 3 0 66 187 16 0
+writeRmrStructure 2 384 8 4 97 3 0 0 128 16 0
 writeRmrStructure 2 392 8 32 48 4 41 136 187 64 0
 writeRmrStructure 2 400 8 32 97 1 0 0 0 0 0
 writeRmrStructure 2 408 8 40 97 1 0 100 6 102 12
@@ -80,7 +80,7 @@ writeRmrStructure 2 488 8 130 0 0 0 0 0 0 0
 writeRmrStructure 2 496 8 213 0 0 0 72 112 2 0
 writeRmrStructure 2 504 8 62 56 0 0 188 37 0 0
 writeRmrStructure 2 512 8 112 112 3 0 3 1 18 0
-writeRmrStructure 2 520 8 45 48 8 0 128 132 109 0
+writeRmrStructure 2 520 8 67 48 8 0 128 132 109 0
 writeRmrStructure 2 528 4 255 255 255 255
 writeRmrStructure 6 0 4 255 255 255 255
 writeRmrStructure 7 4 8 128 80 222 25 100 0 0 0

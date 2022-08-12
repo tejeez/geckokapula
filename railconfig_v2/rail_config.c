@@ -1,4 +1,4 @@
-// Copyright 2020 Silicon Laboratories, Inc.
+// Copyright 2022 Silicon Laboratories, Inc.
 //
 //
 
@@ -76,7 +76,7 @@ static const uint32_t generated_phyInfo[] = {
   38400000UL,
   16000UL,
   (1UL << 8) | 1UL,
-  0x0C004639UL,
+  0x0C003000UL,
 };
 
 uint32_t generated[] = {
@@ -106,7 +106,7 @@ uint32_t generated[] = {
   0x00012010UL, 0x00000000UL,
   0x00012018UL, 0x00000000UL,
   0x00013008UL, 0x0100AC13UL,
-  0x00023030UL, 0x00104639UL,
+  0x00023030UL, 0x00103000UL,
      /* 3034 */ 0x00000013UL,
   0x00013040UL, 0x00000000UL,
   0x000140A0UL, 0x0F0027AAUL,
@@ -153,7 +153,7 @@ uint32_t generated[] = {
      /* 60F4 */ 0x000A2090UL,
      /* 60F8 */ 0x00206100UL,
      /* 60FC */ 0x123556B7UL,
-  0x00036104UL, 0x0010BB42UL,
+  0x00036104UL, 0x00108000UL,
      /* 6108 */ 0x29043020UL,
      /* 610C */ 0x0040BB88UL,
   0x00016120UL, 0x00000000UL,
@@ -180,7 +180,7 @@ uint32_t generated[] = {
   0x00027048UL, 0x0000383EUL,
      /* 704C */ 0x000025BCUL,
   0x00037070UL, 0x00120103UL,
-     /* 7074 */ 0x0008302DUL,
+     /* 7074 */ 0x00083043UL,
      /* 7078 */ 0x006D8480UL,
 
   0xFFFFFFFFUL,

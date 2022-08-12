@@ -75,6 +75,7 @@ HEADER_EN=bool:false
 HEADER_EXCLUDESUBFRAMEWCNT_EN=bool:false
 HEADER_SIZE=int:1
 HEADER_WHITE_EN=bool:false
+IF_FREQUENCY_HZ=int:150000
 IN_2FSK_OPT_SCOPE=bool:false
 LO_INJECTION_SIDE=serializableObject:EnumDataItem:0
 MANCHESTER_MAPPING=serializableObject:EnumDataItem:0

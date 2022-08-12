@@ -1,4 +1,4 @@
-// Copyright 2020 Silicon Laboratories, Inc.
+// Copyright 2022 Silicon Laboratories, Inc.
 //
 //
 
@@ -20,7 +20,7 @@ Timing Detection Threshold = 3
 Timing Samples Threshold = 10 
 Frequency Offset Compensation (AFC) Limit = 0 Hz
 Acquistion Channel Bandwidth = 12600 Hz
-IF Frequency = 219450 Hz
+IF Frequency = 150000 Hz
 PLL Bandwidth in TX mode = 2 
 PLL Bandwidth in RX mode = 0 
 Number of Symbols in Timing Window = 0 
