@@ -61,7 +61,7 @@ static const uint8_t generated_irCalConfig[] = {
   25, 67, 18, 6, 4, 16, 0, 1, 1, 2, 1, 6, 0, 16, 39, 0, 0, 5, 0, 1, 1, 0, 0, 0, 0, 0
 };
 
-static const uint32_t generated_phyInfo[] = {
+uint32_t generated_phyInfo[] = {
   5UL,
   0x001EB851UL, // 30.72
   (uint32_t) NULL,

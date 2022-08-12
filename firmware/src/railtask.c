@@ -43,6 +43,7 @@ RAIL_ChannelConfigEntry_t channelconfig_entry[] = {
 	}
 };
 
+extern uint32_t generated_phyInfo[];
 extern uint32_t generated[];
 const RAIL_ChannelConfig_t channelConfig = {
 	generated,
@@ -55,7 +56,7 @@ const RAIL_ChannelConfig_t channelConfig = {
 
 /* Find suitable VCO frequency dividers for a given frequency.
  * Return 0 if no possible combination was found. */
-uint32_t find_divider(uint32_t f)
+static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 {
 	uint32_t d1, d2, d3;
 	// Try all the possible combinations
@@ -77,6 +78,7 @@ uint32_t find_divider(uint32_t f)
 	// Divider combination not found
 	return 0;
 divider_found:
+	*ratio = d1 * d2 * d3;
 	if (d1 == 1) d1 = 0;
 	if (d2 == 1) d2 = 0;
 	return (d1 << 6) | (d2 << 3) | d3;
@@ -90,7 +92,8 @@ void config_channel() {
 
 	uint32_t basefreq = p.frequency - MIDDLECHANNEL*CHANNELSPACING;
 
-	uint32_t divider = find_divider(basefreq);
+	uint32_t ratio;
+	uint32_t divider = find_divider(basefreq, &ratio);
 	if (!divider) {
 		// This frequency isn't possible.
 		frequency_ok = 0;
@@ -99,7 +102,20 @@ void config_channel() {
 	frequency_ok = 1;
 	// Modify the frequency divider register in radio configuration
 	generated[39] = divider;
+	// and the IF register.
+	// If you change the IF, remember to modify this as well.
+	uint32_t iffreq = ratio << 11;
+	generated[38] = 0x00100000UL | iffreq;
 
+	// I don't exactly know what these values are doing
+	// but looks like they should all be proportional
+	// to the division ratio being used.
+	generated_phyInfo[1] = 111848UL * ratio;
+	// The lowest 16 (or more?) bits of this are also
+	// proportional to the intermediate frequency.
+	generated_phyInfo[10] = (ratio << 25) | iffreq;
+
+	// Then the normal RAIL configuration
 	channelconfig_entry[0].baseFrequency = basefreq;
 	r = RAIL_ConfigChannels(rail, &channelConfig, NULL);
 	printf("RAIL_ConfigChannels (2): %u\n", r);
