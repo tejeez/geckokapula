@@ -58,12 +58,12 @@ void RAILCb_ConfigFrameTypeLength(RAIL_Handle_t railHandle,
 }
 
 static const uint8_t generated_irCalConfig[] = {
-  25, 68, 6, 6, 4, 16, 0, 1, 1, 2, 1, 6, 0, 16, 39, 0, 0, 5, 0, 1, 1, 0, 0, 0, 0, 0
+  25, 67, 18, 6, 4, 16, 0, 1, 1, 2, 1, 6, 0, 16, 39, 0, 0, 5, 0, 1, 1, 0, 0, 0, 0, 0
 };
 
 static const uint32_t generated_phyInfo[] = {
   5UL,
-  0x000A3D70UL, // 10.24
+  0x001EB851UL, // 30.72
   (uint32_t) NULL,
   (uint32_t) generated_irCalConfig,
 #ifdef RADIO_CONFIG_ENABLE_TIMING
@@ -76,7 +76,7 @@ static const uint32_t generated_phyInfo[] = {
   38400000UL,
   16000UL,
   (1UL << 8) | 1UL,
-  0x0C003000UL,
+  0x24009000UL,
 };
 
 uint32_t generated[] = {
@@ -106,8 +106,8 @@ uint32_t generated[] = {
   0x00012010UL, 0x00000000UL,
   0x00012018UL, 0x00000000UL,
   0x00013008UL, 0x0100AC13UL,
-  0x00023030UL, 0x00103000UL,
-     /* 3034 */ 0x00000013UL,
+  0x00023030UL, 0x00109000UL,
+     /* 3034 */ 0x0000009BUL,
   0x00013040UL, 0x00000000UL,
   0x000140A0UL, 0x0F0027AAUL,
   0x000140B8UL, 0x0023C000UL,
@@ -136,7 +136,7 @@ uint32_t generated[] = {
      /* 6064 */ 0x00000000UL,
   0x000C6078UL, 0x046C0003UL,
      /* 607C */ 0x00000000UL,
-     /* 6080 */ 0x0034035FUL,
+     /* 6080 */ 0x00340397UL,
      /* 6084 */ 0x00000000UL,
      /* 6088 */ 0x00000000UL,
      /* 608C */ 0x22140A04UL,
@@ -193,7 +193,7 @@ RAIL_ChannelConfigEntryAttr_t generated_entryAttr = {
 const RAIL_ChannelConfigEntry_t generated_channels[] = {
   {
     .phyConfigDeltaAdd = NULL,
-    .baseFrequency = 434000000,
+    .baseFrequency = 145000000,
     .channelSpacing = 100,
     .physicalChannelOffset = 0,
     .channelNumberStart = 0,
