@@ -1,9 +1,9 @@
-// Copyright 2020 Silicon Laboratories, Inc.
+// Copyright 2022 Silicon Laboratories, Inc.
 //
 //
 
 
-API version: 5.0.1
+API version: 5.6.0
 
 - Informational data:
 Preamble Binary Pattern = 01 
@@ -19,8 +19,8 @@ FEC enabled flag = 0
 Timing Detection Threshold = 3 
 Timing Samples Threshold = 10 
 Frequency Offset Compensation (AFC) Limit = 0 Hz
-Channel Bandwidth = 12700 Hz
-IF Frequency = 300000 Hz
+Acquistion Channel Bandwidth = 12700 Hz
+IF Frequency = 150000 Hz
 PLL Bandwidth in TX mode = 0 
 PLL Bandwidth in RX mode = 2 
 Number of Symbols in Timing Window = 0 

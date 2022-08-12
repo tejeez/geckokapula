@@ -59,12 +59,24 @@ const RAIL_ChannelConfig_t channelConfig = {
 static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 {
 	uint32_t d1, d2, d3;
+#ifdef KAPULA_v2
 	// Try all the possible combinations
 	for (d1 = 1; d1 <= 5; d1++) {
+#else
+	// v1 seems to crash on some frequencies below 23 MHz.
+	// It's mostly useless on lower frequencies anyway,
+	// so just limit the tuning range by not allowing d1=5.
+	for (d1 = 1; d1 <= 4; d1++) {
+#endif
 		for (d2 = 1; d2 <= 5; d2++) {
+#ifdef KAPULA_v2
 			// Try values 1, 2, 3, 4, 5, 7 for d3
 			for (d3 = 1; d3 <= 6; d3++) {
 				if (d3 == 6) d3 = 7;
+#else
+			// 7 isn't supported by the older chip.
+			for (d3 = 1; d3 <= 5; d3++) {
+#endif
 				// VCO frequency with these divider values
 				uint64_t vco = (uint64_t)f * d1 * d2 * d3;
 				// RAIL only accepts VCO frequencies in the range 2.3-2.9 GHz.

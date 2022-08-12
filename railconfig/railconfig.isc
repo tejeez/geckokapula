@@ -1,5 +1,5 @@
 #ISD afv6
-# Simplicity Studio version: 5.16.1.202002191732-22
+# Simplicity Studio version: 5.18.7.202008130736-45
 
 # Application configuration
 stackId: stackless
@@ -21,7 +21,7 @@ BASE_FREQUENCY_HZ=long:2400000000
 BAUDRATE_TOL_PPM=int:0
 BITRATE=int:16000
 CHANNEL_SPACING_HZ=int:100
-CONFIGURATOR_VERSION=string:5.0.1
+CONFIGURATOR_VERSION=string:5.6.0
 CRC_BIT_ENDIAN=serializableObject:EnumDataItem:1
 CRC_BYTE_ENDIAN=serializableObject:EnumDataItem:0
 CRC_INPUT_ORDER=serializableObject:EnumDataItem:0
@@ -72,6 +72,7 @@ HEADER_CALC_CRC=bool:false
 HEADER_EN=bool:false
 HEADER_SIZE=int:1
 HEADER_WHITE_EN=bool:false
+IF_FREQUENCY_HZ=int:150000
 IN_2FSK_OPT_SCOPE=bool:false
 LO_INJECTION_SIDE=serializableObject:EnumDataItem:0
 MANCHESTER_MAPPING=serializableObject:EnumDataItem:0

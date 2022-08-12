@@ -32,7 +32,7 @@ The first version has some problems with flashing using OpenOCD.
 Halting the program and erasing the whole flash first seems to help.
 Try something like:
 
-    openocd -f board/efm32.cfg -c "reset_config none" -c init -c halt -c "flash erase_address 0 262144" -c "program gekkofirmis.elf" -c reset
+    openocd -f board/efm32.cfg -c "reset_config none" -c init -c halt -c "flash erase_address 0 262144" -c "program gekkofirmis.elf verify reset"
 
 Try repeating it a couple of times if it doesn't work the first time.
 You can also try using Simplicity Commander (from Simplicity Studio)

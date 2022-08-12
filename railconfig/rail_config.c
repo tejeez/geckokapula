@@ -1,4 +1,4 @@
-// Copyright 2020 Silicon Laboratories, Inc.
+// Copyright 2022 Silicon Laboratories, Inc.
 //
 //
 
@@ -6,8 +6,8 @@
  * @brief RAIL Configuration
  * @details
  *   WARNING: Auto-Generated Radio Config  -  DO NOT EDIT
- *   Radio Configurator Version: 5.0.1
- *   RAIL Adapter Version: 2.4.10
+ *   Radio Configurator Version: 5.6.0
+ *   RAIL Adapter Version: 2.4.13
  *   RAIL Compatibility: 2.x
  *******************************************************************************
  * # License
@@ -35,7 +35,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
-#include "em_common.h"
+#include "em_device.h"
 #include "rail_config.h"
 
 uint32_t RAILCb_CalcSymbolRate(RAIL_Handle_t railHandle)
@@ -61,9 +61,9 @@ static const uint8_t generated_irCalConfig[] = {
   25, 63, 1, 6, 4, 16, 1, 0, 0, 1, 1, 6, 0, 16, 39, 0, 0, 5, 0, 1, 1, 0, 0, 0, 0, 0
 };
 
-static const uint32_t generated_phyInfo[] = {
+uint32_t generated_phyInfo[] = {
   5UL,
-  0x0001B4E8UL, // 1.70666666667
+  0x0001B4E8UL, // 1.7066666666666666
   (uint32_t) NULL,
   (uint32_t) generated_irCalConfig,
 #ifdef RADIO_CONFIG_ENABLE_TIMING
@@ -76,7 +76,7 @@ static const uint32_t generated_phyInfo[] = {
   38400000UL,
   16000UL,
   (1UL << 8) | 1UL,
-  0x02001000UL,
+  0x02000800UL,
 };
 
 uint32_t generated[] = {
@@ -106,14 +106,14 @@ uint32_t generated[] = {
   0x00012010UL, 0x00000000UL,
   0x00012018UL, 0x00000000UL,
   0x00013008UL, 0x0000AC3FUL,
-  0x00023030UL, 0x00101000UL,
+  0x00023030UL, 0x00100800UL,
      /* 3034 */ 0x00000001UL,
   0x00013040UL, 0x00000000UL,
   0x000140A0UL, 0x0F00277AUL,
   0x000140F4UL, 0x00001020UL,
   0x00024134UL, 0x00000880UL,
      /* 4138 */ 0x000087E6UL,
-  0x00024140UL, 0x00880060UL,
+  0x00024140UL, 0x00880020UL,
      /* 4144 */ 0x1153E6C1UL,
   0x00156014UL, 0x00000010UL,
      /* 6018 */ 0x04000000UL,
@@ -124,7 +124,7 @@ uint32_t generated[] = {
      /* 602C */ 0x00000000UL,
      /* 6030 */ 0x006D7FBCUL,
      /* 6034 */ 0x00000441UL,
-     /* 6038 */ 0x0200063AUL,
+     /* 6038 */ 0x0200031CUL,
      /* 603C */ 0x00010012UL,
      /* 6040 */ 0x00000002UL,
      /* 6044 */ 0x00000000UL,
