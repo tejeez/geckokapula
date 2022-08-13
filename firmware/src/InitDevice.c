@@ -35,7 +35,7 @@
 //==============================================================================
 extern void enter_DefaultMode_from_RESET(void) {
 	// $[Config Calls]
-	CHIP_Init();
+	//CHIP_Init();
 
 	EMU_enter_DefaultMode_from_RESET();
 	CMU_enter_DefaultMode_from_RESET();
@@ -822,16 +822,17 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// Display pins
 
-	GPIO_PinModeSet(TFT_EN_PORT,  TFT_EN_PIN,  gpioModePushPull, 0);
+	//GPIO_PinModeSet(TFT_EN_PORT,  TFT_EN_PIN,  gpioModePushPull, 0);
 	GPIO_PinModeSet(gpioPortC,    6,           gpioModePushPull, 0);
 	GPIO_PinModeSet(TFT_CS_PORT,  TFT_CS_PIN,  gpioModePushPull, 1);
 	GPIO_PinModeSet(gpioPortC,    8,           gpioModePushPull, 0);
 	GPIO_PinModeSet(TFT_DC_PORT,  TFT_DC_PIN,  gpioModePushPull, 0);
-	GPIO_PinModeSet(TFT_LED_PORT, TFT_LED_PIN, gpioModePushPull, 1);
+	GPIO_PinModeSet(TFT_LED_PORT, TFT_LED_PIN, gpioModePushPullAlternate, 1);
 
-	// Limit slew rate of display pins to reduce interference
-	GPIO_SlewrateSet(gpioPortC, 2, 2);
-	GPIO_DriveStrengthSet(gpioPortC, gpioDriveStrengthWeakAlternateWeak);
+	// Limit slew rate of display pins to reduce interference.
+	// Use higher drive strength to drive the backlight.
+	GPIO_SlewrateSet(gpioPortC, 2, 0);
+	GPIO_DriveStrengthSet(gpioPortC, gpioDriveStrengthWeakAlternateStrong);
 
 
 	// Encoder and button pins
