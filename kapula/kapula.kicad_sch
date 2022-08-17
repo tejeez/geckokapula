@@ -5008,6 +5008,10 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 1a5e9f5d-c631-47c3-ba17-14b465b63461)
   )
+  (text "11 mm\nin between" (at 232.41 90.17 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 1c2e4f69-5974-49a3-9ba1-49ddd807853d)
+  )
   (text "DC blocking capacitors here may not be\nstrictly necessary since the DC level\non the RX pins seems to be 0 V."
     (at 179.07 116.84 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -5059,8 +5063,8 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid c3008ac0-7f36-4a00-920e-ccff43cbf78a)
   )
-  (text "2.4 GHz match to the recommended 23+j7.1 ohm:\n8.4 mm long 0.3 mm wide (50 ohm) trace\n5.6 mm long 0.5 mm wide (37 ohm) open stub"
-    (at 179.07 93.98 0)
+  (text "2.4 GHz match to the recommended 23+j7.1 ohm:\n6.5 mm long 0.25 mm wide trace\n5.3 mm long 0.7 mm wide open stub\nThe open stub also shorts 3rd harmonic"
+    (at 179.07 95.25 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid cc70091d-8fce-4096-8ab3-4506071f9e72)
   )
@@ -5068,7 +5072,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid d3bd9031-bef7-4d19-93a6-2b9937fce9c2)
   )
-  (text "17 mm (quarter wave) shorted stub\nto attenuate 2nd harmonic"
+  (text "17 mm (quarter wave) shorted stub\nto short even harmonics"
     (at 252.73 92.71 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid efd8c35e-d4fb-41c4-b313-8fffc0f206e4)
