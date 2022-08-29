@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 #include "em_timer.h"
 #include "em_adc.h"
 #include "em_gpio.h"

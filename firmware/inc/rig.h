@@ -1,9 +1,4 @@
-/*
- * rig.h
- *
- *  Created on: Dec 3, 2017
- *      Author: Tatu
- */
+/* SPDX-License-Identifier: MIT */
 
 #ifndef INC_RIG_H_
 #define INC_RIG_H_

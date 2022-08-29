@@ -1,9 +1,4 @@
-/*
- * display.c
- *
- *  Created on: Sep 24, 2017
- *      Author: Tatu
- */
+/* SPDX-License-Identifier: MIT */
 
 /*
  * P1 PC6  DATA

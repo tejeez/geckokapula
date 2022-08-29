@@ -1,9 +1,4 @@
-/*
- * ui.c
- *
- *  Created on: Nov 30, 2017
- *      Author: Tatu
- */
+/* SPDX-License-Identifier: MIT */
 
 // FreeRTOS
 #include "FreeRTOS.h"

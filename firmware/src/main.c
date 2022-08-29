@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 // emlib
 #include "em_chip.h"
 #include "em_cmu.h"

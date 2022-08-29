@@ -26,3 +26,11 @@ Apparently, EFR32 can be tuned over a much broader range:
 * 766.7 - 966.6 MHz
 * 1.15 - 1.45 GHz
 * 2.3 - 2.9 GHz
+
+## Licensing
+
+The firmware is released under the [MIT license](firmware/LICENSE).
+It depends on the Gecko SDK from Silicon Labs,
+mostly licensed under the Zlib license.
+
+I haven't decided on licensing of the hardware design yet.

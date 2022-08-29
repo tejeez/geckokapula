@@ -1,9 +1,4 @@
-/*
- * ui_parameters.h
- *
- *  Created on: Mar 26, 2018
- *      Author: Tatu
- */
+/* SPDX-License-Identifier: MIT */
 
 #ifndef INC_UI_PARAMETERS_H_
 #define INC_UI_PARAMETERS_H_

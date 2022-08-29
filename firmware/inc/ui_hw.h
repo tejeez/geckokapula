@@ -1,9 +1,8 @@
+/* SPDX-License-Identifier: MIT */
+
 /*
  * ui_hw.h
  * Some hardware-specific parts of UI code
- *
- *  Created on: Dec 3, 2017
- *      Author: Tatu
  */
 
 #ifndef INC_UI_HW_H_

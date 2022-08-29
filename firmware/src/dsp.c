@@ -1,9 +1,4 @@
-/*
- * dsp.c
- *
- *  Created on: Mar 26, 2018
- *      Author: Tatu
- */
+/* SPDX-License-Identifier: MIT */
 
 #include <stdlib.h>
 

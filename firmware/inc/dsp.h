@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 #ifndef DSP_H_
 #define DSP_H_
 #include <stdint.h>

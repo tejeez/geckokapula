@@ -1,9 +1,5 @@
-/*
- * rail.c
- *
- *  Created on: Dec 19, 2017
- *      Author: Tatu
- */
+/* SPDX-License-Identifier: MIT */
+
 // RAIL
 #ifndef DISABLE_RAIL
 #include "rail.h"

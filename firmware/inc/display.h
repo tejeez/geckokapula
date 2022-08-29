@@ -1,9 +1,4 @@
-/*
- * display.h
- *
- *  Created on: Nov 30, 2017
- *      Author: Tatu
- */
+/* SPDX-License-Identifier: MIT */
 
 #ifndef INC_DISPLAY_H_
 #define INC_DISPLAY_H_
