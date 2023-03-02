@@ -60,7 +60,7 @@ LD_FLAGS = -Wl,--wrap=RAILINT_999bd22c50df2f99ce048cba68f11c3a
 #######################################
 
 # Path to Gecko SDK
-GECKOSDK = $(HOME)/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.7
+GECKOSDK = ../gecko_sdk_suite/v2.7
 
 # CMSIS
 C_INCLUDES += -I$(GECKOSDK)/platform/CMSIS/Include
