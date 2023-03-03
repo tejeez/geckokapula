@@ -23,9 +23,17 @@ The application code is under src/ and inc/.
 Font is from https://github.com/dhepper/font8x8/
 
 # Compiling and flashing
-See https://github.com/tejeez/efr32-template/ for instructions.
+The project includes configuration for Visual Studio Code and the
+Cortex-Debug extension, but using them is not mandatory.
+To develop with Visual Studio Code, install the extensions
+*Arm toolchain Linux* (or *Arm toolchain Windows* or *Arm toolchain macOS*)
+from *Chipcode* and *Cortex-Debug* from *marus25*.
+See https://github.com/tejeez/efr32-template/
+for more detailed instructions.
 
-To read debug prints, use
+The firmware uses RTT for debug printing.
+To read debug prints with old versions of OpenOCD that did not have
+RTT support yet, use
 https://gist.github.com/tejeez/ccdf3d03740bdffaf93b992b114aeb51
 
 The first version has some problems with flashing using OpenOCD.

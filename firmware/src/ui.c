@@ -24,9 +24,9 @@ rig_parameters_t p = {
 	.mode = MODE_FM,
 	.frequency = RIG_DEFAULT_FREQUENCY,
 	.offset_freq = 0UL,
-	.volume = 4,
-	.waterfall_averages = 5,
-	.squelch = 29
+	.volume = 10,
+	.waterfall_averages = 20,
+	.squelch = 15
 };
 rig_status_t rs = {0};
 
@@ -39,6 +39,7 @@ int backlight_timer = 0;
 uint8_t displaybuf[DISPLAYBUF_SIZE], displaybuf2[DISPLAYBUF2_SIZE];
 
 volatile struct display_ev display_ev;
+SemaphoreHandle_t display_sem;
 
 #if DISPLAYBUF_SIZE < 3*8*8
 #error "Too small display buffer for text"

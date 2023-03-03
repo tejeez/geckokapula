@@ -24,6 +24,6 @@ extern volatile struct display_ev display_ev;
 
 /* Semaphore to wake up the display task.
  * Given after setting a display event flag. */
-SemaphoreHandle_t display_sem;
+extern SemaphoreHandle_t display_sem;
 
 #endif /* INC_UI_H_ */
