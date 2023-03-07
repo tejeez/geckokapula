@@ -1,4 +1,5 @@
 (sym_lib_table
-  (lib (name "kapula")(type "Legacy")(uri "${KIPRJMOD}/kapula.lib")(options "")(descr ""))
-  (lib (name "kapula-rescue")(type "Legacy")(uri "${KIPRJMOD}/kapula-rescue.lib")(options "")(descr ""))
+  (version 7)
+  (lib (name "kapula")(type "KiCad")(uri "${KIPRJMOD}/kapula.kicad_sym")(options "")(descr ""))
+  (lib (name "kapula-rescue")(type "KiCad")(uri "${KIPRJMOD}/kapula-rescue.kicad_sym")(options "")(descr ""))
 )
