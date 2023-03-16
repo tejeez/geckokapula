@@ -1,8 +1,10 @@
 /* SPDX-License-Identifier: MIT */
-
 #include "em_timer.h"
 #include "em_adc.h"
+#include "em_cmu.h"
 #include "em_gpio.h"
+#include "em_opamp.h"
+#include "em_vdac.h"
 #include "InitDevice.h"
 
 #include "rail.h"
@@ -234,6 +236,48 @@ int start_tx_dsp(RAIL_Handle_t rail)
 #ifdef RX_EN_PIN
 	GPIO_PinOutClear(RX_EN_PORT, RX_EN_PIN);
 	GPIO_PinOutSet(TX_EN_PORT, TX_EN_PIN);
+#endif
+#ifdef USE_OPAMPS
+	CMU_ClockEnable(cmuClock_VDAC0, true);
+	VDAC_Init(VDAC0, &(const VDAC_Init_TypeDef){
+		.mainCalibration = true,
+		.asyncClockMode = false,
+		.warmupKeepOn = true,
+		.refresh = vdacRefresh8,
+		.prescaler = 0,
+		.reference = vdacRef1V25Ln,
+		.ch0ResetPre = false,
+		.outEnablePRS = false,
+		.sineEnable = false,
+		.diff = false,
+	});
+	VDAC_Channel0OutputSet(VDAC0, 0x800);
+	VDAC_Enable(VDAC0, 0, true);
+	OPAMP_Enable(VDAC0, OPA0, &(const OPAMP_Init_TypeDef){
+		.negSel = opaNegSelResTap,
+		.posSel = opaPosSelDac,
+		.outMode =  opaOutModeAPORT1YCH19, // PF3
+		.resSel = opaResSelR2eqR1, // may be changed to adjust mic gain
+		.resInMux = opaResInMuxPosPad,
+		.outPen = VDAC_OPA_OUT_ALTOUTPADEN_OUT0, // TODO?
+		.drvStr = opaDrvStrHighAccHighStr, // maybe adjust later to optimize power consumption
+		.gain3xEn = false,
+		.halfDrvStr = false,
+		.ugBwScale = false,
+		.prsEn = false,
+		.prsMode = opaPrsModeDefault,
+		.prsSel = opaPrsSelDefault,
+		.prsOutSel = opaPrsOutDefault,
+		.aportYMasterDisable = false,
+		.aportXMasterDisable = false,
+		.settleTime = 3, // from OPA_INIT_INVERTING defaults
+		.startupDly = 0,
+		.hcmDisable = false,
+		.defaultOffsetN = true,
+		.offsetN = 0,
+		.defaultOffsetP = true,
+		.offsetP = 0,
+	});
 #endif
 	NVIC_EnableIRQ(ADC0_IRQn);
 	ADC_IntEnable(ADC0, ADC_IF_SINGLE);

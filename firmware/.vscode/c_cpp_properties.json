@@ -3,21 +3,22 @@
         {
             "name": "EFR32",
             "defines": [
-                "EFR32MG1P232F256GM48"
+                "EFR32FG14P233F256GM48",
+                "KAPULA_v2"
             ],
             "includePath": [
                 "${workspaceFolder}",
                 "${workspaceFolder}/inc",
                 "${workspaceFolder}/freertos",
                 "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/emlib/inc",
-                "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/Device/SiliconLabs/EFR32MG1P/Include",
+                "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/Device/SiliconLabs/EFR32FG14P/Include",
                 "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/CMSIS/Include",
                 "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/radio/rail_lib/common",
                 "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/radio/rail_lib/chip/efr32/efr32xg1x"
             ],
-            "intelliSenseMode": "gcc-x86",
+            "intelliSenseMode": "linux-gcc-arm",
             "compilerPath": "${config:arm-none-eabi.bin}/arm-none-eabi-gcc",
-            "cStandard": "c11",
+            "cStandard": "gnu11",
             "cppStandard": "c++17"
         }
     ],
