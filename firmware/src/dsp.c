@@ -531,7 +531,7 @@ int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 
 		float amp = fabsf(audioin);
 
-		const float agc_attack = 0.01f, agc_decay = 0.0003f;
+		const float agc_attack = 0.01f, agc_decay = 0.001f;
 		// Avoid NaN, clamp to a minimum value
 		if (agc_amp != agc_amp || agc_amp < .01f)
 			agc_amp = .01f;
@@ -543,8 +543,8 @@ int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 			agc_amp = agc_amp + d * agc_decay;
 
 		int32_t audioout = audioin * (50.0f / agc_amp) + 32.0f;
-		if(audioout <= 10) audioout = 10;
-		if(audioout >= 53) audioout = 53;
+		if(audioout <= 6)  audioout = 6;
+		if(audioout >= 57) audioout = 57;
 		out[i] = audioout;
 	}
 
