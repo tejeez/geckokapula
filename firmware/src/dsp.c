@@ -249,11 +249,11 @@ void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
 	const float beta = 0.4142f;
 	for (i = 0; i < len; i+=2) {
 		float ai, aq, o;
-		ai = fabsf(in[i].i);
-		aq = fabsf(in[i].q);
+		ai = fabsf((float)in[i].i);
+		aq = fabsf((float)in[i].q);
 		o = (ai >= aq) ? (ai + aq * beta) : (aq + ai * beta);
-		ai = fabsf(in[i+1].i);
-		aq = fabsf(in[i+1].q);
+		ai = fabsf((float)in[i+1].i);
+		aq = fabsf((float)in[i+1].q);
 		o += (ai >= aq) ? (ai + aq * beta) : (aq + ai * beta);
 		out[i/2] = o;
 	}
@@ -470,7 +470,7 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 		demod_convert_audio(audio, out, out_len, demodstate.audiogain / demodstate.agc_amp);
 	} else {
 		// Squelch closed
-		unsigned i;
+		int i;
 		for (i = 0; i < out_len; i++)
 			out[i] = AUDIO_MID;
 	}

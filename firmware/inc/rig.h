@@ -3,6 +3,8 @@
 #ifndef INC_RIG_H_
 #define INC_RIG_H_
 
+#include <stdint.h>
+
 enum rig_mode { MODE_NONE, MODE_FM, MODE_AM, MODE_DSB };
 
 // parameters communicated from UI to RAIL and DSP parts

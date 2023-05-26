@@ -65,13 +65,10 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 	int x, y;
 	if(!display_ready()) return;
 
-	//display_area(y1, x1, y1+7, x1+7);
 	display_area(x1, y1, x1+7, y1+7);
 	display_start();
 	const char *font = font8x8_basic[c];
 	uint8_t *bufp = displaybuf;
-	/*for(x=0; x<8; x++) {
-		for(y=7; y>=0; y--) {*/
 	for(y=0; y<8; y++) {
 		for(x=0; x<8; x++) {
 			if(font[y] & (1<<x)) {
