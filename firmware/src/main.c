@@ -145,9 +145,7 @@ void misc_fast_task(void *arg) {
 	for(;;) {
 		ui_check_buttons();
 
-		// Hack: if audio volume is turned to 0, shut down.
-		// This is for testing before adding it properly to the UI.
-		if (p.volume == 0)
+		if (p.mode == MODE_OFF)
 			shutdown();
 
 		ui_control_backlight();

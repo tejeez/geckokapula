@@ -93,7 +93,7 @@ char textprev[TEXT_LEN+1] = "";
 
 static unsigned char ui_cursor = 6, ui_keyed = 0;
 
-const char *p_mode_names[] = { "---", " FM", " AM", "SSB" };
+const char *p_mode_names[] = { "---", " FM", " AM", "SSB", "---", "off" };
 const char *p_keyed_text[] = { "rx", "tx" };
 
 typedef struct {

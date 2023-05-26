@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-enum rig_mode { MODE_NONE, MODE_FM, MODE_AM, MODE_DSB };
+enum rig_mode { MODE_NONE, MODE_FM, MODE_AM, MODE_DSB, MODE_NONE2, MODE_OFF };
 
 // parameters communicated from UI to RAIL and DSP parts
 typedef struct {
@@ -29,7 +29,8 @@ extern rig_status_t rs;
 #define FFTLEN 256
 
 #if KAPULA_v2
-#define RIG_DEFAULT_FREQUENCY 433550000UL
+//#define RIG_DEFAULT_FREQUENCY 433550000UL
+#define RIG_DEFAULT_FREQUENCY 1297550000UL
 #else
 #define RIG_DEFAULT_FREQUENCY 2397500000UL
 #endif
