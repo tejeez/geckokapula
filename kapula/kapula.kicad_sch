@@ -6961,7 +6961,7 @@
     (property "Value" "1n" (at 274.32 122.9106 90)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric" (at 270.51 127.9652 0)
+    (property "Footprint" "kapula:C_0402_to_0603_HandSolder" (at 270.51 127.9652 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (at 274.32 127 0)
