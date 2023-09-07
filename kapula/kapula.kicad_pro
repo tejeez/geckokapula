@@ -56,7 +56,11 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "clearance|108162768|99494473|ef536f29-b853-4e04-966e-2ed999ed4d78|502b8890-a39a-4f54-b79a-2c2f58cc5e2c",
+        "courtyards_overlap|114310001|60035814|00000000-0000-0000-0000-00005ecdb219|00000000-0000-0000-0000-00005ecdb5dd",
+        "courtyards_overlap|135620685|61743462|00000000-0000-0000-0000-00005ecdb219|00000000-0000-0000-0000-00005ecdbb0e"
+      ],
       "meta": {
         "filename": "board_design_settings.json",
         "version": 2
@@ -126,8 +130,8 @@
         "min_microvia_drill": 0.09999999999999999,
         "min_resolved_spokes": 2,
         "min_silk_clearance": 0.0,
-        "min_text_height": 0.7999999999999999,
-        "min_text_thickness": 0.08,
+        "min_text_height": 0.7,
+        "min_text_thickness": 0.15,
         "min_through_hole_diameter": 0.3,
         "min_track_width": 0.19999999999999998,
         "min_via_annular_width": 0.049999999999999996,
