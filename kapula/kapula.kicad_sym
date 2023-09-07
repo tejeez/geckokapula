@@ -295,7 +295,7 @@
         (name "HFXTAL_P" (effects (font (size 1.27 1.27))))
         (number "11" (effects (font (size 1.27 1.27))))
       )
-      (pin input line (at -26.67 -13.97 0) (length 2.54)
+      (pin passive line (at -26.67 -13.97 0) (length 2.54)
         (name "RESETn" (effects (font (size 1.27 1.27))))
         (number "12" (effects (font (size 1.27 1.27))))
       )
