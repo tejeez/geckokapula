@@ -9,6 +9,8 @@
       (effects (font (size 1 1) (thickness 0.15)))
     (tstamp c180cb49-73aa-4bd0-a9ab-84fb2f68d07f)
   )
+  (fp_circle (center 0 0) (end 0.65 0.6)
+    (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd") (tstamp 0a0a2437-4417-4f6e-963d-ecf1f050c904))
   (pad "" np_thru_hole circle (at 0 0) (size 1.752 1.752) (drill 1.152) (layers "*.Mask")
     (solder_mask_margin 0.3) (clearance 0.3) (zone_connect 0) (tstamp 400bf488-13e4-426a-aacf-c06d30bfaf82))
 )
