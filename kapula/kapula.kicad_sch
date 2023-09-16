@@ -11332,7 +11332,7 @@
     )
   )
 
-  (symbol (lib_id "Transistor_FET:AO3400A") (at 24.13 127 0) (mirror x) (unit 1)
+  (symbol (lib_id "Transistor_FET:AO3400A") (at 24.13 127 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c5eb1456-6ad8-4db7-91bc-62ba9ae987e0)
     (property "Reference" "Q6" (at 30.48 127 90)
@@ -11341,7 +11341,7 @@
     (property "Value" "AO3400A" (at 33.02 127 90)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 29.21 125.095 0)
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 29.21 128.905 0)
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
     )
     (property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf" (at 24.13 127 0)
