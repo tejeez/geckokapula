@@ -3977,7 +3977,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 1c2e4f69-5974-49a3-9ba1-49ddd807853d)
   )
-  (text "Tooling holes" (at 383.54 67.31 0)
+  (text "Tooling holes" (at 383.54 148.59 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 2790a7f7-3be6-4b06-92ae-039add8d34be)
   )
@@ -4791,7 +4791,7 @@
   (symbol (lib_id "power:GND") (at 90.17 217.17 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6c9f3e)
-    (property "Reference" "#PWR041" (at 90.17 223.52 0)
+    (property "Reference" "#PWR0141" (at 90.17 223.52 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 90.297 221.5642 0)
@@ -4807,7 +4807,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR041") (unit 1)
+          (reference "#PWR0141") (unit 1)
         )
       )
     )
@@ -4816,7 +4816,7 @@
   (symbol (lib_id "Device:C") (at 80.01 200.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca039)
-    (property "Reference" "C26" (at 82.931 199.4916 0)
+    (property "Reference" "C38" (at 82.931 199.4916 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 82.931 201.803 0)
@@ -4836,7 +4836,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C26") (unit 1)
+          (reference "C38") (unit 1)
         )
       )
     )
@@ -4845,7 +4845,7 @@
   (symbol (lib_id "power:GND") (at 80.01 204.47 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca075)
-    (property "Reference" "#PWR037" (at 80.01 210.82 0)
+    (property "Reference" "#PWR0155" (at 80.01 210.82 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 80.137 208.8642 0)
@@ -4861,7 +4861,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR037") (unit 1)
+          (reference "#PWR0155") (unit 1)
         )
       )
     )
@@ -4870,7 +4870,7 @@
   (symbol (lib_id "Device:C") (at 68.58 198.12 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca0ad)
-    (property "Reference" "C25" (at 71.501 196.9516 0)
+    (property "Reference" "C37" (at 71.501 196.9516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1u" (at 71.501 199.263 0)
@@ -4890,7 +4890,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C25") (unit 1)
+          (reference "C37") (unit 1)
         )
       )
     )
@@ -4899,7 +4899,7 @@
   (symbol (lib_id "power:GND") (at 68.58 201.93 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca0e0)
-    (property "Reference" "#PWR035" (at 68.58 208.28 0)
+    (property "Reference" "#PWR0153" (at 68.58 208.28 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 68.707 206.3242 0)
@@ -4915,7 +4915,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR035") (unit 1)
+          (reference "#PWR0153") (unit 1)
         )
       )
     )
@@ -4924,7 +4924,7 @@
   (symbol (lib_id "Device:C") (at 57.15 195.58 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca108)
-    (property "Reference" "C23" (at 60.071 194.4116 0)
+    (property "Reference" "C36" (at 60.071 194.4116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 60.071 196.723 0)
@@ -4944,7 +4944,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C23") (unit 1)
+          (reference "C36") (unit 1)
         )
       )
     )
@@ -4953,7 +4953,7 @@
   (symbol (lib_id "power:GND") (at 57.15 199.39 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca12a)
-    (property "Reference" "#PWR032" (at 57.15 205.74 0)
+    (property "Reference" "#PWR0151" (at 57.15 205.74 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 57.277 203.7842 0)
@@ -4969,7 +4969,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR032") (unit 1)
+          (reference "#PWR0151") (unit 1)
         )
       )
     )
@@ -4978,7 +4978,7 @@
   (symbol (lib_id "Device:C") (at 45.72 193.04 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca167)
-    (property "Reference" "C22" (at 48.641 191.8716 0)
+    (property "Reference" "C35" (at 48.641 191.8716 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 48.641 194.183 0)
@@ -4998,7 +4998,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C22") (unit 1)
+          (reference "C35") (unit 1)
         )
       )
     )
@@ -5007,7 +5007,7 @@
   (symbol (lib_id "power:GND") (at 45.72 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca193)
-    (property "Reference" "#PWR029" (at 45.72 203.2 0)
+    (property "Reference" "#PWR0152" (at 45.72 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 45.847 201.2442 0)
@@ -5023,7 +5023,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR029") (unit 1)
+          (reference "#PWR0152") (unit 1)
         )
       )
     )
@@ -5032,7 +5032,7 @@
   (symbol (lib_id "power:GND") (at 90.17 184.15 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca297)
-    (property "Reference" "#PWR027" (at 83.82 184.15 0)
+    (property "Reference" "#PWR0189" (at 83.82 184.15 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 86.9188 184.277 90)
@@ -5048,7 +5048,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR027") (unit 1)
+          (reference "#PWR0189") (unit 1)
         )
       )
     )
@@ -5057,7 +5057,7 @@
   (symbol (lib_id "Device:L") (at 74.93 168.91 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ca348)
-    (property "Reference" "L1" (at 74.93 164.084 90)
+    (property "Reference" "L31" (at 74.93 164.084 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "4u7" (at 74.93 166.3954 90)
@@ -5077,7 +5077,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L1") (unit 1)
+          (reference "L31") (unit 1)
         )
       )
     )
@@ -5086,7 +5086,7 @@
   (symbol (lib_id "Device:C") (at 82.55 172.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6cec91)
-    (property "Reference" "C18" (at 85.471 171.5516 0)
+    (property "Reference" "C33" (at 85.471 171.5516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "4u7" (at 85.471 173.863 0)
@@ -5106,7 +5106,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C18") (unit 1)
+          (reference "C33") (unit 1)
         )
       )
     )
@@ -5115,7 +5115,7 @@
   (symbol (lib_id "power:GND") (at 82.55 176.53 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6cedd5)
-    (property "Reference" "#PWR025" (at 82.55 182.88 0)
+    (property "Reference" "#PWR0190" (at 82.55 182.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 82.677 180.9242 0)
@@ -5131,7 +5131,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR025") (unit 1)
+          (reference "#PWR0190") (unit 1)
         )
       )
     )
@@ -5140,7 +5140,7 @@
   (symbol (lib_id "Device:C") (at 58.42 160.02 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6cf8cf)
-    (property "Reference" "C14" (at 61.341 158.8516 0)
+    (property "Reference" "C31" (at 61.341 158.8516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "10u" (at 61.341 161.163 0)
@@ -5160,7 +5160,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C14") (unit 1)
+          (reference "C31") (unit 1)
         )
       )
     )
@@ -5169,7 +5169,7 @@
   (symbol (lib_id "power:GND") (at 58.42 163.83 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6cfc4c)
-    (property "Reference" "#PWR021" (at 58.42 170.18 0)
+    (property "Reference" "#PWR0192" (at 58.42 170.18 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 58.547 168.2242 0)
@@ -5185,7 +5185,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR021") (unit 1)
+          (reference "#PWR0192") (unit 1)
         )
       )
     )
@@ -5194,7 +5194,7 @@
   (symbol (lib_id "power:GND") (at 149.86 201.93 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0025)
-    (property "Reference" "#PWR036" (at 156.21 201.93 0)
+    (property "Reference" "#PWR0145" (at 156.21 201.93 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 153.1112 201.803 90)
@@ -5210,7 +5210,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR036") (unit 1)
+          (reference "#PWR0145") (unit 1)
         )
       )
     )
@@ -5219,7 +5219,7 @@
   (symbol (lib_id "power:GND") (at 149.86 199.39 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d023f)
-    (property "Reference" "#PWR033" (at 156.21 199.39 0)
+    (property "Reference" "#PWR0146" (at 156.21 199.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 153.1112 199.263 90)
@@ -5235,7 +5235,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR033") (unit 1)
+          (reference "#PWR0146") (unit 1)
         )
       )
     )
@@ -5244,7 +5244,7 @@
   (symbol (lib_id "Device:C") (at 138.43 160.02 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0515)
-    (property "Reference" "C16" (at 141.351 158.8516 0)
+    (property "Reference" "C43" (at 141.351 158.8516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 141.351 161.163 0)
@@ -5264,7 +5264,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C16") (unit 1)
+          (reference "C43") (unit 1)
         )
       )
     )
@@ -5273,7 +5273,7 @@
   (symbol (lib_id "Device:C") (at 148.59 160.02 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d05b0)
-    (property "Reference" "C17" (at 151.511 158.8516 0)
+    (property "Reference" "C44" (at 151.511 158.8516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "15p" (at 151.511 161.163 0)
@@ -5293,7 +5293,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C17") (unit 1)
+          (reference "C44") (unit 1)
         )
       )
     )
@@ -5302,7 +5302,7 @@
   (symbol (lib_id "power:GND") (at 138.43 163.83 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0847)
-    (property "Reference" "#PWR023" (at 138.43 170.18 0)
+    (property "Reference" "#PWR0149" (at 138.43 170.18 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 138.557 168.2242 0)
@@ -5318,7 +5318,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR023") (unit 1)
+          (reference "#PWR0149") (unit 1)
         )
       )
     )
@@ -5327,7 +5327,7 @@
   (symbol (lib_id "power:GND") (at 148.59 163.83 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0866)
-    (property "Reference" "#PWR024" (at 148.59 170.18 0)
+    (property "Reference" "#PWR0148" (at 148.59 170.18 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 148.717 168.2242 0)
@@ -5343,7 +5343,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR024") (unit 1)
+          (reference "#PWR0148") (unit 1)
         )
       )
     )
@@ -5352,7 +5352,7 @@
   (symbol (lib_id "Device:C") (at 120.65 242.57 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0de3)
-    (property "Reference" "C43" (at 123.571 241.4016 0)
+    (property "Reference" "C40" (at 123.571 241.4016 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 123.571 243.713 0)
@@ -5372,7 +5372,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C43") (unit 1)
+          (reference "C40") (unit 1)
         )
       )
     )
@@ -5381,7 +5381,7 @@
   (symbol (lib_id "Device:C") (at 110.49 242.57 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0e55)
-    (property "Reference" "C42" (at 113.411 241.4016 0)
+    (property "Reference" "C39" (at 113.411 241.4016 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1u" (at 113.411 243.713 0)
@@ -5401,7 +5401,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C42") (unit 1)
+          (reference "C39") (unit 1)
         )
       )
     )
@@ -5410,7 +5410,7 @@
   (symbol (lib_id "power:GND") (at 110.49 246.38 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0eb9)
-    (property "Reference" "#PWR054" (at 110.49 252.73 0)
+    (property "Reference" "#PWR0142" (at 110.49 252.73 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 110.617 250.7742 0)
@@ -5426,7 +5426,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR054") (unit 1)
+          (reference "#PWR0142") (unit 1)
         )
       )
     )
@@ -5435,7 +5435,7 @@
   (symbol (lib_id "power:GND") (at 120.65 246.38 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d0edc)
-    (property "Reference" "#PWR055" (at 120.65 252.73 0)
+    (property "Reference" "#PWR0144" (at 120.65 252.73 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 120.777 250.7742 0)
@@ -5451,7 +5451,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR055") (unit 1)
+          (reference "#PWR0144") (unit 1)
         )
       )
     )
@@ -5460,7 +5460,7 @@
   (symbol (lib_id "Oscillator:XO32") (at 105.41 265.43 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d3cf8)
-    (property "Reference" "X1" (at 104.14 279.4 0)
+    (property "Reference" "U6" (at 104.14 279.4 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "DSB221SDN" (at 105.41 281.94 0)
@@ -5482,7 +5482,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "X1") (unit 1)
+          (reference "U6") (unit 1)
         )
       )
     )
@@ -5491,7 +5491,7 @@
   (symbol (lib_id "power:GND") (at 71.12 273.05 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d3e40)
-    (property "Reference" "#PWR057" (at 64.77 273.05 0)
+    (property "Reference" "#PWR0140" (at 64.77 273.05 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 66.7258 273.177 0)
@@ -5507,7 +5507,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR057") (unit 1)
+          (reference "#PWR0140") (unit 1)
         )
       )
     )
@@ -5516,7 +5516,7 @@
   (symbol (lib_id "Device:C") (at 85.09 254 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d3e65)
-    (property "Reference" "C46" (at 88.011 252.8316 0)
+    (property "Reference" "C42" (at 88.011 252.8316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 88.011 255.143 0)
@@ -5536,7 +5536,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C46") (unit 1)
+          (reference "C42") (unit 1)
         )
       )
     )
@@ -5545,7 +5545,7 @@
   (symbol (lib_id "power:GND") (at 149.86 196.85 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6d7baa)
-    (property "Reference" "#PWR030" (at 156.21 196.85 0)
+    (property "Reference" "#PWR0147" (at 156.21 196.85 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 153.1112 196.723 90)
@@ -5561,7 +5561,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR030") (unit 1)
+          (reference "#PWR0147") (unit 1)
         )
       )
     )
@@ -5570,7 +5570,7 @@
   (symbol (lib_id "power:GND") (at 132.08 48.26 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6e1885)
-    (property "Reference" "#PWR019" (at 132.08 54.61 0)
+    (property "Reference" "#PWR0127" (at 132.08 54.61 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 132.207 52.6542 0)
@@ -5586,7 +5586,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR019") (unit 1)
+          (reference "#PWR0127") (unit 1)
         )
       )
     )
@@ -5621,7 +5621,7 @@
   (symbol (lib_id "power:GND") (at 63.5 43.18 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6e3bbe)
-    (property "Reference" "#PWR011" (at 63.5 49.53 0)
+    (property "Reference" "#PWR0188" (at 63.5 49.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 63.627 47.5742 0)
@@ -5637,7 +5637,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR011") (unit 1)
+          (reference "#PWR0188") (unit 1)
         )
       )
     )
@@ -5675,7 +5675,7 @@
   (symbol (lib_id "Device:R") (at 76.2 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ec6f0)
-    (property "Reference" "R3" (at 77.978 44.5516 0)
+    (property "Reference" "R2" (at 77.978 44.5516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1k5" (at 77.978 46.863 0)
@@ -5695,7 +5695,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R3") (unit 1)
+          (reference "R2") (unit 1)
         )
       )
     )
@@ -5704,7 +5704,7 @@
   (symbol (lib_id "power:GND") (at 76.2 49.53 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ed31b)
-    (property "Reference" "#PWR012" (at 76.2 55.88 0)
+    (property "Reference" "#PWR0126" (at 76.2 55.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 76.327 53.9242 0)
@@ -5720,7 +5720,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR012") (unit 1)
+          (reference "#PWR0126") (unit 1)
         )
       )
     )
@@ -5729,7 +5729,7 @@
   (symbol (lib_id "power:GND") (at 25.4 39.37 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c6ef2f0)
-    (property "Reference" "#PWR02" (at 25.4 45.72 0)
+    (property "Reference" "#PWR0186" (at 25.4 45.72 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 25.527 43.7642 0)
@@ -5745,7 +5745,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR02") (unit 1)
+          (reference "#PWR0186") (unit 1)
         )
       )
     )
@@ -5754,7 +5754,7 @@
   (symbol (lib_id "Device:C") (at 322.58 66.04 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005c6fe6e8)
-    (property "Reference" "C10" (at 322.58 58.42 90)
+    (property "Reference" "C29" (at 322.58 58.42 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "220p" (at 322.58 60.96 90)
@@ -5774,7 +5774,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C10") (unit 1)
+          (reference "C29") (unit 1)
         )
       )
     )
@@ -5783,7 +5783,7 @@
   (symbol (lib_id "Device:C") (at 359.41 66.04 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005c6fe75c)
-    (property "Reference" "C11" (at 359.41 58.42 90)
+    (property "Reference" "C28" (at 359.41 58.42 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "220p" (at 359.41 60.96 90)
@@ -5803,7 +5803,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C11") (unit 1)
+          (reference "C28") (unit 1)
         )
       )
     )
@@ -5812,7 +5812,7 @@
   (symbol (lib_id "power:GND") (at 318.77 66.04 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c72244d)
-    (property "Reference" "#PWR018" (at 312.42 66.04 0)
+    (property "Reference" "#PWR0174" (at 312.42 66.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 314.3758 66.167 0)
@@ -5828,7 +5828,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR018") (unit 1)
+          (reference "#PWR0174") (unit 1)
         )
       )
     )
@@ -5837,7 +5837,7 @@
   (symbol (lib_id "Device:C") (at 322.58 72.39 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005c739c1e)
-    (property "Reference" "C12" (at 322.58 77.47 90)
+    (property "Reference" "C27" (at 322.58 77.47 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "220p" (at 322.58 80.01 90)
@@ -5857,7 +5857,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C12") (unit 1)
+          (reference "C27") (unit 1)
         )
       )
     )
@@ -5866,7 +5866,7 @@
   (symbol (lib_id "Device:L") (at 177.8 196.85 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005c767da8)
-    (property "Reference" "L3" (at 177.8 190.5 90)
+    (property "Reference" "L71" (at 177.8 190.5 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "47n" (at 177.8 193.04 90)
@@ -5886,7 +5886,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L3") (unit 1)
+          (reference "L71") (unit 1)
         )
       )
     )
@@ -5895,7 +5895,7 @@
   (symbol (lib_id "Device:C") (at 167.64 201.93 0) (unit 1)
     (in_bom no) (on_board yes) (dnp yes)
     (uuid 00000000-0000-0000-0000-00005c76ec49)
-    (property "Reference" "C27" (at 170.561 199.6186 0)
+    (property "Reference" "C72" (at 170.561 199.6186 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "DNP" (at 170.561 201.93 0)
@@ -5912,7 +5912,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C27") (unit 1)
+          (reference "C72") (unit 1)
         )
       )
     )
@@ -5921,7 +5921,7 @@
   (symbol (lib_id "kapula-rescue:Ferrite_Bead-Device") (at 151.13 259.08 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c7af33d)
-    (property "Reference" "FB3" (at 151.13 252.1204 90)
+    (property "Reference" "FB32" (at 151.13 252.1204 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "GZ1608D601TF" (at 151.13 254.4318 90)
@@ -5941,7 +5941,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "FB3") (unit 1)
+          (reference "FB32") (unit 1)
         )
       )
     )
@@ -5950,7 +5950,7 @@
   (symbol (lib_id "Device:R") (at 43.18 78.74 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005c8004a6)
-    (property "Reference" "R19" (at 40.64 77.47 0)
+    (property "Reference" "R22" (at 40.64 77.47 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "10k" (at 40.64 80.01 0)
@@ -5970,7 +5970,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R19") (unit 1)
+          (reference "R22") (unit 1)
         )
       )
     )
@@ -5979,7 +5979,7 @@
   (symbol (lib_id "Device:C") (at 55.88 85.09 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8064c6)
-    (property "Reference" "C57" (at 55.88 78.6892 90)
+    (property "Reference" "C23" (at 55.88 78.6892 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "TBD" (at 55.88 81.0006 90)
@@ -5999,7 +5999,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C57") (unit 1)
+          (reference "C23") (unit 1)
         )
       )
     )
@@ -6008,7 +6008,7 @@
   (symbol (lib_id "Device:R") (at 25.4 66.04 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005c830198)
-    (property "Reference" "R17" (at 25.4 59.69 90)
+    (property "Reference" "R21" (at 25.4 59.69 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "2k2" (at 25.4 62.23 90)
@@ -6028,7 +6028,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R17") (unit 1)
+          (reference "R21") (unit 1)
         )
       )
     )
@@ -6037,7 +6037,7 @@
   (symbol (lib_id "Connector:Conn_01x08_Socket") (at 369.57 30.48 0) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c873d96)
-    (property "Reference" "J2" (at 372.11 30.48 0)
+    (property "Reference" "J9" (at 372.11 30.48 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "~" (at 366.8268 16.9164 0)
@@ -6060,7 +6060,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J2") (unit 1)
+          (reference "J9") (unit 1)
         )
       )
     )
@@ -6069,7 +6069,7 @@
   (symbol (lib_id "power:GND") (at 364.49 35.56 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c87cb50)
-    (property "Reference" "#PWR015" (at 358.14 35.56 0)
+    (property "Reference" "#PWR0175" (at 358.14 35.56 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 361.2388 35.687 90)
@@ -6085,7 +6085,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR015") (unit 1)
+          (reference "#PWR0175") (unit 1)
         )
       )
     )
@@ -6094,7 +6094,7 @@
   (symbol (lib_id "Device:C") (at 358.14 41.91 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c886eee)
-    (property "Reference" "C13" (at 361.061 40.7416 0)
+    (property "Reference" "C47" (at 361.061 40.7416 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1u" (at 361.061 43.053 0)
@@ -6114,7 +6114,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C13") (unit 1)
+          (reference "C47") (unit 1)
         )
       )
     )
@@ -6123,7 +6123,7 @@
   (symbol (lib_id "power:GND") (at 358.14 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c886fd3)
-    (property "Reference" "#PWR016" (at 358.14 52.07 0)
+    (property "Reference" "#PWR0171" (at 358.14 52.07 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 358.267 50.1142 0)
@@ -6139,7 +6139,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR016") (unit 1)
+          (reference "#PWR0171") (unit 1)
         )
       )
     )
@@ -6148,7 +6148,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 97.79 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c888f56)
-    (property "Reference" "H1" (at 392.43 96.6216 90)
+    (property "Reference" "H2" (at 392.43 96.6216 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 98.933 90)
@@ -6164,7 +6164,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H1") (unit 1)
+          (reference "H2") (unit 1)
         )
       )
     )
@@ -6173,7 +6173,7 @@
   (symbol (lib_id "power:GND") (at 386.08 97.79 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8a4d76)
-    (property "Reference" "#PWR062" (at 379.73 97.79 0)
+    (property "Reference" "#PWR0180" (at 379.73 97.79 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 97.917 90)
@@ -6189,7 +6189,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR062") (unit 1)
+          (reference "#PWR0180") (unit 1)
         )
       )
     )
@@ -6198,7 +6198,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 102.87 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8a5576)
-    (property "Reference" "H2" (at 392.43 101.7016 90)
+    (property "Reference" "H3" (at 392.43 101.7016 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 104.013 90)
@@ -6214,7 +6214,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H2") (unit 1)
+          (reference "H3") (unit 1)
         )
       )
     )
@@ -6223,7 +6223,7 @@
   (symbol (lib_id "power:GND") (at 386.08 102.87 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8a557c)
-    (property "Reference" "#PWR065" (at 379.73 102.87 0)
+    (property "Reference" "#PWR0181" (at 379.73 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 102.997 90)
@@ -6239,7 +6239,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR065") (unit 1)
+          (reference "#PWR0181") (unit 1)
         )
       )
     )
@@ -6248,7 +6248,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 107.95 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8a9e29)
-    (property "Reference" "H3" (at 392.43 106.7816 90)
+    (property "Reference" "H4" (at 392.43 106.7816 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 109.093 90)
@@ -6264,7 +6264,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H3") (unit 1)
+          (reference "H4") (unit 1)
         )
       )
     )
@@ -6273,7 +6273,7 @@
   (symbol (lib_id "power:GND") (at 386.08 107.95 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8a9e2f)
-    (property "Reference" "#PWR066" (at 379.73 107.95 0)
+    (property "Reference" "#PWR0182" (at 379.73 107.95 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 108.077 90)
@@ -6289,7 +6289,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR066") (unit 1)
+          (reference "#PWR0182") (unit 1)
         )
       )
     )
@@ -6298,7 +6298,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 113.03 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8a9e35)
-    (property "Reference" "H4" (at 392.43 111.8616 90)
+    (property "Reference" "H5" (at 392.43 111.8616 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 114.173 90)
@@ -6314,7 +6314,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H4") (unit 1)
+          (reference "H5") (unit 1)
         )
       )
     )
@@ -6323,7 +6323,7 @@
   (symbol (lib_id "power:GND") (at 386.08 113.03 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8a9e3b)
-    (property "Reference" "#PWR067" (at 379.73 113.03 0)
+    (property "Reference" "#PWR0183" (at 379.73 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 113.157 90)
@@ -6339,7 +6339,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR067") (unit 1)
+          (reference "#PWR0183") (unit 1)
         )
       )
     )
@@ -6348,7 +6348,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 125.73 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3b87)
-    (property "Reference" "H5" (at 392.43 124.5616 90)
+    (property "Reference" "H6" (at 392.43 124.5616 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 126.873 90)
@@ -6364,7 +6364,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H5") (unit 1)
+          (reference "H6") (unit 1)
         )
       )
     )
@@ -6373,7 +6373,7 @@
   (symbol (lib_id "power:GND") (at 386.08 125.73 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3b8d)
-    (property "Reference" "#PWR074" (at 379.73 125.73 0)
+    (property "Reference" "#PWR0184" (at 379.73 125.73 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 125.857 90)
@@ -6389,7 +6389,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR074") (unit 1)
+          (reference "#PWR0184") (unit 1)
         )
       )
     )
@@ -6398,7 +6398,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 130.81 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3b93)
-    (property "Reference" "H6" (at 392.43 129.6416 90)
+    (property "Reference" "H7" (at 392.43 129.6416 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 131.953 90)
@@ -6414,7 +6414,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H6") (unit 1)
+          (reference "H7") (unit 1)
         )
       )
     )
@@ -6423,7 +6423,7 @@
   (symbol (lib_id "power:GND") (at 386.08 130.81 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3b99)
-    (property "Reference" "#PWR076" (at 379.73 130.81 0)
+    (property "Reference" "#PWR0177" (at 379.73 130.81 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 130.937 90)
@@ -6439,7 +6439,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR076") (unit 1)
+          (reference "#PWR0177") (unit 1)
         )
       )
     )
@@ -6448,7 +6448,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 135.89 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3b9f)
-    (property "Reference" "H7" (at 392.43 134.7216 90)
+    (property "Reference" "H8" (at 392.43 134.7216 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 137.033 90)
@@ -6464,7 +6464,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H7") (unit 1)
+          (reference "H8") (unit 1)
         )
       )
     )
@@ -6473,7 +6473,7 @@
   (symbol (lib_id "power:GND") (at 386.08 135.89 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3ba5)
-    (property "Reference" "#PWR079" (at 379.73 135.89 0)
+    (property "Reference" "#PWR0178" (at 379.73 135.89 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 136.017 90)
@@ -6489,7 +6489,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR079") (unit 1)
+          (reference "#PWR0178") (unit 1)
         )
       )
     )
@@ -6498,7 +6498,7 @@
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 388.62 140.97 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3bab)
-    (property "Reference" "H8" (at 392.43 139.8016 90)
+    (property "Reference" "H9" (at 392.43 139.8016 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "M3" (at 392.43 142.113 90)
@@ -6514,7 +6514,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H8") (unit 1)
+          (reference "H9") (unit 1)
         )
       )
     )
@@ -6523,7 +6523,7 @@
   (symbol (lib_id "power:GND") (at 386.08 140.97 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8b3bb1)
-    (property "Reference" "#PWR081" (at 379.73 140.97 0)
+    (property "Reference" "#PWR0179" (at 379.73 140.97 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 382.8288 141.097 90)
@@ -6539,7 +6539,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR081") (unit 1)
+          (reference "#PWR0179") (unit 1)
         )
       )
     )
@@ -6548,7 +6548,7 @@
   (symbol (lib_id "power:GND") (at 222.25 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8c82be)
-    (property "Reference" "#PWR08" (at 222.25 40.64 0)
+    (property "Reference" "#PWR0129" (at 222.25 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 222.377 38.6842 0)
@@ -6564,7 +6564,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR08") (unit 1)
+          (reference "#PWR0129") (unit 1)
         )
       )
     )
@@ -6573,7 +6573,7 @@
   (symbol (lib_id "Device:C") (at 204.47 30.48 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8da870)
-    (property "Reference" "C3" (at 207.391 29.3116 0)
+    (property "Reference" "C5" (at 207.391 29.3116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1u" (at 207.391 31.623 0)
@@ -6593,7 +6593,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C3") (unit 1)
+          (reference "C5") (unit 1)
         )
       )
     )
@@ -6602,7 +6602,7 @@
   (symbol (lib_id "power:GND") (at 185.42 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8e40a6)
-    (property "Reference" "#PWR07" (at 185.42 40.64 0)
+    (property "Reference" "#PWR0130" (at 185.42 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 185.547 38.6842 0)
@@ -6618,7 +6618,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR07") (unit 1)
+          (reference "#PWR0130") (unit 1)
         )
       )
     )
@@ -6627,7 +6627,7 @@
   (symbol (lib_id "power:GND") (at 232.41 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8e93cf)
-    (property "Reference" "#PWR09" (at 232.41 40.64 0)
+    (property "Reference" "#PWR0160" (at 232.41 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 232.537 38.6842 0)
@@ -6643,7 +6643,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR09") (unit 1)
+          (reference "#PWR0160") (unit 1)
         )
       )
     )
@@ -6652,7 +6652,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 173.99 26.67 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c8f4e05)
-    (property "Reference" "#FLG01" (at 173.99 28.575 0)
+    (property "Reference" "#FLG0102" (at 173.99 28.575 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 173.99 31.0896 0)
@@ -6668,7 +6668,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG01") (unit 1)
+          (reference "#FLG0102") (unit 1)
         )
       )
     )
@@ -6677,7 +6677,7 @@
   (symbol (lib_id "Device:D") (at 143.51 30.48 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c91c5ed)
-    (property "Reference" "D2" (at 145.5166 29.3116 90)
+    (property "Reference" "D1" (at 145.5166 29.3116 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "SM4007PL" (at 145.5166 31.623 90)
@@ -6703,7 +6703,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "D2") (unit 1)
+          (reference "D1") (unit 1)
         )
       )
     )
@@ -6712,7 +6712,7 @@
   (symbol (lib_id "power:GND") (at 143.51 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005c927961)
-    (property "Reference" "#PWR06" (at 143.51 40.64 0)
+    (property "Reference" "#PWR0131" (at 143.51 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 143.637 38.6842 0)
@@ -6728,7 +6728,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR06") (unit 1)
+          (reference "#PWR0131") (unit 1)
         )
       )
     )
@@ -6737,7 +6737,7 @@
   (symbol (lib_id "Device:C") (at 44.45 91.44 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ecb2bf9)
-    (property "Reference" "C62" (at 47.371 89.1286 0)
+    (property "Reference" "C22" (at 47.371 89.1286 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1n" (at 47.371 91.44 0)
@@ -6757,7 +6757,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C62") (unit 1)
+          (reference "C22") (unit 1)
         )
       )
     )
@@ -6766,7 +6766,7 @@
   (symbol (lib_id "power:GND") (at 44.45 95.25 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ecbbfb0)
-    (property "Reference" "#PWR075" (at 44.45 101.6 0)
+    (property "Reference" "#PWR0193" (at 44.45 101.6 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 44.577 99.6442 0)
@@ -6782,7 +6782,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR075") (unit 1)
+          (reference "#PWR0193") (unit 1)
         )
       )
     )
@@ -6791,7 +6791,7 @@
   (symbol (lib_id "kapula:DW01x") (at 121.92 29.21 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ecc071a)
-    (property "Reference" "U3" (at 128.9812 29.5148 0)
+    (property "Reference" "U2" (at 128.9812 29.5148 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "DW01+G" (at 128.9812 31.8262 0)
@@ -6815,7 +6815,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "U3") (unit 1)
+          (reference "U2") (unit 1)
         )
       )
     )
@@ -6824,7 +6824,7 @@
   (symbol (lib_id "power:GND") (at 318.77 83.82 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ecc39fd)
-    (property "Reference" "#PWR017" (at 312.42 83.82 0)
+    (property "Reference" "#PWR0173" (at 312.42 83.82 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 314.3758 83.947 0)
@@ -6840,7 +6840,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR017") (unit 1)
+          (reference "#PWR0173") (unit 1)
         )
       )
     )
@@ -6849,7 +6849,7 @@
   (symbol (lib_id "Device:R") (at 96.52 26.67 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ecd1c36)
-    (property "Reference" "R2" (at 96.52 21.4122 90)
+    (property "Reference" "R3" (at 96.52 21.4122 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "470" (at 96.52 23.7236 90)
@@ -6869,7 +6869,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R2") (unit 1)
+          (reference "R3") (unit 1)
         )
       )
     )
@@ -6878,7 +6878,7 @@
   (symbol (lib_id "Device:C") (at 101.6 30.48 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ecd33b1)
-    (property "Reference" "C7" (at 104.521 29.3116 0)
+    (property "Reference" "C2" (at 104.521 29.3116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 104.521 31.623 0)
@@ -6898,7 +6898,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C7") (unit 1)
+          (reference "C2") (unit 1)
         )
       )
     )
@@ -6907,7 +6907,7 @@
   (symbol (lib_id "kapula:SKY13270-92LF") (at 269.24 212.09 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ece332a)
-    (property "Reference" "U6" (at 269.24 200.9902 0)
+    (property "Reference" "U7" (at 269.24 200.9902 0)
       (effects (font (size 1.524 1.524)))
     )
     (property "Value" "XA213-G4J" (at 269.24 203.6826 0)
@@ -6931,7 +6931,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "U6") (unit 1)
+          (reference "U7") (unit 1)
         )
       )
     )
@@ -6940,7 +6940,7 @@
   (symbol (lib_id "power:GND") (at 269.24 219.71 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ece488b)
-    (property "Reference" "#PWR043" (at 269.24 226.06 0)
+    (property "Reference" "#PWR0120" (at 269.24 226.06 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 269.367 224.1042 0)
@@ -6956,7 +6956,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR043") (unit 1)
+          (reference "#PWR0120") (unit 1)
         )
       )
     )
@@ -6965,7 +6965,7 @@
   (symbol (lib_id "Device:C") (at 250.19 208.28 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ece58c7)
-    (property "Reference" "C24" (at 250.19 201.8792 90)
+    (property "Reference" "C74" (at 250.19 201.8792 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1n" (at 250.19 204.1906 90)
@@ -6985,7 +6985,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C24") (unit 1)
+          (reference "C74") (unit 1)
         )
       )
     )
@@ -6994,7 +6994,7 @@
   (symbol (lib_id "Device:R") (at 91.44 269.24 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ecf2c92)
-    (property "Reference" "R16" (at 93.218 268.0716 0)
+    (property "Reference" "R36" (at 93.218 268.0716 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "0" (at 93.218 270.383 0)
@@ -7014,7 +7014,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R16") (unit 1)
+          (reference "R36") (unit 1)
         )
       )
     )
@@ -7023,7 +7023,7 @@
   (symbol (lib_id "Device:R") (at 205.74 201.93 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005ed06f9d)
-    (property "Reference" "R10" (at 205.74 195.58 90)
+    (property "Reference" "R73" (at 205.74 195.58 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 205.74 198.12 90)
@@ -7043,7 +7043,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R10") (unit 1)
+          (reference "R73") (unit 1)
         )
       )
     )
@@ -7052,7 +7052,7 @@
   (symbol (lib_id "Device:R") (at 132.08 43.18 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed1b204)
-    (property "Reference" "R7" (at 133.858 42.0116 0)
+    (property "Reference" "R4" (at 133.858 42.0116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1k5" (at 133.858 44.323 0)
@@ -7072,7 +7072,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R7") (unit 1)
+          (reference "R4") (unit 1)
         )
       )
     )
@@ -7081,7 +7081,7 @@
   (symbol (lib_id "Device:C") (at 283.21 232.41 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed3be40)
-    (property "Reference" "C34" (at 286.131 231.2416 0)
+    (property "Reference" "C85" (at 286.131 231.2416 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220p" (at 286.131 233.553 0)
@@ -7101,7 +7101,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C34") (unit 1)
+          (reference "C85") (unit 1)
         )
       )
     )
@@ -7110,7 +7110,7 @@
   (symbol (lib_id "Device:C") (at 283.21 194.31 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed47673)
-    (property "Reference" "C30" (at 286.131 193.1416 0)
+    (property "Reference" "C80" (at 286.131 193.1416 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220p" (at 286.131 195.453 0)
@@ -7130,7 +7130,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C30") (unit 1)
+          (reference "C80") (unit 1)
         )
       )
     )
@@ -7139,7 +7139,7 @@
   (symbol (lib_id "Device:R") (at 67.31 250.19 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed58e01)
-    (property "Reference" "R13" (at 67.31 244.9322 90)
+    (property "Reference" "R34" (at 67.31 244.9322 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "100" (at 67.31 247.2436 90)
@@ -7159,7 +7159,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R13") (unit 1)
+          (reference "R34") (unit 1)
         )
       )
     )
@@ -7168,7 +7168,7 @@
   (symbol (lib_id "Device:C") (at 68.58 160.02 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed7dd51)
-    (property "Reference" "C15" (at 71.501 158.8516 0)
+    (property "Reference" "C32" (at 71.501 158.8516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 71.501 161.163 0)
@@ -7188,7 +7188,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C15") (unit 1)
+          (reference "C32") (unit 1)
         )
       )
     )
@@ -7197,7 +7197,7 @@
   (symbol (lib_id "power:GND") (at 68.58 163.83 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed7e60d)
-    (property "Reference" "#PWR022" (at 68.58 170.18 0)
+    (property "Reference" "#PWR0191" (at 68.58 170.18 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 68.707 168.2242 0)
@@ -7213,7 +7213,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR022") (unit 1)
+          (reference "#PWR0191") (unit 1)
         )
       )
     )
@@ -7222,7 +7222,7 @@
   (symbol (lib_id "Device:R") (at 133.35 156.21 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed7ecae)
-    (property "Reference" "R8" (at 133.35 150.9522 90)
+    (property "Reference" "R37" (at 133.35 150.9522 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 133.35 153.2636 90)
@@ -7242,7 +7242,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R8") (unit 1)
+          (reference "R37") (unit 1)
         )
       )
     )
@@ -7251,7 +7251,7 @@
   (symbol (lib_id "power:GND") (at 242.57 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed82b3f)
-    (property "Reference" "#PWR010" (at 242.57 40.64 0)
+    (property "Reference" "#PWR0161" (at 242.57 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 242.697 38.6842 0)
@@ -7267,7 +7267,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR010") (unit 1)
+          (reference "#PWR0161") (unit 1)
         )
       )
     )
@@ -7276,7 +7276,7 @@
   (symbol (lib_id "kapula:TP4054") (at 63.5 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed8b1e6)
-    (property "Reference" "U2" (at 63.5 23.749 0)
+    (property "Reference" "U1" (at 63.5 23.749 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "TP4054" (at 63.5 26.0604 0)
@@ -7299,7 +7299,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "U2") (unit 1)
+          (reference "U1") (unit 1)
         )
       )
     )
@@ -7308,7 +7308,7 @@
   (symbol (lib_id "power:GND") (at 283.21 198.12 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed9e24f)
-    (property "Reference" "#PWR039" (at 283.21 204.47 0)
+    (property "Reference" "#PWR0116" (at 283.21 204.47 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 283.337 202.5142 0)
@@ -7324,7 +7324,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR039") (unit 1)
+          (reference "#PWR0116") (unit 1)
         )
       )
     )
@@ -7333,7 +7333,7 @@
   (symbol (lib_id "power:GND") (at 283.21 236.22 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ed9e606)
-    (property "Reference" "#PWR047" (at 283.21 242.57 0)
+    (property "Reference" "#PWR0121" (at 283.21 242.57 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 283.337 240.6142 0)
@@ -7349,7 +7349,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR047") (unit 1)
+          (reference "#PWR0121") (unit 1)
         )
       )
     )
@@ -7358,7 +7358,7 @@
   (symbol (lib_id "Device:R") (at 279.4 181.61 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005eda6019)
-    (property "Reference" "R9" (at 279.4 175.26 90)
+    (property "Reference" "R76" (at 279.4 175.26 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1k" (at 279.4 177.8 90)
@@ -7378,7 +7378,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R9") (unit 1)
+          (reference "R76") (unit 1)
         )
       )
     )
@@ -7387,7 +7387,7 @@
   (symbol (lib_id "Device:R") (at 264.16 29.21 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005edafd7e)
-    (property "Reference" "R6" (at 265.938 28.0416 0)
+    (property "Reference" "R38" (at 265.938 28.0416 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "1M" (at 265.938 30.353 0)
@@ -7407,7 +7407,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R6") (unit 1)
+          (reference "R38") (unit 1)
         )
       )
     )
@@ -7416,7 +7416,7 @@
   (symbol (lib_id "Device:C") (at 158.75 30.48 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005edc5895)
-    (property "Reference" "C6" (at 161.671 29.3116 0)
+    (property "Reference" "C3" (at 161.671 29.3116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 161.671 31.623 0)
@@ -7436,7 +7436,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C6") (unit 1)
+          (reference "C3") (unit 1)
         )
       )
     )
@@ -7445,7 +7445,7 @@
   (symbol (lib_id "Device:R") (at 279.4 227.33 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005edc6415)
-    (property "Reference" "R12" (at 279.4 222.0722 90)
+    (property "Reference" "R79" (at 279.4 222.0722 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1k" (at 279.4 224.3836 90)
@@ -7465,7 +7465,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R12") (unit 1)
+          (reference "R79") (unit 1)
         )
       )
     )
@@ -7474,7 +7474,7 @@
   (symbol (lib_id "Device:L") (at 177.8 207.01 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005edc8271)
-    (property "Reference" "L5" (at 177.8 209.55 90)
+    (property "Reference" "L73" (at 177.8 209.55 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "47n" (at 177.8 212.09 90)
@@ -7494,7 +7494,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L5") (unit 1)
+          (reference "L73") (unit 1)
         )
       )
     )
@@ -7503,7 +7503,7 @@
   (symbol (lib_id "power:GND") (at 158.75 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005eddc091)
-    (property "Reference" "#PWR013" (at 158.75 40.64 0)
+    (property "Reference" "#PWR0132" (at 158.75 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 158.877 38.6842 0)
@@ -7519,7 +7519,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR013") (unit 1)
+          (reference "#PWR0132") (unit 1)
         )
       )
     )
@@ -7528,7 +7528,7 @@
   (symbol (lib_id "power:GND") (at 31.75 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005edf476a)
-    (property "Reference" "#PWR063" (at 31.75 80.01 0)
+    (property "Reference" "#PWR0185" (at 31.75 80.01 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 31.75 78.74 0)
@@ -7544,7 +7544,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR063") (unit 1)
+          (reference "#PWR0185") (unit 1)
         )
       )
     )
@@ -7553,7 +7553,7 @@
   (symbol (lib_id "kapula-rescue:Ferrite_Bead-Device") (at 53.34 156.21 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ee0ad12)
-    (property "Reference" "FB1" (at 53.34 149.2504 90)
+    (property "Reference" "FB31" (at 53.34 149.2504 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "GZ1608D601TF" (at 53.34 151.5618 90)
@@ -7573,7 +7573,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "FB1") (unit 1)
+          (reference "FB31") (unit 1)
         )
       )
     )
@@ -7582,7 +7582,7 @@
   (symbol (lib_id "Connector:Conn_Coaxial") (at 261.62 185.42 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ee19af0)
-    (property "Reference" "J5" (at 264.16 184.912 0)
+    (property "Reference" "J4" (at 264.16 184.912 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "U.FL" (at 264.16 187.2234 0)
@@ -7602,7 +7602,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J5") (unit 1)
+          (reference "J4") (unit 1)
         )
       )
     )
@@ -7611,7 +7611,7 @@
   (symbol (lib_id "Regulator_Linear:XC6206PxxxMR") (at 222.25 26.67 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005ee2d7a5)
-    (property "Reference" "U1" (at 222.25 18.415 0)
+    (property "Reference" "U3" (at 222.25 18.415 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "XC6206P332MR" (at 222.25 20.955 0)
@@ -7632,7 +7632,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "U1") (unit 1)
+          (reference "U3") (unit 1)
         )
       )
     )
@@ -7641,7 +7641,7 @@
   (symbol (lib_id "power:GND") (at 261.62 190.5 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ee300b4)
-    (property "Reference" "#PWR053" (at 261.62 196.85 0)
+    (property "Reference" "#PWR0118" (at 261.62 196.85 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 261.747 194.8942 0)
@@ -7657,7 +7657,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR053") (unit 1)
+          (reference "#PWR0118") (unit 1)
         )
       )
     )
@@ -7666,7 +7666,7 @@
   (symbol (lib_id "Device:C") (at 322.58 83.82 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005ee76497)
-    (property "Reference" "C9" (at 322.58 88.9 90)
+    (property "Reference" "C26" (at 322.58 88.9 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "220p" (at 322.58 91.44 90)
@@ -7686,7 +7686,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C9") (unit 1)
+          (reference "C26") (unit 1)
         )
       )
     )
@@ -7695,7 +7695,7 @@
   (symbol (lib_id "Device:L") (at 184.15 201.93 0) (unit 1)
     (in_bom no) (on_board yes) (dnp yes)
     (uuid 00000000-0000-0000-0000-00005eefb0b9)
-    (property "Reference" "L4" (at 185.4708 200.7616 0)
+    (property "Reference" "L72" (at 185.4708 200.7616 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "DNP" (at 185.4708 203.073 0)
@@ -7715,7 +7715,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L4") (unit 1)
+          (reference "L72") (unit 1)
         )
       )
     )
@@ -7724,7 +7724,7 @@
   (symbol (lib_id "kapula-rescue:Net-Tie_2-Device") (at 227.33 160.02 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ef0fa29)
-    (property "Reference" "NT1" (at 228.4476 160.02 90)
+    (property "Reference" "NT71" (at 228.4476 160.02 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 228.4476 161.163 90)
@@ -7741,7 +7741,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "NT1") (unit 1)
+          (reference "NT71") (unit 1)
         )
       )
     )
@@ -7750,7 +7750,7 @@
   (symbol (lib_id "power:GND") (at 227.33 162.56 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ef3278d)
-    (property "Reference" "#PWR026" (at 227.33 168.91 0)
+    (property "Reference" "#PWR0156" (at 227.33 168.91 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 227.457 166.9542 0)
@@ -7766,7 +7766,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR026") (unit 1)
+          (reference "#PWR0156") (unit 1)
         )
       )
     )
@@ -7803,7 +7803,7 @@
   (symbol (lib_id "power:GND") (at 246.38 78.74 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f0575f4)
-    (property "Reference" "#PWR059" (at 240.03 78.74 0)
+    (property "Reference" "#PWR0159" (at 240.03 78.74 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 243.1288 78.867 90)
@@ -7819,7 +7819,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR059") (unit 1)
+          (reference "#PWR0159") (unit 1)
         )
       )
     )
@@ -7828,7 +7828,7 @@
   (symbol (lib_id "Transistor_FET:AO3401A") (at 271.78 27.94 270) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f11467d)
-    (property "Reference" "Q2" (at 271.78 19.2532 90)
+    (property "Reference" "Q5" (at 271.78 19.2532 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "AO3401A" (at 271.78 21.5646 90)
@@ -7849,7 +7849,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "Q2") (unit 1)
+          (reference "Q5") (unit 1)
         )
       )
     )
@@ -7858,7 +7858,7 @@
   (symbol (lib_id "Connector_Generic:Conn_01x04") (at 384.81 26.67 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 00000000-0000-0000-0000-00005f151430)
-    (property "Reference" "J6" (at 384.81 20.32 0)
+    (property "Reference" "J10" (at 384.81 20.32 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "~" (at 386.8928 23.4696 0)
@@ -7877,7 +7877,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J6") (unit 1)
+          (reference "J10") (unit 1)
         )
       )
     )
@@ -7886,7 +7886,7 @@
   (symbol (lib_id "Device:R") (at 26.67 118.11 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f182c47)
-    (property "Reference" "R1" (at 28.448 116.9416 0)
+    (property "Reference" "R11" (at 28.448 116.9416 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "330k" (at 28.448 119.253 0)
@@ -7906,7 +7906,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R1") (unit 1)
+          (reference "R11") (unit 1)
         )
       )
     )
@@ -7915,7 +7915,7 @@
   (symbol (lib_id "Device:R") (at 26.67 135.89 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f18c82a)
-    (property "Reference" "R5" (at 28.448 134.7216 0)
+    (property "Reference" "R12" (at 28.448 134.7216 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "100k" (at 28.448 137.033 0)
@@ -7935,7 +7935,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R5") (unit 1)
+          (reference "R12") (unit 1)
         )
       )
     )
@@ -7944,7 +7944,7 @@
   (symbol (lib_id "Device:C") (at 35.56 135.89 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f1a7f6b)
-    (property "Reference" "C8" (at 38.481 134.7216 0)
+    (property "Reference" "C11" (at 38.481 134.7216 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 38.481 137.033 0)
@@ -7964,7 +7964,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C8") (unit 1)
+          (reference "C11") (unit 1)
         )
       )
     )
@@ -8003,7 +8003,7 @@
   (symbol (lib_id "Device:C") (at 297.18 212.09 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f1e4602)
-    (property "Reference" "C31" (at 297.18 205.6892 90)
+    (property "Reference" "C81" (at 297.18 205.6892 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1n" (at 297.18 208.0006 90)
@@ -8023,7 +8023,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C31") (unit 1)
+          (reference "C81") (unit 1)
         )
       )
     )
@@ -8032,7 +8032,7 @@
   (symbol (lib_id "power:GND") (at 26.67 139.7 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f1f845b)
-    (property "Reference" "#PWR014" (at 26.67 146.05 0)
+    (property "Reference" "#PWR0194" (at 26.67 146.05 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 26.797 144.0942 0)
@@ -8048,7 +8048,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR014") (unit 1)
+          (reference "#PWR0194") (unit 1)
         )
       )
     )
@@ -8057,7 +8057,7 @@
   (symbol (lib_id "Device:C") (at 35.56 193.04 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f2bb076)
-    (property "Reference" "C21" (at 38.481 191.8716 0)
+    (property "Reference" "C34" (at 38.481 191.8716 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "4u7" (at 38.481 194.183 0)
@@ -8077,7 +8077,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C21") (unit 1)
+          (reference "C34") (unit 1)
         )
       )
     )
@@ -8086,7 +8086,7 @@
   (symbol (lib_id "power:GND") (at 35.56 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f2d4296)
-    (property "Reference" "#PWR028" (at 35.56 203.2 0)
+    (property "Reference" "#PWR0154" (at 35.56 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 35.687 201.2442 0)
@@ -8102,7 +8102,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR028") (unit 1)
+          (reference "#PWR0154") (unit 1)
         )
       )
     )
@@ -8111,7 +8111,7 @@
   (symbol (lib_id "power:GND") (at 34.29 39.37 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f2ecb13)
-    (property "Reference" "#PWR03" (at 34.29 45.72 0)
+    (property "Reference" "#PWR0187" (at 34.29 45.72 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 34.417 43.7642 0)
@@ -8127,7 +8127,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR03") (unit 1)
+          (reference "#PWR0187") (unit 1)
         )
       )
     )
@@ -8136,7 +8136,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 156.21 156.21 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f308430)
-    (property "Reference" "#FLG05" (at 156.21 154.305 0)
+    (property "Reference" "#FLG0107" (at 156.21 154.305 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 156.21 151.7904 0)
@@ -8152,7 +8152,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG05") (unit 1)
+          (reference "#FLG0107") (unit 1)
         )
       )
     )
@@ -8161,7 +8161,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 82.55 168.91 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f30e4c6)
-    (property "Reference" "#FLG06" (at 82.55 167.005 0)
+    (property "Reference" "#FLG0111" (at 82.55 167.005 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 82.55 164.4904 0)
@@ -8177,7 +8177,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG06") (unit 1)
+          (reference "#FLG0111") (unit 1)
         )
       )
     )
@@ -8186,7 +8186,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 68.58 156.21 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f3112c2)
-    (property "Reference" "#FLG04" (at 68.58 154.305 0)
+    (property "Reference" "#FLG0110" (at 68.58 154.305 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 68.58 151.7904 0)
@@ -8202,7 +8202,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG04") (unit 1)
+          (reference "#FLG0110") (unit 1)
         )
       )
     )
@@ -8211,7 +8211,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 120.65 238.76 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f318c91)
-    (property "Reference" "#FLG07" (at 120.65 236.855 0)
+    (property "Reference" "#FLG0106" (at 120.65 236.855 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 120.65 234.3404 0)
@@ -8227,7 +8227,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG07") (unit 1)
+          (reference "#FLG0106") (unit 1)
         )
       )
     )
@@ -8236,7 +8236,7 @@
   (symbol (lib_id "Connector:TestPoint") (at 110.49 36.83 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f3ad20d)
-    (property "Reference" "TP2" (at 110.49 41.91 90)
+    (property "Reference" "TP1" (at 110.49 41.91 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 111.9632 39.8018 0)
@@ -8252,7 +8252,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "TP2") (unit 1)
+          (reference "TP1") (unit 1)
         )
       )
     )
@@ -8261,7 +8261,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 134.62 49.53 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f511bb5)
-    (property "Reference" "#FLG03" (at 134.62 51.435 0)
+    (property "Reference" "#FLG0101" (at 134.62 51.435 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 134.62 53.9496 0)
@@ -8277,7 +8277,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG03") (unit 1)
+          (reference "#FLG0101") (unit 1)
         )
       )
     )
@@ -8286,7 +8286,7 @@
   (symbol (lib_id "Device:R") (at 353.06 30.48 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f513a1a)
-    (property "Reference" "R4" (at 353.06 25.2222 90)
+    (property "Reference" "R43" (at 353.06 25.2222 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 353.06 27.5336 90)
@@ -8306,7 +8306,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R4") (unit 1)
+          (reference "R43") (unit 1)
         )
       )
     )
@@ -8315,7 +8315,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 44.45 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f52a0d8)
-    (property "Reference" "#FLG02" (at 44.45 29.845 0)
+    (property "Reference" "#FLG0109" (at 44.45 29.845 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 44.45 27.3304 0)
@@ -8331,7 +8331,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG02") (unit 1)
+          (reference "#FLG0109") (unit 1)
         )
       )
     )
@@ -8340,7 +8340,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 74.93 250.19 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f530d40)
-    (property "Reference" "#FLG08" (at 74.93 248.285 0)
+    (property "Reference" "#FLG0105" (at 74.93 248.285 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 74.93 245.7704 0)
@@ -8356,7 +8356,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG08") (unit 1)
+          (reference "#FLG0105") (unit 1)
         )
       )
     )
@@ -8365,7 +8365,7 @@
   (symbol (lib_id "Connector:TestPoint") (at 130.81 234.95 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f62deb9)
-    (property "Reference" "TP11" (at 132.2832 236.7788 0)
+    (property "Reference" "TP2" (at 132.2832 236.7788 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "~" (at 132.2832 237.9218 0)
@@ -8381,7 +8381,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "TP11") (unit 1)
+          (reference "TP2") (unit 1)
         )
       )
     )
@@ -8390,7 +8390,7 @@
   (symbol (lib_id "Device:C") (at 74.93 254 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f7f8437)
-    (property "Reference" "C45" (at 77.851 252.8316 0)
+    (property "Reference" "C41" (at 77.851 252.8316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "10u" (at 77.851 255.143 0)
@@ -8410,7 +8410,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C45") (unit 1)
+          (reference "C41") (unit 1)
         )
       )
     )
@@ -8419,7 +8419,7 @@
   (symbol (lib_id "Device:C") (at 232.41 30.48 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f7fa808)
-    (property "Reference" "C4" (at 235.331 29.3116 0)
+    (property "Reference" "C6" (at 235.331 29.3116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "10u" (at 235.331 31.623 0)
@@ -8439,7 +8439,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C4") (unit 1)
+          (reference "C6") (unit 1)
         )
       )
     )
@@ -8448,7 +8448,7 @@
   (symbol (lib_id "Device:C") (at 31.75 69.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f816d37)
-    (property "Reference" "C50" (at 34.671 68.6816 0)
+    (property "Reference" "C21" (at 34.671 68.6816 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "4u7" (at 34.671 70.993 0)
@@ -8468,7 +8468,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C50") (unit 1)
+          (reference "C21") (unit 1)
         )
       )
     )
@@ -8477,7 +8477,7 @@
   (symbol (lib_id "Device:C") (at 242.57 30.48 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005f835c80)
-    (property "Reference" "C5" (at 245.491 29.3116 0)
+    (property "Reference" "C7" (at 245.491 29.3116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "10u" (at 245.491 31.623 0)
@@ -8497,7 +8497,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C5") (unit 1)
+          (reference "C7") (unit 1)
         )
       )
     )
@@ -8506,7 +8506,7 @@
   (symbol (lib_id "Connector:Conn_Coaxial") (at 360.68 212.09 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 002a3077-b764-430e-8084-692dc8e9a0ee)
-    (property "Reference" "J13" (at 363.22 211.582 0)
+    (property "Reference" "J5" (at 363.22 211.582 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "U.FL" (at 363.22 213.8934 0)
@@ -8526,7 +8526,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J13") (unit 1)
+          (reference "J5") (unit 1)
         )
       )
     )
@@ -8535,7 +8535,7 @@
   (symbol (lib_id "power:GND") (at 214.63 82.55 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00932aab-b8f5-4c55-973b-07b124e723db)
-    (property "Reference" "#PWR040" (at 214.63 88.9 0)
+    (property "Reference" "#PWR0135" (at 214.63 88.9 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 214.757 86.9442 0)
@@ -8551,31 +8551,31 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR040") (unit 1)
+          (reference "#PWR0135") (unit 1)
         )
       )
     )
   )
 
-  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 86.36 0) (unit 1)
+  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 167.64 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 0500a41d-8a19-425f-98ae-8c620f349cbf)
-    (property "Reference" "H12" (at 392.43 86.36 0)
+    (property "Reference" "H13" (at 392.43 167.64 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "~" (at 392.43 87.63 0)
+    (property "Value" "~" (at 392.43 168.91 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "kapula:ToolingHole" (at 389.89 86.36 0)
+    (property "Footprint" "kapula:ToolingHole" (at 389.89 167.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "" (at 389.89 86.36 0)
+    (property "Datasheet" "" (at 389.89 167.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H12") (unit 1)
+          (reference "H13") (unit 1)
         )
       )
     )
@@ -8584,7 +8584,7 @@
   (symbol (lib_id "Device:R") (at 177.8 102.87 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 064d6ead-6cd1-4c6a-9292-00c5c72b7950)
-    (property "Reference" "R42" (at 177.8 106.68 90)
+    (property "Reference" "R20" (at 177.8 106.68 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 177.8 109.22 90)
@@ -8599,12 +8599,12 @@
     (property "LCSC" "C17168" (at 177.8 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid fa9e600c-aa29-4756-a903-2c6d97229ea4))
-    (pin "2" (uuid 744d31dd-6e98-4696-a2c4-8d5be9c3342f))
+    (pin "1" (uuid a04850ec-2756-4eaf-afd2-da6d91a45c6d))
+    (pin "2" (uuid 69b6e83f-a252-412a-85f3-772e89ff2644))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R42") (unit 1)
+          (reference "R20") (unit 1)
         )
       )
     )
@@ -8613,7 +8613,7 @@
   (symbol (lib_id "Device:C") (at 184.15 238.76 0) (unit 1)
     (in_bom no) (on_board yes) (dnp yes)
     (uuid 0664d3bc-f0f6-4984-b364-502e6fc92939)
-    (property "Reference" "C47" (at 187.071 236.4486 0)
+    (property "Reference" "C78" (at 187.071 236.4486 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "DNP" (at 187.071 238.76 0)
@@ -8630,7 +8630,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C47") (unit 1)
+          (reference "C78") (unit 1)
         )
       )
     )
@@ -8639,7 +8639,7 @@
   (symbol (lib_id "Device:R") (at 393.7 24.13 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 098d92ad-f9d2-447b-994c-c30bb90d38c3)
-    (property "Reference" "R33" (at 400.05 24.13 90)
+    (property "Reference" "R44" (at 400.05 24.13 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 393.7 24.13 90)
@@ -8659,7 +8659,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R33") (unit 1)
+          (reference "R44") (unit 1)
         )
       )
     )
@@ -8668,7 +8668,7 @@
   (symbol (lib_id "Device:R") (at 48.26 40.64 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 0af48edf-5791-4675-a74b-4ff0a4da0aff)
-    (property "Reference" "R15" (at 50.8 39.37 0)
+    (property "Reference" "R1" (at 50.8 39.37 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "0" (at 50.8 41.91 0)
@@ -8688,7 +8688,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R15") (unit 1)
+          (reference "R1") (unit 1)
         )
       )
     )
@@ -8697,7 +8697,7 @@
   (symbol (lib_id "Device:R") (at 96.52 238.76 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0b15e55e-0dfb-49cc-875c-6692ae47a232)
-    (property "Reference" "R26" (at 96.52 233.5022 90)
+    (property "Reference" "R33" (at 96.52 233.5022 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1" (at 96.52 235.8136 90)
@@ -8717,7 +8717,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R26") (unit 1)
+          (reference "R33") (unit 1)
         )
       )
     )
@@ -8726,7 +8726,7 @@
   (symbol (lib_id "power:GND") (at 223.52 210.82 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 0ca39043-161a-45e3-aa35-0471d1dea060)
-    (property "Reference" "#PWR0104" (at 229.87 210.82 0)
+    (property "Reference" "#PWR0114" (at 229.87 210.82 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 227.33 210.8199 90)
@@ -8742,7 +8742,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0104") (unit 1)
+          (reference "#PWR0114") (unit 1)
         )
       )
     )
@@ -8751,7 +8751,7 @@
   (symbol (lib_id "Device:R") (at 295.91 25.4 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0d2ad4e8-916f-476d-86e3-c2425ead36b3)
-    (property "Reference" "R24" (at 295.91 20.1422 90)
+    (property "Reference" "R40" (at 295.91 20.1422 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 295.91 22.4536 90)
@@ -8771,7 +8771,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R24") (unit 1)
+          (reference "R40") (unit 1)
         )
       )
     )
@@ -8780,7 +8780,7 @@
   (symbol (lib_id "Device:C") (at 187.96 106.68 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0e98a479-1de5-4f93-9dde-208f618e2bad)
-    (property "Reference" "C71" (at 190.881 105.5116 0)
+    (property "Reference" "C17" (at 190.881 105.5116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "4u7" (at 190.881 107.823 0)
@@ -8795,12 +8795,12 @@
     (property "LCSC" "C1779" (at 187.96 106.68 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 2d650755-144e-4f0d-81df-0b60debc9561))
-    (pin "2" (uuid bd6a1bdc-ab61-44f0-bdbb-20aafd46d972))
+    (pin "1" (uuid 20ce79b6-c6c4-49e5-be02-a0ca8f078c82))
+    (pin "2" (uuid 96c40c0e-571d-441b-b5dd-a749d2a4f28b))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C71") (unit 1)
+          (reference "C17") (unit 1)
         )
       )
     )
@@ -8809,7 +8809,7 @@
   (symbol (lib_id "power:GND") (at 317.5 224.79 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 0e996aa1-3a4e-470b-9a84-aafcb2306f33)
-    (property "Reference" "#PWR0119" (at 317.5 231.14 0)
+    (property "Reference" "#PWR0123" (at 317.5 231.14 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 317.5 229.87 0)
@@ -8825,7 +8825,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0119") (unit 1)
+          (reference "#PWR0123") (unit 1)
         )
       )
     )
@@ -8834,7 +8834,7 @@
   (symbol (lib_id "kapula-rescue:Net-Tie_2-Device") (at 317.5 222.25 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0ff7a07a-8f13-4565-946a-4a82f2d50757)
-    (property "Reference" "NT2" (at 318.6176 222.25 90)
+    (property "Reference" "NT72" (at 318.6176 222.25 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 318.6176 223.393 90)
@@ -8851,7 +8851,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "NT2") (unit 1)
+          (reference "NT72") (unit 1)
         )
       )
     )
@@ -8860,7 +8860,7 @@
   (symbol (lib_id "Transistor_FET:AO3400A") (at 125.73 45.72 90) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1115fb32-6936-41bd-8cc0-73a0a06cfdcd)
-    (property "Reference" "Q5" (at 125.73 52.07 90)
+    (property "Reference" "Q3" (at 125.73 52.07 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "AO3400A" (at 125.73 54.61 90)
@@ -8881,7 +8881,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "Q5") (unit 1)
+          (reference "Q3") (unit 1)
         )
       )
     )
@@ -8921,7 +8921,7 @@
   (symbol (lib_id "power:GND") (at 251.46 193.04 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 156466c1-2721-47a2-ada9-be5d77ed2494)
-    (property "Reference" "#PWR080" (at 251.46 199.39 0)
+    (property "Reference" "#PWR0117" (at 251.46 199.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 251.587 197.4342 0)
@@ -8937,7 +8937,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR080") (unit 1)
+          (reference "#PWR0117") (unit 1)
         )
       )
     )
@@ -8946,7 +8946,7 @@
   (symbol (lib_id "power:GND") (at 349.25 68.58 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 1613b277-755e-4646-99aa-9b17f2640d47)
-    (property "Reference" "#PWR045" (at 355.6 68.58 0)
+    (property "Reference" "#PWR0168" (at 355.6 68.58 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 353.06 68.58 90)
@@ -8962,7 +8962,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR045") (unit 1)
+          (reference "#PWR0168") (unit 1)
         )
       )
     )
@@ -8971,7 +8971,7 @@
   (symbol (lib_id "Device:C") (at 167.64 238.76 0) (unit 1)
     (in_bom no) (on_board yes) (dnp yes)
     (uuid 196577d8-256a-435b-bf96-dcad72bfe180)
-    (property "Reference" "C32" (at 170.561 236.4486 0)
+    (property "Reference" "C77" (at 170.561 236.4486 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "DNP" (at 170.561 238.76 0)
@@ -8988,7 +8988,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C32") (unit 1)
+          (reference "C77") (unit 1)
         )
       )
     )
@@ -8997,7 +8997,7 @@
   (symbol (lib_id "Device:R") (at 48.26 85.09 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 196a710c-820b-401b-8892-2109a7fb372f)
-    (property "Reference" "R18" (at 48.26 78.74 90)
+    (property "Reference" "R23" (at 48.26 78.74 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1k" (at 48.26 81.28 90)
@@ -9017,7 +9017,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R18") (unit 1)
+          (reference "R23") (unit 1)
         )
       )
     )
@@ -9026,7 +9026,7 @@
   (symbol (lib_id "Connector:TestPoint") (at 246.38 193.04 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1ee5e505-b125-4a4d-9a63-63d6b012fbc8)
-    (property "Reference" "TP16" (at 246.38 198.12 90)
+    (property "Reference" "TP5" (at 246.38 198.12 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 247.8532 196.0118 0)
@@ -9042,7 +9042,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "TP16") (unit 1)
+          (reference "TP5") (unit 1)
         )
       )
     )
@@ -9051,7 +9051,7 @@
   (symbol (lib_id "power:GND") (at 344.17 113.03 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 2230b35c-5281-436a-9114-14e7b01d2444)
-    (property "Reference" "#PWR072" (at 350.52 113.03 0)
+    (property "Reference" "#PWR0103" (at 350.52 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 347.98 113.03 90)
@@ -9067,7 +9067,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR072") (unit 1)
+          (reference "#PWR0103") (unit 1)
         )
       )
     )
@@ -9076,7 +9076,7 @@
   (symbol (lib_id "power:GND") (at 349.25 76.2 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 23d073a5-6fd4-4ca2-b5d3-8d0017606b44)
-    (property "Reference" "#PWR049" (at 355.6 76.2 0)
+    (property "Reference" "#PWR0165" (at 355.6 76.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 353.06 76.2 90)
@@ -9092,7 +9092,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR049") (unit 1)
+          (reference "#PWR0165") (unit 1)
         )
       )
     )
@@ -9101,7 +9101,7 @@
   (symbol (lib_id "Device:C") (at 130.81 106.68 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 23de4045-0c93-43ca-b304-18802306c31e)
-    (property "Reference" "C28" (at 133.731 105.5116 0)
+    (property "Reference" "C14" (at 133.731 105.5116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220p" (at 133.731 107.823 0)
@@ -9116,12 +9116,12 @@
     (property "LCSC" "C1530" (at 130.81 106.68 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 601196fb-cd85-491a-b025-29d4de5ec489))
-    (pin "2" (uuid e2b11ec6-6527-46d5-8e2a-42d079e0e882))
+    (pin "1" (uuid 3f116480-6e9a-444c-a675-35c7b3e930e2))
+    (pin "2" (uuid 4958a276-1684-4fb4-8a41-87b41a0b61b9))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C28") (unit 1)
+          (reference "C14") (unit 1)
         )
       )
     )
@@ -9130,7 +9130,7 @@
   (symbol (lib_id "Device:R") (at 175.26 259.08 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 244f57a8-e4a0-4f2d-96be-38d34a0d7681)
-    (property "Reference" "R38" (at 175.26 253.8222 90)
+    (property "Reference" "R75" (at 175.26 253.8222 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 175.26 256.1336 90)
@@ -9150,7 +9150,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R38") (unit 1)
+          (reference "R75") (unit 1)
         )
       )
     )
@@ -9203,7 +9203,7 @@
   (symbol (lib_id "Device:R") (at 148.59 71.12 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 2b633b79-bbbc-4581-821b-56e82523ca2b)
-    (property "Reference" "R28" (at 151.13 69.85 0)
+    (property "Reference" "R16" (at 151.13 69.85 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1M" (at 151.13 72.39 0)
@@ -9218,12 +9218,12 @@
     (property "LCSC" "C26083" (at 148.59 71.12 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 18763352-3f83-47df-971f-efbc936acdce))
-    (pin "2" (uuid 85260544-2281-4809-a34c-eff000903cc8))
+    (pin "1" (uuid 0751cf49-ecbf-4bba-a442-4899d18c355b))
+    (pin "2" (uuid 5959e9da-0588-494a-9756-30569f580932))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R28") (unit 1)
+          (reference "R16") (unit 1)
         )
       )
     )
@@ -9232,7 +9232,7 @@
   (symbol (lib_id "power:GND") (at 304.8 219.71 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 2be87673-f7bf-4d43-be71-358421413041)
-    (property "Reference" "#PWR0118" (at 304.8 226.06 0)
+    (property "Reference" "#PWR0115" (at 304.8 226.06 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 304.8 224.79 0)
@@ -9248,7 +9248,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0118") (unit 1)
+          (reference "#PWR0115") (unit 1)
         )
       )
     )
@@ -9257,7 +9257,7 @@
   (symbol (lib_id "power:GND") (at 318.77 72.39 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 2c6b3e00-5223-44f8-a238-ba3bddeb4445)
-    (property "Reference" "#PWR04" (at 312.42 72.39 0)
+    (property "Reference" "#PWR0172" (at 312.42 72.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 314.3758 72.517 0)
@@ -9273,7 +9273,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR04") (unit 1)
+          (reference "#PWR0172") (unit 1)
         )
       )
     )
@@ -9282,7 +9282,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 31.75 189.23 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 2d0e359d-abdd-446e-9cf5-1d56141f4964)
-    (property "Reference" "#FLG010" (at 31.75 187.325 0)
+    (property "Reference" "#FLG0112" (at 31.75 187.325 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 31.75 184.15 0)
@@ -9298,7 +9298,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG010") (unit 1)
+          (reference "#FLG0112") (unit 1)
         )
       )
     )
@@ -9362,7 +9362,7 @@
       )
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "Q4") (unit 1)
+          (reference "Q6") (unit 1)
         )
       )
     )
@@ -9371,7 +9371,7 @@
   (symbol (lib_id "power:GND") (at 204.47 34.29 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 381715da-ff64-4232-8551-7cbcba49b601)
-    (property "Reference" "#PWR056" (at 204.47 40.64 0)
+    (property "Reference" "#PWR0128" (at 204.47 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 204.597 38.6842 0)
@@ -9387,7 +9387,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR056") (unit 1)
+          (reference "#PWR0128") (unit 1)
         )
       )
     )
@@ -9422,7 +9422,7 @@
   (symbol (lib_id "Transistor_FET:AO3400A") (at 113.03 45.72 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3913c9c3-6af2-43b5-8153-58d24537b154)
-    (property "Reference" "Q3" (at 113.03 52.07 90)
+    (property "Reference" "Q2" (at 113.03 52.07 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "AO3400A" (at 113.03 54.61 90)
@@ -9443,7 +9443,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "Q3") (unit 1)
+          (reference "Q2") (unit 1)
         )
       )
     )
@@ -9452,7 +9452,7 @@
   (symbol (lib_id "power:GND") (at 331.47 107.95 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 3b5ec350-3f8a-4a16-9f5a-f26f2feb695b)
-    (property "Reference" "#PWR070" (at 325.12 107.95 0)
+    (property "Reference" "#PWR0108" (at 325.12 107.95 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 327.66 107.95 90)
@@ -9468,7 +9468,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR070") (unit 1)
+          (reference "#PWR0108") (unit 1)
         )
       )
     )
@@ -9477,7 +9477,7 @@
   (symbol (lib_id "power:GND") (at 156.21 266.7 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 3c9714a1-8c2a-4b08-a6ee-a4bdf96cb211)
-    (property "Reference" "#PWR0102" (at 156.21 273.05 0)
+    (property "Reference" "#PWR0143" (at 156.21 273.05 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 156.2099 270.51 90)
@@ -9493,7 +9493,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0102") (unit 1)
+          (reference "#PWR0143") (unit 1)
         )
       )
     )
@@ -9502,7 +9502,7 @@
   (symbol (lib_id "kapula-rescue:Ferrite_Bead-Device") (at 196.85 85.09 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 3d7e73c9-2109-4d4e-b13e-1a797c29dc15)
-    (property "Reference" "FB8" (at 196.7992 78.74 90)
+    (property "Reference" "FB12" (at 196.7992 78.74 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "GZ2012D101TF" (at 196.7992 81.28 90)
@@ -9517,12 +9517,12 @@
     (property "LCSC" "C1015" (at 196.85 85.09 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 8d34eedb-de66-4538-9252-2c4d55872c1f))
-    (pin "2" (uuid 8bc5357b-d979-4dc8-a899-0f59d2386c61))
+    (pin "1" (uuid fcb94c9f-3840-4c7d-b435-7b3185f2f080))
+    (pin "2" (uuid 334e769b-4d15-45c3-a0f4-2e78bd529290))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "FB8") (unit 1)
+          (reference "FB12") (unit 1)
         )
       )
     )
@@ -9531,7 +9531,7 @@
   (symbol (lib_id "Device:C") (at 317.5 215.9 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3d985846-7fbf-4782-b846-1068c2babf35)
-    (property "Reference" "C44" (at 320.421 214.7316 0)
+    (property "Reference" "C83" (at 320.421 214.7316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "10p" (at 320.421 217.043 0)
@@ -9551,7 +9551,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C44") (unit 1)
+          (reference "C83") (unit 1)
         )
       )
     )
@@ -9560,7 +9560,7 @@
   (symbol (lib_id "Connector:Conn_Coaxial") (at 238.76 154.94 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3e771762-3e07-435c-893b-54af4b17e727)
-    (property "Reference" "J9" (at 241.2746 155.5496 0)
+    (property "Reference" "J3" (at 241.2746 155.5496 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "U.FL" (at 241.2746 157.861 0)
@@ -9580,7 +9580,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J9") (unit 1)
+          (reference "J3") (unit 1)
         )
       )
     )
@@ -9589,7 +9589,7 @@
   (symbol (lib_id "Connector:TestPoint") (at 341.63 200.66 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4037f28c-e517-4cee-b587-24569bc7f571)
-    (property "Reference" "TP14" (at 341.63 205.74 90)
+    (property "Reference" "TP7" (at 341.63 205.74 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 343.1032 203.6318 0)
@@ -9605,7 +9605,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "TP14") (unit 1)
+          (reference "TP7") (unit 1)
         )
       )
     )
@@ -9614,7 +9614,7 @@
   (symbol (lib_id "Device:C") (at 203.2 88.9 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4215be8f-69dd-4d35-9898-bc7467c9eb73)
-    (property "Reference" "C70" (at 206.121 87.7316 0)
+    (property "Reference" "C24" (at 206.121 87.7316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220p" (at 206.121 90.043 0)
@@ -9629,12 +9629,12 @@
     (property "LCSC" "C1530" (at 203.2 88.9 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid f5f98827-9026-4c29-9f38-e90c2260986a))
-    (pin "2" (uuid dfb9590a-a08c-4452-9a2d-12e2c5025c91))
+    (pin "1" (uuid 0bd3d7e3-554f-4a9c-ab82-7aa386344db0))
+    (pin "2" (uuid f6e80ac8-1f1b-48c7-b24d-f92600260e51))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C70") (unit 1)
+          (reference "C24") (unit 1)
         )
       )
     )
@@ -9643,7 +9643,7 @@
   (symbol (lib_id "power:GND") (at 187.96 110.49 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 44c48323-5f71-4027-9769-c3208429222b)
-    (property "Reference" "#PWR044" (at 187.96 116.84 0)
+    (property "Reference" "#PWR0136" (at 187.96 116.84 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 188.087 114.8842 0)
@@ -9659,7 +9659,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR044") (unit 1)
+          (reference "#PWR0136") (unit 1)
         )
       )
     )
@@ -9668,7 +9668,7 @@
   (symbol (lib_id "power:GND") (at 130.81 110.49 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 4623fd73-2244-48cd-8efd-63f25a32bc4f)
-    (property "Reference" "#PWR038" (at 130.81 116.84 0)
+    (property "Reference" "#PWR0138" (at 130.81 116.84 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 130.81 115.57 0)
@@ -9684,7 +9684,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR038") (unit 1)
+          (reference "#PWR0138") (unit 1)
         )
       )
     )
@@ -9693,7 +9693,7 @@
   (symbol (lib_id "power:GND") (at 278.13 115.57 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4ec2f3bd-44cc-469f-aec0-b0e68fc92656)
-    (property "Reference" "#PWR0123" (at 278.13 121.92 0)
+    (property "Reference" "#PWR0107" (at 278.13 121.92 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 278.257 119.9642 0)
@@ -9709,7 +9709,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0123") (unit 1)
+          (reference "#PWR0107") (unit 1)
         )
       )
     )
@@ -9718,7 +9718,7 @@
   (symbol (lib_id "Device:C") (at 194.31 207.01 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 50d6e1c6-4833-4769-bf76-fbbc2a5e0d6d)
-    (property "Reference" "C20" (at 194.31 212.09 90)
+    (property "Reference" "C73" (at 194.31 212.09 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1n" (at 194.31 214.63 90)
@@ -9738,7 +9738,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C20") (unit 1)
+          (reference "C73") (unit 1)
         )
       )
     )
@@ -9747,7 +9747,7 @@
   (symbol (lib_id "Device:L") (at 177.8 247.65 270) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 5139d444-bdb4-4607-9d1c-43bb9ce81b44)
-    (property "Reference" "L10" (at 177.8 241.3 90)
+    (property "Reference" "L75" (at 177.8 241.3 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "3n9" (at 177.8 243.84 90)
@@ -9767,7 +9767,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L10") (unit 1)
+          (reference "L75") (unit 1)
         )
       )
     )
@@ -9776,7 +9776,7 @@
   (symbol (lib_id "Device:C") (at 231.14 236.22 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 539fb74e-4bb5-4232-9a58-a2d8d20fbf5c)
-    (property "Reference" "C29" (at 231.14 228.6 90)
+    (property "Reference" "C76" (at 231.14 228.6 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1n" (at 231.14 231.14 90)
@@ -9796,7 +9796,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C29") (unit 1)
+          (reference "C76") (unit 1)
         )
       )
     )
@@ -9805,7 +9805,7 @@
   (symbol (lib_id "power:GND") (at 360.68 217.17 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 53b2cf0b-3dc4-49f9-a725-b534c91dd3a4)
-    (property "Reference" "#PWR0124" (at 360.68 223.52 0)
+    (property "Reference" "#PWR0125" (at 360.68 223.52 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 360.807 221.5642 0)
@@ -9821,7 +9821,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0124") (unit 1)
+          (reference "#PWR0125") (unit 1)
         )
       )
     )
@@ -9830,7 +9830,7 @@
   (symbol (lib_id "Device:R") (at 287.02 81.28 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 54eb928f-4311-42bc-89b6-4a4b70d0957d)
-    (property "Reference" "R14" (at 287.02 85.09 90)
+    (property "Reference" "R48" (at 287.02 85.09 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 287.02 87.63 90)
@@ -9850,7 +9850,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R14") (unit 1)
+          (reference "R48") (unit 1)
         )
       )
     )
@@ -9859,7 +9859,7 @@
   (symbol (lib_id "power:GND") (at 182.88 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 54f94ddc-3df7-4bda-8d5f-e590650c0995)
-    (property "Reference" "#PWR031" (at 189.23 77.47 0)
+    (property "Reference" "#PWR0133" (at 189.23 77.47 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 187.2742 77.343 0)
@@ -9875,7 +9875,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR031") (unit 1)
+          (reference "#PWR0133") (unit 1)
         )
       )
     )
@@ -9884,7 +9884,7 @@
   (symbol (lib_id "power:GND") (at 203.2 92.71 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 553bd326-4471-47ea-a3b9-849726857d02)
-    (property "Reference" "#PWR034" (at 203.2 99.06 0)
+    (property "Reference" "#PWR0134" (at 203.2 99.06 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 203.327 97.1042 0)
@@ -9900,7 +9900,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR034") (unit 1)
+          (reference "#PWR0134") (unit 1)
         )
       )
     )
@@ -9909,7 +9909,7 @@
   (symbol (lib_id "Device:R") (at 144.78 74.93 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 5542aaee-b7c5-42ed-b753-3418c8ea727f)
-    (property "Reference" "R22" (at 144.78 68.58 90)
+    (property "Reference" "R15" (at 144.78 68.58 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 144.78 71.12 90)
@@ -9924,12 +9924,12 @@
     (property "LCSC" "C17168" (at 144.78 74.93 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid d1aeaa12-d95f-4a6e-9dea-529a413c7c35))
-    (pin "2" (uuid f0e84a8b-f013-48d7-b3d9-62de45ed864b))
+    (pin "1" (uuid a80aa796-a307-4c67-90cc-54624a732979))
+    (pin "2" (uuid 623e250f-3864-4b50-97f4-4c1391cc465c))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R22") (unit 1)
+          (reference "R15") (unit 1)
         )
       )
     )
@@ -9969,7 +9969,7 @@
   (symbol (lib_id "Device:C") (at 93.98 106.68 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 58ea89d3-b229-4098-8152-a960058ca479)
-    (property "Reference" "C37" (at 90.17 105.41 0)
+    (property "Reference" "C12" (at 90.17 105.41 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "10n" (at 90.17 107.95 0)
@@ -9984,12 +9984,12 @@
     (property "LCSC" "C15195" (at 93.98 106.68 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 4112a2f7-f176-4269-b354-3f2a67d8555d))
-    (pin "2" (uuid cc3189eb-144c-4065-ba18-f7137cda3a8f))
+    (pin "1" (uuid dd7c54c5-7c9a-4545-a7cb-90b4af012ce1))
+    (pin "2" (uuid 224c8ad6-49ba-45c9-b6bb-063c64bdd567))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C37") (unit 1)
+          (reference "C12") (unit 1)
         )
       )
     )
@@ -9998,7 +9998,7 @@
   (symbol (lib_id "power:GND") (at 330.2 219.71 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 63ea0fe1-b9b5-4b63-b9dc-e880863570a1)
-    (property "Reference" "#PWR0117" (at 330.2 226.06 0)
+    (property "Reference" "#PWR0122" (at 330.2 226.06 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 330.2 224.79 0)
@@ -10014,31 +10014,31 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0117") (unit 1)
+          (reference "#PWR0122") (unit 1)
         )
       )
     )
   )
 
-  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 76.2 0) (unit 1)
+  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 157.48 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 683ab71a-8265-4079-b014-3ebff842b2f3)
-    (property "Reference" "H10" (at 392.43 76.2 0)
+    (property "Reference" "H11" (at 392.43 157.48 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "~" (at 392.43 77.47 0)
+    (property "Value" "~" (at 392.43 158.75 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "kapula:ToolingHole" (at 389.89 76.2 0)
+    (property "Footprint" "kapula:ToolingHole" (at 389.89 157.48 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "" (at 389.89 76.2 0)
+    (property "Datasheet" "" (at 389.89 157.48 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H10") (unit 1)
+          (reference "H11") (unit 1)
         )
       )
     )
@@ -10047,7 +10047,7 @@
   (symbol (lib_id "Connector:TestPoint") (at 203.2 189.23 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 691a1191-06e3-49cc-b4ba-6d1c2457c6f5)
-    (property "Reference" "TP8" (at 203.2 184.15 90)
+    (property "Reference" "TP3" (at 203.2 184.15 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 201.7268 186.2582 0)
@@ -10063,7 +10063,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "TP8") (unit 1)
+          (reference "TP3") (unit 1)
         )
       )
     )
@@ -10072,7 +10072,7 @@
   (symbol (lib_id "Device:R") (at 276.86 29.21 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 6b94cd7b-a01a-44f3-a32d-26402315c2c7)
-    (property "Reference" "R29" (at 278.638 28.0416 0)
+    (property "Reference" "R39" (at 278.638 28.0416 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "1M" (at 278.638 30.353 0)
@@ -10092,7 +10092,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R29") (unit 1)
+          (reference "R39") (unit 1)
         )
       )
     )
@@ -10101,7 +10101,7 @@
   (symbol (lib_id "Device:R") (at 309.88 29.21 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 6e9d34bc-684e-4bc7-9944-dac1b14634c5)
-    (property "Reference" "R20" (at 311.658 28.0416 0)
+    (property "Reference" "R41" (at 311.658 28.0416 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "1M" (at 311.658 30.353 0)
@@ -10121,7 +10121,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R20") (unit 1)
+          (reference "R41") (unit 1)
         )
       )
     )
@@ -10130,7 +10130,7 @@
   (symbol (lib_id "power:GND") (at 344.17 123.19 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 6eb4b73d-e972-4b31-aa3e-87ace85ce9ce)
-    (property "Reference" "#PWR069" (at 350.52 123.19 0)
+    (property "Reference" "#PWR0101" (at 350.52 123.19 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 347.98 123.19 90)
@@ -10146,7 +10146,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR069") (unit 1)
+          (reference "#PWR0101") (unit 1)
         )
       )
     )
@@ -10155,10 +10155,10 @@
   (symbol (lib_id "Connector:Conn_ARM_JTAG_SWD_10") (at 270.51 76.2 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 72e49fc9-224c-4db2-a1bb-eca340f61acf)
-    (property "Reference" "J4" (at 259.08 76.2 0)
+    (property "Reference" "J7" (at 259.08 76.2 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Value" "" (at 259.08 77.47 0)
+    (property "Value" "~" (at 259.08 77.47 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Footprint" "kapula:DZ127S-22-10-55" (at 270.51 76.2 0)
@@ -10183,7 +10183,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J4") (unit 1)
+          (reference "J7") (unit 1)
         )
       )
     )
@@ -10192,7 +10192,7 @@
   (symbol (lib_id "Device:R") (at 233.68 194.31 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 74076c0d-37cf-416c-9679-5e57af13e72b)
-    (property "Reference" "R11" (at 233.68 187.96 90)
+    (property "Reference" "R72" (at 233.68 187.96 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 233.68 190.5 90)
@@ -10212,7 +10212,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R11") (unit 1)
+          (reference "R72") (unit 1)
         )
       )
     )
@@ -10221,7 +10221,7 @@
   (symbol (lib_id "power:GND") (at 331.47 110.49 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7754e6e7-80ea-4c69-800c-ce2663d7c232)
-    (property "Reference" "#PWR071" (at 325.12 110.49 0)
+    (property "Reference" "#PWR0109" (at 325.12 110.49 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 327.66 110.49 90)
@@ -10237,7 +10237,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR071") (unit 1)
+          (reference "#PWR0109") (unit 1)
         )
       )
     )
@@ -10246,7 +10246,7 @@
   (symbol (lib_id "power:GND") (at 349.25 78.74 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 7836f743-1b9d-4b00-8719-7133149a3c13)
-    (property "Reference" "#PWR050" (at 355.6 78.74 0)
+    (property "Reference" "#PWR0167" (at 355.6 78.74 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 353.06 78.74 90)
@@ -10262,7 +10262,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR050") (unit 1)
+          (reference "#PWR0167") (unit 1)
         )
       )
     )
@@ -10271,7 +10271,7 @@
   (symbol (lib_id "power:GND") (at 299.72 33.02 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 7bc3a1d2-fe77-4e4c-bc56-a0b7d3b743ee)
-    (property "Reference" "#PWR060" (at 299.72 39.37 0)
+    (property "Reference" "#PWR0162" (at 299.72 39.37 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 299.72 39.37 0)
@@ -10287,31 +10287,31 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR060") (unit 1)
+          (reference "#PWR0162") (unit 1)
         )
       )
     )
   )
 
-  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 81.28 0) (unit 1)
+  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 162.56 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 7fb622d1-3fa7-441b-bfa6-dafbd05dcfb8)
-    (property "Reference" "H11" (at 392.43 81.28 0)
+    (property "Reference" "H12" (at 392.43 162.56 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "~" (at 392.43 82.55 0)
+    (property "Value" "~" (at 392.43 163.83 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "kapula:ToolingHole" (at 389.89 81.28 0)
+    (property "Footprint" "kapula:ToolingHole" (at 389.89 162.56 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "" (at 389.89 81.28 0)
+    (property "Datasheet" "" (at 389.89 162.56 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H11") (unit 1)
+          (reference "H12") (unit 1)
         )
       )
     )
@@ -10320,7 +10320,7 @@
   (symbol (lib_id "Device:R") (at 22.86 189.23 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8059f7d8-4745-4d04-8c46-eaa9baf15bee)
-    (property "Reference" "R36" (at 22.86 183.9722 90)
+    (property "Reference" "R31" (at 22.86 183.9722 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 22.86 186.2836 90)
@@ -10340,7 +10340,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R36") (unit 1)
+          (reference "R31") (unit 1)
         )
       )
     )
@@ -10349,7 +10349,7 @@
   (symbol (lib_id "Device:C") (at 140.97 102.87 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 8159a2e8-d9cf-4964-a9b2-7e2b8a00488c)
-    (property "Reference" "C68" (at 140.97 96.52 90)
+    (property "Reference" "C15" (at 140.97 96.52 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "220n" (at 140.97 99.06 90)
@@ -10364,12 +10364,12 @@
     (property "LCSC" "C16772" (at 140.97 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 273837aa-788a-4136-9b37-560a5767cb47))
-    (pin "2" (uuid 12b857b0-221b-4900-ac70-edcb21050124))
+    (pin "1" (uuid ec79a0d7-c624-4cf7-9f1c-0151701aecf6))
+    (pin "2" (uuid 4a0ca54b-c482-4b9a-9771-031a25b6f5fd))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C68") (unit 1)
+          (reference "C15") (unit 1)
         )
       )
     )
@@ -10378,7 +10378,7 @@
   (symbol (lib_id "Device:L") (at 323.85 212.09 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 82fc56b5-fa18-4f9c-88df-50e7c2a1ea0f)
-    (property "Reference" "L6" (at 323.85 207.01 90)
+    (property "Reference" "L77" (at 323.85 207.01 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "15n" (at 323.85 209.55 90)
@@ -10398,7 +10398,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L6") (unit 1)
+          (reference "L77") (unit 1)
         )
       )
     )
@@ -10407,7 +10407,7 @@
   (symbol (lib_id "Device:R") (at 22.86 208.28 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 85085975-d02e-4435-aebd-565d8fdd90fa)
-    (property "Reference" "R37" (at 22.86 203.0222 90)
+    (property "Reference" "R32" (at 22.86 203.0222 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 22.86 205.3336 90)
@@ -10427,7 +10427,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R37") (unit 1)
+          (reference "R32") (unit 1)
         )
       )
     )
@@ -10436,7 +10436,7 @@
   (symbol (lib_id "Device:C") (at 143.51 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 86b6f570-2dfa-4a7f-829b-dbd80255da8c)
-    (property "Reference" "C67" (at 139.7 85.725 0)
+    (property "Reference" "C16" (at 139.7 85.725 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "1u" (at 139.7 88.265 0)
@@ -10451,36 +10451,36 @@
     (property "LCSC" "C15849" (at 143.51 86.36 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid c8c59e09-e1e9-483c-8a3a-154055b24ae6))
-    (pin "2" (uuid ccd34563-d2d4-43ff-87da-b60383e5a224))
+    (pin "1" (uuid a6ce323a-7cf8-4a33-b752-9bc5a2bb90a3))
+    (pin "2" (uuid 994217ce-12c9-4ba7-a611-b295d719918f))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C67") (unit 1)
+          (reference "C16") (unit 1)
         )
       )
     )
   )
 
-  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 71.12 0) (unit 1)
+  (symbol (lib_id "Mechanical:MountingHole") (at 389.89 152.4 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 910cdc15-b06d-44f6-9750-53ba1524dbc9)
-    (property "Reference" "H9" (at 392.43 71.12 0)
+    (property "Reference" "H10" (at 392.43 152.4 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "~" (at 392.43 72.39 0)
+    (property "Value" "~" (at 392.43 153.67 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "kapula:ToolingHole" (at 389.89 71.12 0)
+    (property "Footprint" "kapula:ToolingHole" (at 389.89 152.4 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "" (at 389.89 71.12 0)
+    (property "Datasheet" "" (at 389.89 152.4 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "H9") (unit 1)
+          (reference "H10") (unit 1)
         )
       )
     )
@@ -10489,7 +10489,7 @@
   (symbol (lib_id "Device:R") (at 262.89 114.3 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 923bdc38-436a-4b45-bf23-c72343791abc)
-    (property "Reference" "R32" (at 264.668 113.1316 0)
+    (property "Reference" "R49" (at 264.668 113.1316 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "1M" (at 264.668 115.443 0)
@@ -10509,7 +10509,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R32") (unit 1)
+          (reference "R49") (unit 1)
         )
       )
     )
@@ -10518,7 +10518,7 @@
   (symbol (lib_id "power:GND") (at 331.47 128.27 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 92e6626c-4f03-4000-b1d9-b1d3ca8328ee)
-    (property "Reference" "#PWR061" (at 325.12 128.27 0)
+    (property "Reference" "#PWR0105" (at 325.12 128.27 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 323.85 128.27 90)
@@ -10534,7 +10534,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR061") (unit 1)
+          (reference "#PWR0105") (unit 1)
         )
       )
     )
@@ -10543,7 +10543,7 @@
   (symbol (lib_id "Connector:TestPoint") (at 203.2 215.9 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 95a80db0-d548-417e-90a1-e869a57fee35)
-    (property "Reference" "TP12" (at 203.2 210.82 90)
+    (property "Reference" "TP4" (at 203.2 210.82 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 201.7268 212.9282 0)
@@ -10559,7 +10559,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "TP12") (unit 1)
+          (reference "TP4") (unit 1)
         )
       )
     )
@@ -10568,7 +10568,7 @@
   (symbol (lib_id "Device:C") (at 185.42 30.48 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9988a2d3-a548-4bc2-bb04-e0eb3d35246d)
-    (property "Reference" "C35" (at 188.341 29.3116 0)
+    (property "Reference" "C4" (at 188.341 29.3116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1u" (at 188.341 31.623 0)
@@ -10588,7 +10588,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C35") (unit 1)
+          (reference "C4") (unit 1)
         )
       )
     )
@@ -10597,7 +10597,7 @@
   (symbol (lib_id "kapula-rescue:Ferrite_Bead-Device") (at 196.85 74.93 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 99c0b591-2ecd-4fcc-9e06-939f51fa7803)
-    (property "Reference" "FB7" (at 196.85 67.9704 90)
+    (property "Reference" "FB11" (at 196.85 67.9704 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "GZ2012D101TF" (at 196.85 70.2818 90)
@@ -10612,12 +10612,12 @@
     (property "LCSC" "C1015" (at 196.85 74.93 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 7440bf38-0a90-4bf6-8037-e63d92042368))
-    (pin "2" (uuid 8aae3783-fbe6-4f24-a31c-221ea0fb44ba))
+    (pin "1" (uuid 395687db-0f56-4a7c-85bd-da69c9235e03))
+    (pin "2" (uuid b77fbe0e-adba-48d2-b77f-64bfa1883160))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "FB7") (unit 1)
+          (reference "FB11") (unit 1)
         )
       )
     )
@@ -10626,7 +10626,7 @@
   (symbol (lib_id "Device:C") (at 330.2 215.9 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9b256a26-f127-40a9-b11c-5fc05664b630)
-    (property "Reference" "C65" (at 333.121 214.7316 0)
+    (property "Reference" "C84" (at 333.121 214.7316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "6p8" (at 333.121 217.043 0)
@@ -10646,7 +10646,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C65") (unit 1)
+          (reference "C84") (unit 1)
         )
       )
     )
@@ -10655,7 +10655,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 31.75 208.28 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 9cf8ddcc-7e4f-4768-86a5-36e466270a2a)
-    (property "Reference" "#FLG012" (at 31.75 206.375 0)
+    (property "Reference" "#FLG0108" (at 31.75 206.375 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 31.75 203.2 0)
@@ -10671,7 +10671,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG012") (unit 1)
+          (reference "#FLG0108") (unit 1)
         )
       )
     )
@@ -10680,7 +10680,7 @@
   (symbol (lib_id "Device:R") (at 336.55 212.09 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 9cff6770-6e63-4e76-9b09-798f9f323d28)
-    (property "Reference" "R31" (at 336.55 205.74 90)
+    (property "Reference" "R77" (at 336.55 205.74 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 336.55 208.28 90)
@@ -10700,7 +10700,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R31") (unit 1)
+          (reference "R77") (unit 1)
         )
       )
     )
@@ -10709,7 +10709,7 @@
   (symbol (lib_id "Device:R") (at 251.46 189.23 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9ecd7954-ceef-4a09-9cfc-09f8e2a8faf0)
-    (property "Reference" "R30" (at 253.238 188.0616 0)
+    (property "Reference" "R71" (at 253.238 188.0616 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "1M" (at 253.238 190.373 0)
@@ -10729,7 +10729,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R30") (unit 1)
+          (reference "R71") (unit 1)
         )
       )
     )
@@ -10738,7 +10738,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 200.66 26.67 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid a32dc685-c8bc-4e9d-b9cf-0e184324a11d)
-    (property "Reference" "#FLG09" (at 200.66 24.765 0)
+    (property "Reference" "#FLG0103" (at 200.66 24.765 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 200.66 22.2504 0)
@@ -10754,7 +10754,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG09") (unit 1)
+          (reference "#FLG0103") (unit 1)
         )
       )
     )
@@ -10763,7 +10763,7 @@
   (symbol (lib_id "Device:C") (at 299.72 29.21 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid a6d708e6-b9ba-4dce-82b4-bde2968c5def)
-    (property "Reference" "C48" (at 302.641 28.0416 0)
+    (property "Reference" "C46" (at 302.641 28.0416 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1u" (at 302.641 30.353 0)
@@ -10783,7 +10783,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C48") (unit 1)
+          (reference "C46") (unit 1)
         )
       )
     )
@@ -10792,7 +10792,7 @@
   (symbol (lib_id "Device:L") (at 177.8 229.87 270) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid ab4b2790-aaa8-48bf-b085-18e4e0c76654)
-    (property "Reference" "L7" (at 177.8 223.52 90)
+    (property "Reference" "L74" (at 177.8 223.52 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "3n9" (at 177.8 226.06 90)
@@ -10812,7 +10812,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L7") (unit 1)
+          (reference "L74") (unit 1)
         )
       )
     )
@@ -10821,7 +10821,7 @@
   (symbol (lib_id "power:GND") (at 201.93 201.93 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid ad625308-0b7e-4dd8-b5c5-0331246a385a)
-    (property "Reference" "#PWR0103" (at 195.58 201.93 0)
+    (property "Reference" "#PWR0157" (at 195.58 201.93 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 198.12 201.9299 90)
@@ -10837,7 +10837,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0103") (unit 1)
+          (reference "#PWR0157") (unit 1)
         )
       )
     )
@@ -10846,7 +10846,7 @@
   (symbol (lib_id "Device:C") (at 231.14 241.3 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid ada85b78-a0c5-41e3-a272-5e9186b0d9bf)
-    (property "Reference" "C36" (at 231.14 246.38 90)
+    (property "Reference" "C79" (at 231.14 246.38 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1n" (at 231.14 248.92 90)
@@ -10866,7 +10866,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C36") (unit 1)
+          (reference "C79") (unit 1)
         )
       )
     )
@@ -10875,7 +10875,7 @@
   (symbol (lib_id "Connector:Conn_Coaxial") (at 278.13 110.49 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ade6b512-3cb5-4405-926b-0ef6a319897a)
-    (property "Reference" "J12" (at 280.67 109.982 0)
+    (property "Reference" "J6" (at 280.67 109.982 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "U.FL" (at 280.67 112.2934 0)
@@ -10895,7 +10895,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J12") (unit 1)
+          (reference "J6") (unit 1)
         )
       )
     )
@@ -10935,7 +10935,7 @@
   (symbol (lib_id "Device:R") (at 393.7 31.75 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid b2a2aaf8-4eed-4837-9ace-a2f4d09c254d)
-    (property "Reference" "R45" (at 400.05 31.75 90)
+    (property "Reference" "R47" (at 400.05 31.75 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 393.7 31.75 90)
@@ -10955,7 +10955,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R45") (unit 1)
+          (reference "R47") (unit 1)
         )
       )
     )
@@ -10964,7 +10964,7 @@
   (symbol (lib_id "power:GND") (at 349.25 88.9 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid b3971a24-3c73-4b05-a468-57bba37fa309)
-    (property "Reference" "#PWR051" (at 355.6 88.9 0)
+    (property "Reference" "#PWR0166" (at 355.6 88.9 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 353.06 88.9 90)
@@ -10980,7 +10980,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR051") (unit 1)
+          (reference "#PWR0166") (unit 1)
         )
       )
     )
@@ -10989,7 +10989,7 @@
   (symbol (lib_id "kapula:FM8002A") (at 172.72 80.01 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid b3dc02db-945b-4ce4-8d30-df6fda47521c)
-    (property "Reference" "U8" (at 172.72 71.12 0)
+    (property "Reference" "U4" (at 172.72 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "~" (at 172.72 80.01 0)
@@ -11001,18 +11001,18 @@
     (property "Datasheet" "" (at 172.72 80.01 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid dfbde411-40db-4c2a-89f4-a7724f963593))
-    (pin "2" (uuid 60e90b47-7988-45e3-a772-bea5363ad102))
-    (pin "3" (uuid 27145fec-b73f-491f-a884-c2081c9627df))
-    (pin "4" (uuid 88bdd1fd-78b2-49e7-b361-e42eb842c684))
-    (pin "5" (uuid 95d081f1-14fe-40e5-a19e-66d9f21b8c14))
-    (pin "6" (uuid 9af8cd3d-bacc-491c-8dd6-6b712160bd3a))
-    (pin "7" (uuid c5b8baa4-b29d-4b14-8b52-50504f207ba1))
-    (pin "8" (uuid 04e4792f-b509-40b1-be63-af0738ac97ff))
+    (pin "1" (uuid 8935b87b-f2f4-4c83-9b45-b7f7d08d7e12))
+    (pin "2" (uuid 3f41434f-fcf9-4d27-b1df-892e95a1cede))
+    (pin "3" (uuid 0ad747b6-1f57-436d-a564-b2dd045cb84d))
+    (pin "4" (uuid 51ea24a9-f3a3-425d-9c65-a09336fa6c66))
+    (pin "5" (uuid e4f67d6c-159f-497e-aab1-c609b2c4077c))
+    (pin "6" (uuid 05115c93-5c46-4cfd-8b56-5386e84838f2))
+    (pin "7" (uuid 70c3d707-01ed-47db-8ffd-83f6c700ce8c))
+    (pin "8" (uuid f26716c0-c920-40dc-a2a6-e63493ee09ad))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "U8") (unit 1)
+          (reference "U4") (unit 1)
         )
       )
     )
@@ -11021,7 +11021,7 @@
   (symbol (lib_id "power:GND") (at 331.47 118.11 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid b40863bb-a290-4522-9ae0-7d88ab6ebe38)
-    (property "Reference" "#PWR068" (at 325.12 118.11 0)
+    (property "Reference" "#PWR0111" (at 325.12 118.11 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 327.66 118.11 90)
@@ -11037,7 +11037,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR068") (unit 1)
+          (reference "#PWR0111") (unit 1)
         )
       )
     )
@@ -11046,7 +11046,7 @@
   (symbol (lib_id "Device:R") (at 195.58 26.67 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid b41e0596-a660-4135-99db-b0ce410f851c)
-    (property "Reference" "R23" (at 195.58 30.48 90)
+    (property "Reference" "R5" (at 195.58 30.48 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 195.58 33.02 90)
@@ -11066,7 +11066,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R23") (unit 1)
+          (reference "R5") (unit 1)
         )
       )
     )
@@ -11075,7 +11075,7 @@
   (symbol (lib_id "Device:C") (at 256.54 110.49 90) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid b42333d6-72bd-4b61-a57f-961e64943f43)
-    (property "Reference" "C33" (at 256.54 104.0892 90)
+    (property "Reference" "C53" (at 256.54 104.0892 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1n" (at 256.54 106.4006 90)
@@ -11095,7 +11095,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C33") (unit 1)
+          (reference "C53") (unit 1)
         )
       )
     )
@@ -11104,7 +11104,7 @@
   (symbol (lib_id "power:GND") (at 359.41 125.73 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid b843cc85-5422-4ef9-bed1-cec319c3bf60)
-    (property "Reference" "#PWR083" (at 365.76 125.73 0)
+    (property "Reference" "#PWR0104" (at 365.76 125.73 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 364.49 125.73 0)
@@ -11120,7 +11120,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR083") (unit 1)
+          (reference "#PWR0104") (unit 1)
         )
       )
     )
@@ -11129,7 +11129,7 @@
   (symbol (lib_id "Device:R") (at 233.68 215.9 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid baaca0fa-2d13-4b21-a632-5e2be74d0ee2)
-    (property "Reference" "R25" (at 233.68 209.55 90)
+    (property "Reference" "R74" (at 233.68 209.55 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 233.68 212.09 90)
@@ -11149,7 +11149,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R25") (unit 1)
+          (reference "R74") (unit 1)
         )
       )
     )
@@ -11158,7 +11158,7 @@
   (symbol (lib_id "power:GND") (at 234.95 236.22 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid bec92b7e-c67d-4e22-81a3-1e9cfaf359ff)
-    (property "Reference" "#PWR0105" (at 241.3 236.22 0)
+    (property "Reference" "#PWR0119" (at 241.3 236.22 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 238.76 236.2199 90)
@@ -11174,7 +11174,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0105") (unit 1)
+          (reference "#PWR0119") (unit 1)
         )
       )
     )
@@ -11183,7 +11183,7 @@
   (symbol (lib_id "Device:C") (at 156.21 262.89 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid c042913f-d147-471c-9d32-7b1120f9925a)
-    (property "Reference" "C38" (at 160.02 261.6199 0)
+    (property "Reference" "C45" (at 160.02 261.6199 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "10u" (at 160.02 264.1599 0)
@@ -11203,7 +11203,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C38") (unit 1)
+          (reference "C45") (unit 1)
         )
       )
     )
@@ -11212,7 +11212,7 @@
   (symbol (lib_id "Connector_Generic:Conn_02x10_Odd_Even") (at 339.09 120.65 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid c3f5a51c-098e-460d-9c6d-28bf5c632820)
-    (property "Reference" "J3" (at 337.82 101.6 0)
+    (property "Reference" "J2" (at 337.82 101.6 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Conn_02x10_Odd_Even" (at 337.82 104.14 0)
@@ -11247,7 +11247,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "J3") (unit 1)
+          (reference "J2") (unit 1)
         )
       )
     )
@@ -11256,7 +11256,7 @@
   (symbol (lib_id "power:GND") (at 349.25 73.66 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid c4930d9c-df3b-455d-a0d0-c5776b39a483)
-    (property "Reference" "#PWR048" (at 355.6 73.66 0)
+    (property "Reference" "#PWR0164" (at 355.6 73.66 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 353.06 73.66 90)
@@ -11272,7 +11272,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR048") (unit 1)
+          (reference "#PWR0164") (unit 1)
         )
       )
     )
@@ -11281,7 +11281,7 @@
   (symbol (lib_id "power:GND") (at 143.51 90.17 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c59b0bd4-4ad2-4fb3-a2c8-eee59a80d687)
-    (property "Reference" "#PWR020" (at 143.51 96.52 0)
+    (property "Reference" "#PWR0137" (at 143.51 96.52 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 143.637 94.5642 0)
@@ -11297,7 +11297,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR020") (unit 1)
+          (reference "#PWR0137") (unit 1)
         )
       )
     )
@@ -11306,7 +11306,7 @@
   (symbol (lib_name "C_1") (lib_id "Device:C") (at 99.06 102.87 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid c59e0388-fa24-4244-b089-77d01048f99f)
-    (property "Reference" "C40" (at 99.06 95.25 90)
+    (property "Reference" "C13" (at 99.06 95.25 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1u" (at 99.06 97.79 90)
@@ -11321,12 +11321,12 @@
     (property "LCSC" "C15849" (at 99.06 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 44915ef6-dec1-435d-8ed0-3c1d28ad55ae))
-    (pin "2" (uuid d9c8897c-85f6-48a0-8e38-2b917af9fec1))
+    (pin "1" (uuid 30d6807a-f247-487f-ba31-ba45b6034a39))
+    (pin "2" (uuid 580cb3c0-dd47-4e2f-98d9-31226eb8338d))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C40") (unit 1)
+          (reference "C13") (unit 1)
         )
       )
     )
@@ -11335,7 +11335,7 @@
   (symbol (lib_id "Transistor_FET:AO3400A") (at 24.13 127 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c5eb1456-6ad8-4db7-91bc-62ba9ae987e0)
-    (property "Reference" "Q6" (at 30.48 127 90)
+    (property "Reference" "Q4" (at 30.48 127 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "AO3400A" (at 33.02 127 90)
@@ -11356,7 +11356,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "Q6") (unit 1)
+          (reference "Q4") (unit 1)
         )
       )
     )
@@ -11365,7 +11365,7 @@
   (symbol (lib_id "Device:C") (at 214.63 78.74 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c68be243-d8a2-40b1-84fe-d102eada31b1)
-    (property "Reference" "C69" (at 217.551 77.5716 0)
+    (property "Reference" "C25" (at 217.551 77.5716 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220p" (at 217.551 79.883 0)
@@ -11380,12 +11380,12 @@
     (property "LCSC" "C1530" (at 214.63 78.74 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 65fefee9-f8e5-4e45-b328-7e2ef65026e2))
-    (pin "2" (uuid 7e1e9f7c-a903-48df-a14f-e19d7de32093))
+    (pin "1" (uuid 3ca8fd2e-d7cc-4de2-b913-50f6b7b8291a))
+    (pin "2" (uuid 682391ab-a510-4fd7-9b61-c4675ab386fc))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C69") (unit 1)
+          (reference "C25") (unit 1)
         )
       )
     )
@@ -11394,7 +11394,7 @@
   (symbol (lib_id "power:GND") (at 344.17 120.65 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid c6a68177-d439-4753-9257-dc3014598337)
-    (property "Reference" "#PWR073" (at 350.52 120.65 0)
+    (property "Reference" "#PWR0102" (at 350.52 120.65 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 347.98 120.65 90)
@@ -11410,7 +11410,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR073") (unit 1)
+          (reference "#PWR0102") (unit 1)
         )
       )
     )
@@ -11419,7 +11419,7 @@
   (symbol (lib_id "power:GND") (at 195.58 259.08 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid c6f5cee3-f969-4862-96db-6cbf7c374dce)
-    (property "Reference" "#PWR0101" (at 195.58 265.43 0)
+    (property "Reference" "#PWR0150" (at 195.58 265.43 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 195.5801 262.89 90)
@@ -11435,7 +11435,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0101") (unit 1)
+          (reference "#PWR0150") (unit 1)
         )
       )
     )
@@ -11444,7 +11444,7 @@
   (symbol (lib_id "power:GND") (at 397.51 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid cc685f1b-cf4b-4d1a-940b-058ea29f1d23)
-    (property "Reference" "#PWR058" (at 397.51 38.1 0)
+    (property "Reference" "#PWR0176" (at 397.51 38.1 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 397.637 36.1442 0)
@@ -11460,7 +11460,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR058") (unit 1)
+          (reference "#PWR0176") (unit 1)
         )
       )
     )
@@ -11469,7 +11469,7 @@
   (symbol (lib_id "Device:R") (at 327.66 25.4 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d267a7cf-a8bf-4fd9-b558-f677ac338829)
-    (property "Reference" "R46" (at 327.66 20.1422 90)
+    (property "Reference" "R42" (at 327.66 20.1422 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 327.66 22.4536 90)
@@ -11489,7 +11489,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R46") (unit 1)
+          (reference "R42") (unit 1)
         )
       )
     )
@@ -11498,7 +11498,7 @@
   (symbol (lib_id "Device:R") (at 173.99 95.25 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid d26d9dce-5f6a-4520-94cc-9033d28f015b)
-    (property "Reference" "R40" (at 173.99 90.17 90)
+    (property "Reference" "R19" (at 173.99 90.17 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "22k" (at 173.99 92.71 90)
@@ -11513,12 +11513,12 @@
     (property "LCSC" "C25768" (at 173.99 95.25 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid cc9ccf13-0c5b-4af1-95fa-bf7dc185984d))
-    (pin "2" (uuid 619882f0-47d7-406d-be50-32a5b2c063e9))
+    (pin "1" (uuid 43de1fd4-9e4c-4ece-ab36-23cad137f83f))
+    (pin "2" (uuid b829c263-af0c-4509-9122-5e8f187e1ec0))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R40") (unit 1)
+          (reference "R19") (unit 1)
         )
       )
     )
@@ -11527,7 +11527,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 181.61 102.87 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid d375e29a-3088-450d-ab1c-4e15bad2cc80)
-    (property "Reference" "#FLG011" (at 181.61 100.965 0)
+    (property "Reference" "#FLG0104" (at 181.61 100.965 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 181.61 97.79 0)
@@ -11543,7 +11543,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#FLG011") (unit 1)
+          (reference "#FLG0104") (unit 1)
         )
       )
     )
@@ -11552,7 +11552,7 @@
   (symbol (lib_id "Device:R") (at 346.71 215.9 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d4ba51d7-0466-40e3-9976-c964e637ee87)
-    (property "Reference" "R34" (at 348.488 214.7316 0)
+    (property "Reference" "R78" (at 348.488 214.7316 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "1M" (at 348.488 217.043 0)
@@ -11572,7 +11572,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R34") (unit 1)
+          (reference "R78") (unit 1)
         )
       )
     )
@@ -11581,7 +11581,7 @@
   (symbol (lib_id "power:GND") (at 346.71 219.71 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d57942c2-d6a0-4a29-a284-5a8b150d3377)
-    (property "Reference" "#PWR0125" (at 346.71 226.06 0)
+    (property "Reference" "#PWR0124" (at 346.71 226.06 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 346.837 224.1042 0)
@@ -11597,7 +11597,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0125") (unit 1)
+          (reference "#PWR0124") (unit 1)
         )
       )
     )
@@ -11606,7 +11606,7 @@
   (symbol (lib_id "Device:R") (at 158.75 102.87 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid d6765f9d-77ad-4f66-ba19-ea4f27513aa9)
-    (property "Reference" "R41" (at 158.75 97.79 90)
+    (property "Reference" "R18" (at 158.75 97.79 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "22k" (at 158.75 100.33 90)
@@ -11621,12 +11621,12 @@
     (property "LCSC" "C25768" (at 158.75 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid f44fc7df-4345-49c5-ada4-9f896f039ea5))
-    (pin "2" (uuid 9d23789e-5f0a-4570-a564-79817aca1aca))
+    (pin "1" (uuid 0b7cd827-4042-465e-80f7-9d426a75b700))
+    (pin "2" (uuid 9940e885-845f-40aa-9d27-b0ce2d1b4ee4))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R41") (unit 1)
+          (reference "R18") (unit 1)
         )
       )
     )
@@ -11635,7 +11635,7 @@
   (symbol (lib_id "power:GND") (at 336.55 73.66 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid d70e18c3-941a-40c6-82a7-6a647e726d85)
-    (property "Reference" "#PWR046" (at 330.2 73.66 0)
+    (property "Reference" "#PWR0169" (at 330.2 73.66 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 332.74 73.66 90)
@@ -11651,7 +11651,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR046") (unit 1)
+          (reference "#PWR0169") (unit 1)
         )
       )
     )
@@ -11660,7 +11660,7 @@
   (symbol (lib_id "power:GND") (at 262.89 118.11 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d775cece-5572-4887-b850-7b7d78cb0cd4)
-    (property "Reference" "#PWR082" (at 262.89 124.46 0)
+    (property "Reference" "#PWR0106" (at 262.89 124.46 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 263.017 122.5042 0)
@@ -11676,7 +11676,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR082") (unit 1)
+          (reference "#PWR0106") (unit 1)
         )
       )
     )
@@ -11685,7 +11685,7 @@
   (symbol (lib_id "Device:C") (at 355.6 125.73 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid dbeebeb6-4ac7-4770-aabe-4b8ba71cdbf2)
-    (property "Reference" "C49" (at 354.4316 122.809 0)
+    (property "Reference" "C52" (at 354.4316 122.809 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 356.743 122.809 0)
@@ -11705,7 +11705,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C49") (unit 1)
+          (reference "C52") (unit 1)
         )
       )
     )
@@ -11714,7 +11714,7 @@
   (symbol (lib_id "Device:R") (at 393.7 29.21 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid dd199f6c-066f-4eb0-b437-b2f8f3f56c9f)
-    (property "Reference" "R44" (at 400.05 29.21 90)
+    (property "Reference" "R46" (at 400.05 29.21 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 393.7 29.21 90)
@@ -11734,7 +11734,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R44") (unit 1)
+          (reference "R46") (unit 1)
         )
       )
     )
@@ -11774,7 +11774,7 @@
   (symbol (lib_id "Device:R") (at 149.86 82.55 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid e25ad45e-a5e7-45e1-b6f0-ea0da989cd98)
-    (property "Reference" "R39" (at 149.86 86.36 90)
+    (property "Reference" "R17" (at 149.86 86.36 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 149.86 88.9 90)
@@ -11789,12 +11789,12 @@
     (property "LCSC" "C17168" (at 149.86 82.55 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid c16c3879-669b-4db4-aa7e-5ebe96119828))
-    (pin "2" (uuid 2aa326da-5c83-4257-abef-dd20ffc06927))
+    (pin "1" (uuid 53ce8004-7868-4bb0-93e8-d5d0c0e67196))
+    (pin "2" (uuid 9b6f175b-8bd8-4099-af4b-6e32b61f9517))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R39") (unit 1)
+          (reference "R17") (unit 1)
         )
       )
     )
@@ -11803,7 +11803,7 @@
   (symbol (lib_id "power:GND") (at 270.51 91.44 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid e73cadeb-34c8-473d-91e3-4cc018edf25e)
-    (property "Reference" "#PWR042" (at 270.51 97.79 0)
+    (property "Reference" "#PWR0158" (at 270.51 97.79 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 270.51 96.52 0)
@@ -11819,7 +11819,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR042") (unit 1)
+          (reference "#PWR0158") (unit 1)
         )
       )
     )
@@ -11828,7 +11828,7 @@
   (symbol (lib_id "Device:L") (at 311.15 212.09 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid eb9665af-f2c0-4be8-a8a0-df66ad0bb361)
-    (property "Reference" "L2" (at 311.15 207.01 90)
+    (property "Reference" "L76" (at 311.15 207.01 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "15n" (at 311.15 209.55 90)
@@ -11848,7 +11848,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "L2") (unit 1)
+          (reference "L76") (unit 1)
         )
       )
     )
@@ -11857,7 +11857,7 @@
   (symbol (lib_id "power:GND") (at 238.76 160.02 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid ed98655f-c66e-4a7d-b870-904f1550bfc3)
-    (property "Reference" "#PWR0108" (at 238.76 166.37 0)
+    (property "Reference" "#PWR0112" (at 238.76 166.37 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 238.76 165.1 0)
@@ -11873,7 +11873,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0108") (unit 1)
+          (reference "#PWR0112") (unit 1)
         )
       )
     )
@@ -11882,7 +11882,7 @@
   (symbol (lib_id "Device:R") (at 90.17 102.87 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid ef3be740-c354-428c-8df9-0c60d6ccaaa5)
-    (property "Reference" "R21" (at 90.17 96.52 90)
+    (property "Reference" "R14" (at 90.17 96.52 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "2k2" (at 90.17 99.06 90)
@@ -11897,12 +11897,12 @@
     (property "LCSC" "C11702" (at 90.17 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 47028701-9248-4737-b7e1-fb1237e17a98))
-    (pin "2" (uuid f56b36cc-fb2d-4e6d-b79d-b66fb6dc587e))
+    (pin "1" (uuid ceab135e-0f92-4226-aaa9-8aace8402892))
+    (pin "2" (uuid c490f661-ced4-4544-b51b-f45fbc89f7f6))
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R21") (unit 1)
+          (reference "R14") (unit 1)
         )
       )
     )
@@ -11911,7 +11911,7 @@
   (symbol (lib_id "Device:C") (at 194.31 196.85 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid ef4cb231-993e-4cec-b9c9-0df157c6dd5f)
-    (property "Reference" "C19" (at 194.31 189.23 90)
+    (property "Reference" "C71" (at 194.31 189.23 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1n" (at 194.31 191.77 90)
@@ -11931,7 +11931,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C19") (unit 1)
+          (reference "C71") (unit 1)
         )
       )
     )
@@ -11940,7 +11940,7 @@
   (symbol (lib_id "Device:R") (at 48.26 132.08 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid f24872bf-eaf3-4d4f-9c87-9ae72af7e5ed)
-    (property "Reference" "R27" (at 48.26 127 90)
+    (property "Reference" "R13" (at 48.26 127 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 48.26 129.54 90)
@@ -11960,7 +11960,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R27") (unit 1)
+          (reference "R13") (unit 1)
         )
       )
     )
@@ -11969,7 +11969,7 @@
   (symbol (lib_id "Device:R") (at 393.7 26.67 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid f52ce0d8-af6d-47b4-8a47-22c3f7f41363)
-    (property "Reference" "R43" (at 400.05 26.67 90)
+    (property "Reference" "R45" (at 400.05 26.67 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "0" (at 393.7 26.67 90)
@@ -11989,7 +11989,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "R43") (unit 1)
+          (reference "R45") (unit 1)
         )
       )
     )
@@ -11998,7 +11998,7 @@
   (symbol (lib_id "power:GND") (at 331.47 125.73 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid f8589ee8-d92c-4a41-b694-9683ec608b30)
-    (property "Reference" "#PWR064" (at 325.12 125.73 0)
+    (property "Reference" "#PWR0110" (at 325.12 125.73 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 327.66 125.73 90)
@@ -12014,7 +12014,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR064") (unit 1)
+          (reference "#PWR0110") (unit 1)
         )
       )
     )
@@ -12023,7 +12023,7 @@
   (symbol (lib_id "power:GND") (at 223.52 189.23 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid f85b13f3-6b39-4d62-83d5-61b8ebc028f0)
-    (property "Reference" "#PWR0106" (at 229.87 189.23 0)
+    (property "Reference" "#PWR0113" (at 229.87 189.23 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 227.33 189.2299 90)
@@ -12039,7 +12039,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0106") (unit 1)
+          (reference "#PWR0113") (unit 1)
         )
       )
     )
@@ -12048,7 +12048,7 @@
   (symbol (lib_id "Device:C") (at 304.8 215.9 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid fc3f8ee1-68cf-4317-8eb4-3f8f505b12c9)
-    (property "Reference" "C41" (at 307.721 214.7316 0)
+    (property "Reference" "C82" (at 307.721 214.7316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "6p8" (at 307.721 217.043 0)
@@ -12068,7 +12068,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C41") (unit 1)
+          (reference "C82") (unit 1)
         )
       )
     )
@@ -12077,7 +12077,7 @@
   (symbol (lib_id "Device:C") (at 195.58 255.27 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid fe2e1b08-3a81-42a2-a552-deef1c296f2f)
-    (property "Reference" "C39" (at 199.39 253.9999 0)
+    (property "Reference" "C75" (at 199.39 253.9999 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "220n" (at 199.39 256.5399 0)
@@ -12097,7 +12097,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "C39") (unit 1)
+          (reference "C75") (unit 1)
         )
       )
     )
@@ -12106,7 +12106,7 @@
   (symbol (lib_id "power:GND") (at 363.22 66.04 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid fe39761e-a6e8-49b1-a0e3-87f4b76181b3)
-    (property "Reference" "#PWR01" (at 369.57 66.04 0)
+    (property "Reference" "#PWR0170" (at 369.57 66.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 367.6142 65.913 0)
@@ -12122,7 +12122,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR01") (unit 1)
+          (reference "#PWR0170") (unit 1)
         )
       )
     )
@@ -12131,7 +12131,7 @@
   (symbol (lib_id "power:GND") (at 276.86 33.02 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid fe9d8477-06a8-4965-ba88-4fab9257cccc)
-    (property "Reference" "#PWR077" (at 276.86 39.37 0)
+    (property "Reference" "#PWR0163" (at 276.86 39.37 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 276.86 39.37 0)
@@ -12147,7 +12147,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR077") (unit 1)
+          (reference "#PWR0163") (unit 1)
         )
       )
     )
@@ -12156,7 +12156,7 @@
   (symbol (lib_id "Connector:TestPoint") (at 292.1 200.66 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ff924352-f072-4115-b0cc-df14c36c9c56)
-    (property "Reference" "TP13" (at 292.1 205.74 90)
+    (property "Reference" "TP6" (at 292.1 205.74 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "~" (at 293.5732 203.6318 0)
@@ -12172,7 +12172,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "TP13") (unit 1)
+          (reference "TP6") (unit 1)
         )
       )
     )
@@ -12181,7 +12181,7 @@
   (symbol (lib_id "power:GND") (at 93.98 110.49 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid fffca14d-ac20-4a4b-8986-d5640f613d66)
-    (property "Reference" "#PWR052" (at 93.98 116.84 0)
+    (property "Reference" "#PWR0139" (at 93.98 116.84 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 93.98 115.57 0)
@@ -12197,7 +12197,7 @@
     (instances
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR052") (unit 1)
+          (reference "#PWR0139") (unit 1)
         )
       )
     )
