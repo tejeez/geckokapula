@@ -1,9 +1,6 @@
-*.bak
-*.bck
-*.kicad_pcb-bak
-*.pdf
-gerber
-*-cache.lib
+*-backups/
 fp-info-cache
-*.sch-bak
-*.xml
+gerber/
+pcba/
+kapula.csv
+kapula.xml
