@@ -16,7 +16,8 @@ radio module and only works in the 2.3-2.9 GHz band.
 See [hardware\_v1/](hardware_v1/README.md) for details.
 
 The second version is built on a custom PCB and uses a dual band EFR32 chip.
-See [kapula/](kapula/) for a KiCad schematic and PCB design.
+See [hardware_v2/pcb/](hardware_v2/pcb/) for a KiCad schematic and PCB design.
+Construction is documented in [hardware_v2 README file](hardware_v2/README.md).
 
 ## Frequency range for the dual band model
 The second version was designed for the 70 cm (432 MHz) and 13 cm (2.3 GHz)
