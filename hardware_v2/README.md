@@ -1,5 +1,15 @@
 # Building hardware version 2.1
 
+## Display
+A display can be mounted directly on top of a Gekkokapula PCB.
+The display is a
+[128x160 RGB TFT module with an 8-pin header](https://www.ebay.com/itm/403774302965).
+
+These display modules also include an SD card slot
+but it is not used for anything in Gekkokapula.
+The 4-pin SD card header, however, can be placed and used for
+additional mechanical support and ground pins.
+
 ## Encoder
 The most important part of the user interface is a quadrature
 encoder with a push button.
@@ -78,6 +88,35 @@ Charge current is limited to approximately 400 mA.
 If you want to change the current limit, check the
 [data sheet of the charger chip](https://datasheetspdf.com/pdf-file/1090540/NanJingTopPower/TP4054/1)
 and change resistor R2 value.
+
+## RF connections
+All RF connectors on the board are U.FL. Use pigtail cables
+to adapt them to your favourite RF connectors.
+
+13 cm band has its own connector, J3. It is used for both
+receiving and transmitting in the 2300-2900 MHz range.
+All lower frequency bands (13 MHz to 1.45 GHz) use the
+connector J5 for both receiving and transmitting by default.
+
+The PCB includes a low-pass filter (LPF) for the 70 cm band.
+RF matching circuits are also optimized for 70 cm but will
+work on other bands with somewhat reduced transmit power
+and receive sensitivity.
+
+For use on other bands, the LPF should be bypassed
+(by moving C82 and R78) and an external LPF should be
+connected between J5 and an antenna.
+Receiving lower bands without modification or external
+filtering is possible but the receiver is prone to harmonic
+mixing if a proper LPF is not used. This means you may hear
+spurious responses from higher frequencies, such as
+FM broadcast signals when trying to listen to HF,
+or 70cm band signals when trying to listen to 2m.
+
+J4 can be used as a separate receiving connector for frequencies
+below 1.45 GHz but a hardware modification is needed.
+To use J4, move capacitor C74 to connect receiving chain to J4
+through TP5 (and to disconnect it from the RX/TX switch).
 
 ## Flashing and debugging
 The board has two alternative connectors for SWD.
