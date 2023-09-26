@@ -9,31 +9,23 @@ headers on the board. This lets you choose any enclosure
 you like and arrange all the knobs, buttons and connectors
 the way you like.
 
-#### Bugs
-PCB v2.1 has its RF switch control lines swapped.
-This can be fixed by moving series resistors
-R76 and R77 to cross the lines.
+Schematic diagram of wiring between header J1 and other parts:
 
-This could have been fixed by swapping the pins in software,
-but swapping them in hardware keeps the new hardware more
-compatible with older firmware versions.
-Next PCB order (v2.2) will have this fixed.
+![](connections.png)
 
 ### Display
-A display can be mounted directly on top of a Gekkokapula board.
-The display is a
+A display can be mounted directly on top of a Gekkokapula board
+on header J9. The display is a
 [128x160 RGB TFT module with an 8-pin header](https://www.ebay.com/itm/403774302965).
 
 These display modules also include an SD card slot
 but it is not used for anything in Gekkokapula.
-The 4-pin SD card header, however, can be placed and used for
+The 4-pin SD card header J10, however, can be placed and used for
 additional mechanical support and ground pins.
 
 ### Encoder
 The most important part of the user interface is a quadrature
 encoder with a push button.
-
-TODO: diagram showing encoder connections
 
 ### Speaker
 Connect a speaker between SPK+ and SPK- pins
@@ -57,7 +49,7 @@ Note that battery minus is not directly connected to ground
 
 ### Charging
 The battery charger works with any supply voltage from 4 V to 9 V
-between VCharge pin and GND (pins 19 and 20 header J1).
+between VCharge pin and GND (pins 19 and 20 on header J1).
 
 5 V from a USB port or a cellphone charger should work fine.
 
@@ -127,12 +119,23 @@ together. Volume can be also reduced by adding a fixed
 series resistor or a voltage divider here.
 
 
+## Bugs
+PCB v2.1 has its RF switch control lines swapped.
+This can be fixed by moving series resistors
+R76 and R77 to cross the lines.
+
+This could have been fixed by swapping the pins in software,
+but swapping them in hardware keeps the new hardware more
+compatible with older firmware versions.
+Next PCB order (v2.2) will have this fixed.
+
+
 ## Advanced use and modifications
 
 ### Using without battery
 If you want to directly use an external power supply and bypass
 battery protection and charging circuits, connect the supply
-between power switch pin (pin 16 on J1) and ground
+between power switch VBAT pin (pin 16 on J1) and ground
 (such as pin 20 on J1).
 
 The circuit can handle supply voltages from 3 V to 6 V.
