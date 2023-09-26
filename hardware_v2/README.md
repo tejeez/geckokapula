@@ -9,6 +9,16 @@ headers on the board. This lets you choose any enclosure
 you like and arrange all the knobs, buttons and connectors
 the way you like.
 
+#### Bugs
+PCB v2.1 has its RF switch control lines swapped.
+This can be fixed by moving series resistors
+R76 and R77 to cross the lines.
+
+This could have been fixed by swapping the pins in software,
+but swapping them in hardware keeps the new hardware more
+compatible with older firmware versions.
+Next PCB order (v2.2) will have this fixed.
+
 ### Display
 A display can be mounted directly on top of a Gekkokapula board.
 The display is a
@@ -118,6 +128,18 @@ series resistor or a voltage divider here.
 
 
 ## Advanced use and modifications
+
+### Using without battery
+If you want to directly use an external power supply and bypass
+battery protection and charging circuits, connect the supply
+between power switch pin (pin 16 on J1) and ground
+(such as pin 20 on J1).
+
+The circuit can handle supply voltages from 3 V to 6 V.
+Keep in mind that a higher voltage will result in higher power
+dissipation in 3.3 V regulator and audio amplifier chips.
+Recommended range is between 3.5 V and 5.0 V to keep voltage
+regulator working and to keep its dissipation reasonable.
 
 ### Headphone connector
 Output of the audio power amplifier is bridged, so neither end of
