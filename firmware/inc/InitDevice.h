@@ -59,6 +59,8 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 	#define PTT_PIN             (6)
 	#define PTT_PORT            (gpioPortF)
 
+	#define BACKLIGHT_PIN_INVERTED 0
+
 	#define PWM_PIN             (10)
 	#define PWM_PORT            (gpioPortD)
 	#define PWM_TIM0_CC0        TIMER_ROUTELOC0_CC0LOC_LOC18
@@ -79,6 +81,8 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 	#define PTT_PIN             (14)
 	#define PTT_PORT            (gpioPortD)
+
+	#define BACKLIGHT_PIN_INVERTED 1
 
 	#define PWM_PIN             (14)
 	#define PWM_PORT            (gpioPortB)
