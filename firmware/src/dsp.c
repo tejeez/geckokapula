@@ -515,7 +515,7 @@ struct modstate modstate;
 
 
 /* Function to convert input audio to transmit frequency modulation */
-int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
+static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
 {
 	float hpf = modstate.hpf, lpf = modstate.lpf;
 	float agc_amp = modstate.agc_amp;
@@ -552,6 +552,21 @@ int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 	modstate.hpf = hpf;
 	modstate.agc_amp = agc_amp;
 	return len;
+}
+
+
+/* Function to convert input audio to transmit frequency modulation */
+int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
+{
+	if (p.mode == MODE_FM) {
+		dsp_fast_tx_fm(in, out, len);
+	} else {
+		// Transmit unmodulated carrier on other modes
+		int i;
+		for (i = 0; i < len; i++) {
+			out[i] = 32;
+		}
+	}
 }
 
 
