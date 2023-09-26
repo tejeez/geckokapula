@@ -314,6 +314,9 @@ void fast_dsp_task(void *arg)
 			if (xQueueReceive(q, &msg, 0)) {
 				dsp_fast_rx(msg.in, msg.in_len, msg.out, msg.out_len);
 				++diag.rx_blocks_task;
+				// Make sure synth is in the middle channel during RX.
+				// This may not be the best place to do it but it works.
+				synth_set_channel(32);
 			}
 		} else if (q == fast_dsp_tx_q) {
 			struct fast_dsp_tx_msg msg;
