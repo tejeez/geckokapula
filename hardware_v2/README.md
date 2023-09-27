@@ -4,8 +4,10 @@
 
 ### Gekkokapula board
 The Gekkokapula PCB v2.1 contains most of the electronics.
-All bigger and more "mechanical" parts are wired to pin
-headers on the board. This lets you choose any enclosure
+All SMD components are already placed on the board, so
+you only need to hand solder some through hole pin headers.
+All bigger and more "mechanical" parts are wired to these
+pin headers. This lets you choose any enclosure
 you like and arrange all the knobs, buttons and connectors
 the way you like.
 
@@ -26,6 +28,7 @@ additional mechanical support and ground pins.
 ### Encoder
 The most important part of the user interface is a quadrature
 encoder with a push button.
+Connect one as shown in the wiring diagram above.
 
 ### Speaker
 Connect a speaker between SPK+ and SPK- pins
