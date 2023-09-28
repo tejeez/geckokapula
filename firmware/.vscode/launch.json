@@ -10,7 +10,7 @@
             "servertype": "openocd",
             "device": "EFR32MG1P232F256GM48",
             "configFiles": [
-                "board/efm32.cfg"
+                "openocd/adapter.cfg"
             ],
             "svdFile": "EFR32FG14P233F256GM48.svd",
 

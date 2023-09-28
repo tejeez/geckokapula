@@ -23,25 +23,54 @@ The application code is under src/ and inc/.
 Font is from https://github.com/dhepper/font8x8/
 
 # Compiling and flashing
+## Using Visual Studio Code
 The project includes configuration for Visual Studio Code and the
-Cortex-Debug extension, but using them is not mandatory.
+Cortex-Debug extension.
 To develop with Visual Studio Code, install the extensions
 *Arm toolchain Linux* (or *Arm toolchain Windows* or *Arm toolchain macOS*)
 from *Chipcode* and *Cortex-Debug* from *marus25*.
-See https://github.com/tejeez/efr32-template/
-for more detailed instructions.
 
-The firmware uses RTT for debug printing.
-To read debug prints with old versions of OpenOCD that did not have
-RTT support yet, use
-https://gist.github.com/tejeez/ccdf3d03740bdffaf93b992b114aeb51
+Install OpenOCD. On Ubuntu or Debian, do
+`sudo apt install openocd` .
+On Windows, download it from
+https://github.com/xpack-dev-tools/openocd-xpack/releases/ .
+Some additional configuration may be needed for USB device permissions
+on Linux or to use the right USB driver on Windows.
 
-The first version has some problems with flashing using OpenOCD.
-Halting the program and erasing the whole flash first seems to help.
-Try something like:
+TODO: improve tasks.json and launch.json and write instructions to use it.
 
-    openocd -f board/efm32.cfg -c "reset_config none" -c init -c halt -c "flash erase_address 0 262144" -c "program gekkofirmis.elf verify reset"
+## Alternative way: using command line tools only
+If you have installed the Arm toolchain as an extension for VS Code,
+you can also use it from command line by first doing:
 
-Try repeating it a couple of times if it doesn't work the first time.
-You can also try using Simplicity Commander (from Simplicity Studio)
-in case OpenOCD doesn't work at all.
+    export PATH="${HOME}/.vscode/extensions/chipcode-nl.gcc-arm-linux-1.0.1/bin:$PATH"
+
+If not, install the toolchain first. For example, on Ubuntu:
+
+    sudo apt install make gcc-arm-none-eabi libnewlib-arm-none-eabi gdb-multiarch openocd
+
+Compiling the firmware:
+
+    make -j4 KAPULA=v2
+
+Compiling and flashing the firmware:
+
+    make -j4 flash KAPULA=v2
+
+Running OpenOCD to use a debugger or to view RTT debug prints:
+
+    openocd -f openocd/rtt.cfg
+
+Replace KAPULA=v2 with KAPULA=eka for the first version built
+from 2.4 GHz radio modules. The first version has had some problems
+with flashing but try this a couple of times if it does not work
+the first time:
+
+    openocd -f openocd/v1_flash_rtt.cfg
+
+If you have an ST-Link or CMSIS-DAP instead of J-Link as your SWD adapter,
+do this before flashing or starting OpenOCD:
+
+    export SWD_ADAPTER=stlink
+    # or
+    export SWD_ADAPTER=cmsis-dap

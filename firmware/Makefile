@@ -5,7 +5,7 @@
 #######################################
 
 # Default Gekkokapula model
-KAPULA ?= eka
+KAPULA ?= v2
 
 # Name of the binary
 TARGET = gekkofirmis
@@ -215,7 +215,7 @@ clean:
 	-rm -fR $(BUILD_DIR)
 
 flash: $(BUILD_DIR)/$(TARGET).elf
-	openocd -f board/efm32.cfg -c 'program "$(BUILD_DIR)/$(TARGET).elf" verify reset'
+	openocd -f openocd/adapter.cfg -c 'program "$(BUILD_DIR)/$(TARGET).elf" verify reset'
 
 .PHONY: all clean flash
 
