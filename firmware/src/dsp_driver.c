@@ -139,7 +139,16 @@ void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 	BaseType_t yield = 0;
 	if (events & RAIL_EVENT_RX_FIFO_ALMOST_FULL) {
 		unsigned nread, p = rx_buf_p;
-		TIMER_CompareBufSet(TIMER0, 0, buf_audio_out[p]);
+
+		uint32_t audio_out = buf_audio_out[p];
+		TIMER_CompareBufSet(TIMER0, 0, audio_out);
+#ifdef USE_OPAMPS
+		// DAC has more resolution than PWM so really bit depth
+		// should be increased in DSP code, but for now just scale
+		// it to use most of DAC range.
+		VDAC_Channel1OutputSet(VDAC0, audio_out * 20);
+#endif
+
 		nread = RAIL_ReadRxFifo(rail, (uint8_t*)(buf_iq_in + p * RX_SAMPLE_RATIO), sizeof(iq_in_t) * RX_SAMPLE_RATIO);
 		if (nread != sizeof(iq_in_t) * RX_SAMPLE_RATIO)
 			++diag.rx_rail_underruns;
@@ -206,6 +215,85 @@ void ADC0_IRQHandler() {
 }
 
 
+void setup_opamps(void)
+{
+#ifdef USE_OPAMPS
+	// VDAC0 is used for both speaker and microphone.
+	// Channel 0 biases microphone input opamp.
+	// Channel 1 is audio output.
+	CMU_ClockEnable(cmuClock_VDAC0, true);
+	VDAC_Init(VDAC0, &(const VDAC_Init_TypeDef){
+		.mainCalibration = true,
+		.asyncClockMode = false,
+		.warmupKeepOn = true,
+		.refresh = vdacRefresh8,
+		.prescaler = 0,
+		.reference = vdacRef1V25Ln,
+		.ch0ResetPre = false,
+		.outEnablePRS = false,
+		.sineEnable = false,
+		.diff = false,
+	});
+
+	VDAC_Channel0OutputSet(VDAC0, 0x800);
+	VDAC_Channel1OutputSet(VDAC0, 0x800);
+	VDAC_Enable(VDAC0, 1, true);
+
+	OPAMP_Enable(VDAC0, OPA1, &(const OPAMP_Init_TypeDef){
+		.negSel = opaNegSelResTap,
+		.posSel = opaPosSelDac,
+		.outMode =  opaOutModeMain, // PD14
+		.resSel = opaResSelR2eqR1,
+		.resInMux = opaResInMuxVss,
+		.outPen = VDAC_OPA_OUT_MAINOUTEN,
+		.drvStr = opaDrvStrHighAccHighStr, // maybe adjust later to optimize power consumption
+		.gain3xEn = false,
+		.halfDrvStr = false,
+		.ugBwScale = false,
+		.prsEn = false,
+		.prsMode = opaPrsModeDefault,
+		.prsSel = opaPrsSelDefault,
+		.prsOutSel = opaPrsOutDefault,
+		.aportYMasterDisable = false,
+		.aportXMasterDisable = false,
+		.settleTime = 3, // from OPA_INIT_INVERTING defaults
+		.startupDly = 0,
+		.hcmDisable = false,
+		.defaultOffsetN = true,
+		.offsetN = 0,
+		.defaultOffsetP = true,
+		.offsetP = 0,
+	});
+
+	OPAMP_Enable(VDAC0, OPA0, &(const OPAMP_Init_TypeDef){
+		.negSel = opaNegSelResTap,
+		.posSel = opaPosSelDac,
+		.outMode =  opaOutModeAPORT1YCH19, // PF3
+		.resSel = opaResSelR2eqR1, // may be changed to adjust mic gain
+		.resInMux = opaResInMuxNegPad,
+		.outPen = VDAC_OPA_OUT_ALTOUTPADEN_OUT0, // TODO?
+		.drvStr = opaDrvStrHighAccHighStr, // maybe adjust later to optimize power consumption
+		.gain3xEn = false,
+		.halfDrvStr = false,
+		.ugBwScale = false,
+		.prsEn = false,
+		.prsMode = opaPrsModeDefault,
+		.prsSel = opaPrsSelDefault,
+		.prsOutSel = opaPrsOutDefault,
+		.aportYMasterDisable = false,
+		.aportXMasterDisable = false,
+		.settleTime = 3, // from OPA_INIT_INVERTING defaults
+		.startupDly = 0,
+		.hcmDisable = false,
+		.defaultOffsetN = true,
+		.offsetN = 0,
+		.defaultOffsetP = true,
+		.offsetP = 0,
+	});
+#endif
+}
+
+
 int start_rx_dsp(RAIL_Handle_t rail)
 {
 	// TODO clear the audio buffer for first round
@@ -237,52 +325,23 @@ int start_tx_dsp(RAIL_Handle_t rail)
 	GPIO_PinOutClear(RX_EN_PORT, RX_EN_PIN);
 	GPIO_PinOutSet(TX_EN_PORT, TX_EN_PIN);
 #endif
-#ifdef USE_OPAMPS
-	CMU_ClockEnable(cmuClock_VDAC0, true);
-	VDAC_Init(VDAC0, &(const VDAC_Init_TypeDef){
-		.mainCalibration = true,
-		.asyncClockMode = false,
-		.warmupKeepOn = true,
-		.refresh = vdacRefresh8,
-		.prescaler = 0,
-		.reference = vdacRef1V25Ln,
-		.ch0ResetPre = false,
-		.outEnablePRS = false,
-		.sineEnable = false,
-		.diff = false,
-	});
-	VDAC_Channel0OutputSet(VDAC0, 0x800);
-	VDAC_Enable(VDAC0, 0, true);
-	OPAMP_Enable(VDAC0, OPA0, &(const OPAMP_Init_TypeDef){
-		.negSel = opaNegSelResTap,
-		.posSel = opaPosSelDac,
-		.outMode =  opaOutModeAPORT1YCH19, // PF3
-		.resSel = opaResSelR2eqR1, // may be changed to adjust mic gain
-		.resInMux = opaResInMuxPosPad,
-		.outPen = VDAC_OPA_OUT_ALTOUTPADEN_OUT0, // TODO?
-		.drvStr = opaDrvStrHighAccHighStr, // maybe adjust later to optimize power consumption
-		.gain3xEn = false,
-		.halfDrvStr = false,
-		.ugBwScale = false,
-		.prsEn = false,
-		.prsMode = opaPrsModeDefault,
-		.prsSel = opaPrsSelDefault,
-		.prsOutSel = opaPrsOutDefault,
-		.aportYMasterDisable = false,
-		.aportXMasterDisable = false,
-		.settleTime = 3, // from OPA_INIT_INVERTING defaults
-		.startupDly = 0,
-		.hcmDisable = false,
-		.defaultOffsetN = true,
-		.offsetN = 0,
-		.defaultOffsetP = true,
-		.offsetP = 0,
-	});
-#endif
 	NVIC_EnableIRQ(ADC0_IRQn);
 	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
 	ADC_Start(ADC0, adcStartSingle);
 	return 0;
+}
+
+
+// Initialize hardware used for signal I/O.
+void dsp_hw_init(void)
+{
+	// TODO: move other related hardware init code here
+	setup_opamps();
+#ifdef SPK_EN_PIN
+	// Make the speaker pin open drain since it is pulled up
+	// to a voltage higher than EFR32 supply.
+	GPIO_PinModeSet(SPK_EN_PORT, SPK_EN_PIN, gpioModeWiredAnd, 0);
+#endif
 }
 
 

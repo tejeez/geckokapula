@@ -24,6 +24,7 @@
 #include "display.h"
 #include "ui.h"
 #include "rig.h"
+#include "dsp_driver.h"
 
 /* --------------------
  * Interrupt priorities
@@ -47,12 +48,10 @@ int testnumber=73;
 TaskHandle_t taskhandles[NTASKS];
 
 void rail_task(void *);
-void fast_dsp_task(void *);
 void slow_dsp_task(void *);
 void misc_fast_task(void *);
 
 void debug_init(void);
-void dsp_rtos_init(void);
 void slow_dsp_rtos_init(void);
 
 void maybe_sleep(void);
@@ -101,6 +100,7 @@ int main(void) {
 	TIMER_TopSet(TIMER0, 200);
 	TIMER_CompareBufSet(TIMER0, 0, 33);
 	TIMER_CompareBufSet(TIMER0, 1, 20);
+	dsp_hw_init();
 	printf("Peripherals initialized\n");
 
 	dsp_rtos_init();

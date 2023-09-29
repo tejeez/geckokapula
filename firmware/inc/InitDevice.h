@@ -79,8 +79,8 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 	#define ENCP_PIN            (7)
 	#define ENCP_PORT           (gpioPortF)
 
-	#define PTT_PIN             (14)
-	#define PTT_PORT            (gpioPortD)
+	#define PTT_PIN             (13)
+	#define PTT_PORT            (gpioPortB)
 
 	#define BACKLIGHT_PIN_INVERTED 1
 
@@ -89,13 +89,16 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 	#define PWM_TIM0_CC0        TIMER_ROUTELOC0_CC0LOC_LOC9
 
 	#define USE_OPAMPS
-//	#define MIC_APORT           adcPosSelDAC0OUT0
+	#define MIC_APORT           adcPosSelDAC0OUT0
 //	#define MIC_APORT           adcPosSelAPORT3XCH10 // PA2
 //	#define MIC_APORT           adcPosSelAPORT1YCH19 // PF3
-	#define MIC_APORT           adcPosSelAPORT2YCH18 // PF2
+//	#define MIC_APORT           adcPosSelAPORT2YCH18 // PF2
 
 	#define MIC_EN_PIN          (3)
 	#define MIC_EN_PORT         (gpioPortA)
+
+	#define SPK_EN_PIN          (4)
+	#define SPK_EN_PORT         (gpioPortF)
 
 	#define RX_EN_PIN           (15)
 	#define RX_EN_PORT          (gpioPortD)
