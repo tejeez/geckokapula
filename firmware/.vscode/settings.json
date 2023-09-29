@@ -2,5 +2,6 @@
 	"files.associations": {
 		"*.h": "c",
 		"*.c": "c"
-	}
+	},
+	"editor.insertSpaces": false
 }

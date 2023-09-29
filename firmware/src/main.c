@@ -25,6 +25,7 @@
 #include "ui.h"
 #include "rig.h"
 #include "dsp_driver.h"
+#include "power.h"
 
 /* --------------------
  * Interrupt priorities
@@ -54,10 +55,6 @@ void misc_fast_task(void *);
 void debug_init(void);
 void slow_dsp_rtos_init(void);
 
-void maybe_sleep(void);
-void beep(unsigned period, unsigned pulsewidth, unsigned pulses);
-void shutdown(void);
-
 /* -------------
  * Main function
  * -------------
@@ -69,7 +66,6 @@ int main(void) {
 	debug_init();
 	printf("Gekkokapula\n");
 
-	CMU_ClockEnable(cmuClock_GPIO, true);
 	maybe_sleep();
 	// If maybe_sleep returned, the device should turn on.
 	// Crystal oscillator needs to be powered on before configuring clocks.
@@ -144,10 +140,6 @@ void misc_fast_task(void *arg) {
 	(void)arg;
 	for(;;) {
 		ui_check_buttons();
-
-		if (p.mode == MODE_OFF)
-			shutdown();
-
 		ui_control_backlight();
 		//testnumber++;
 		int ti;
@@ -162,82 +154,6 @@ void misc_fast_task(void *arg) {
 		if(++rail_watchdog >= 200)
 			restart_rail_task();
 		vTaskDelay(10);
-	}
-}
-
-
-/* ---------------------
- * Power management code
- * ---------------------
- */
-
-/* Turn off the device.
- *
- * To avoid the need to carefully turn off every peripheral
- * and bring the software into a state suitable for sleep,
- * the processor is simply reset instead.
- * Reset should turn off most peripherals automatically.
- * The main function then first checks whether it should go
- * to sleep or start running normal code.
- */
-void shutdown(void)
-{
-	NVIC_SystemReset();
-}
-
-
-/* Check whether the device should be on or off and act accordingly.
- * This is only called before any other hardware is initialized.
- */
-void maybe_sleep(void)
-{
-	// Make sure all extra hardware is turned off
-	// or in a state that should consume minimum current.
-	GPIO_PinModeSet(TFT_EN_PORT, TFT_EN_PIN, gpioModePushPull, 1);
-	GPIO_PinModeSet(PWM_PORT,    PWM_PIN,    gpioModePushPull, 1);
-
-	// Check whether encoder button is pressed.
-	// Wait a moment before checking the state
-	// to let the debouncing capacitor charge.
-	GPIO_PinModeSet(ENCP_PORT, ENCP_PIN, gpioModeInputPullFilter, 1);
-	beep(20000, 20, 10); // works as a delay too
-	if (GPIO_PinInGet(ENCP_PORT, ENCP_PIN) == 0) {
-		// Button was pressed.
-		// Don't go to sleep.
-		beep(5000, 10, 10);
-		return;
-	}
-	// Wait a moment so that SWD may still work without reset connected
-	beep(100000, 20, 20);
-
-	// Go to sleep.
-
-	EMU_EM4Init_TypeDef e = EMU_EM4INIT_DEFAULT;
-	e.pinRetentionMode = emuPinRetentionEm4Exit;
-	EMU_EM4Init(&e);
-
-	// PF7 is EM4WU1 which is bit 17
-	GPIO_EM4EnablePinWakeup(1 << 17, 1);
-
-	EMU_EnterEM4S();
-	// EnterEM4 should never return because exit from EM4
-	// resets the processor, but just in case
-	for (;;);
-}
-
-
-/* Beep that can be used before any timers are initialized.
- * This is useful for testing early initialization code. */
-void beep(unsigned period, unsigned pulsewidth, unsigned pulses)
-{
-	unsigned i;
-	period -= pulsewidth;
-	for (i = 0; i < pulses; i++) {
-		unsigned p;
-		for (p = 0; p < pulsewidth; p++)
-			GPIO_PinOutClear(PWM_PORT, PWM_PIN);
-		for (p = 0; p < period; p++)
-			GPIO_PinOutSet(PWM_PORT, PWM_PIN);
 	}
 }
 

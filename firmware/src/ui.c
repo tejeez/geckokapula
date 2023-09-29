@@ -11,6 +11,7 @@
 #include "ui_hw.h"
 #include "ui_parameters.h"
 #include "dsp.h"
+#include "power.h"
 
 #include "font8x8_basic.h"
 
@@ -178,11 +179,17 @@ static void ui_knob_turned(int cursor, int diff) {
 void ui_check_buttons(void)
 {
 	static unsigned pos_prev;
-	static unsigned char ptt_prev;
+	static unsigned char button_prev, ptt_prev;
 	int pos_now, pos_diff;
 	char button = get_encoder_button(), ptt = get_ptt();
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
 	pos_diff = pos_now - pos_prev;
+
+	if (p.mode == MODE_OFF && button_prev && (!button)) {
+		// Shut down after button has been released.
+		shutdown();
+	}
+
 	if(button)
 		backlight_timer = 0;
 	if(pos_diff) {
@@ -209,6 +216,7 @@ void ui_check_buttons(void)
 
 	pos_prev = pos_now;
 	ptt_prev = ptt;
+	button_prev = button;
 }
 
 
