@@ -12,6 +12,7 @@
 #include "ui_parameters.h"
 #include "dsp.h"
 #include "power.h"
+#include "railtask.h"
 
 #include "font8x8_basic.h"
 
@@ -124,7 +125,6 @@ const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{28,28, 0, "Offset Hz" }, // offset frequency
 };
 
-extern int testnumber;
 void ui_update_text() {
 	int i;
 	int pos1, pos2;
@@ -150,6 +150,7 @@ static void ui_knob_turned(int cursor, int diff) {
 	if(cursor >= 0 && cursor <= 9) { // frequency
 		p.frequency += diff * ui_steps[9 - ui_cursor];
 		p.channel_changed = 1;
+		xSemaphoreGive(railtask_sem);
 	} else if(cursor == 10) { // mode
 		p.mode = wrap(p.mode + diff, sizeof(p_mode_names) / sizeof(p_mode_names[0]));
 		dsp_update_params();
@@ -179,7 +180,7 @@ static void ui_knob_turned(int cursor, int diff) {
 void ui_check_buttons(void)
 {
 	static unsigned pos_prev;
-	static unsigned char button_prev, ptt_prev;
+	static unsigned char button_prev, ptt_prev, keyed_prev;
 	int pos_now, pos_diff;
 	char button = get_encoder_button(), ptt = get_ptt();
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
@@ -207,6 +208,10 @@ void ui_check_buttons(void)
 	}
 	if (pos_diff != 0 || ptt != ptt_prev) {
 		p.keyed = ui_keyed ? 1 : ptt;
+		if (p.keyed != keyed_prev)
+			xSemaphoreGive(railtask_sem);
+		keyed_prev = p.keyed;
+
 
 		/* Something on the display may have changed at this point,
 		 * so make the display task check for that. */

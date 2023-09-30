@@ -1,10 +1,8 @@
 /* SPDX-License-Identifier: MIT */
 
 // RAIL
-#ifndef DISABLE_RAIL
 #include "rail.h"
 #include "rail_config.h"
-#endif
 
 // FreeRTOS
 #include "FreeRTOS.h"
@@ -12,6 +10,7 @@
 
 // rig
 #include "rig.h"
+#include "railtask.h"
 
 #include <stdio.h>
 
@@ -19,6 +18,7 @@
 #define MIDDLECHANNEL 32
 
 RAIL_Handle_t rail;
+xSemaphoreHandle railtask_sem;
 
 int start_rx_dsp(RAIL_Handle_t rail);
 int start_tx_dsp(RAIL_Handle_t rail);
@@ -188,37 +188,33 @@ void RAILCb_AssertFailed(RAIL_Handle_t railHandle, RAIL_AssertErrorCodes_t error
 }
 
 
-extern int testnumber;
-char rail_watchdog = 0;
-void rail_task() {
+void railtask_main(void *arg)
+{
+	(void)arg;
 	initRadio();
 	for(;;) {
-		unsigned keyed = p.keyed;
-		rail_watchdog = 0;
-		if(p.channel_changed) {
+		bool keyed = p.keyed;
+		bool channel_changed = p.channel_changed;
+		if (channel_changed) {
+			p.channel_changed = 0;
 			config_channel();
 		}
 
-		unsigned r;
 		RAIL_RadioState_t rs = RAIL_GetRadioState(rail);
 		//printf("RAIL_GetRadioState: %08x\n", rs);
-		if(keyed && ((rs & RAIL_RF_STATE_TX) == 0 || p.channel_changed) && frequency_ok) {
-			p.channel_changed = 0;
-			RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
-			r = RAIL_StartTxStream(rail, MIDDLECHANNEL, RAIL_STREAM_CARRIER_WAVE);
-			printf("RAIL_StartTxStream: %u\n", r);
+		if (keyed && ((rs & RAIL_RF_STATE_TX) == 0 || channel_changed) && frequency_ok) {
 			start_tx_dsp(rail);
 		}
-		if((!keyed) && ((rs & RAIL_RF_STATE_RX) == 0 || p.channel_changed) && frequency_ok) {
-			p.channel_changed = 0;
+		if ((!keyed) && ((rs & RAIL_RF_STATE_RX) == 0 || channel_changed) && frequency_ok) {
 			if (rs & RAIL_RF_STATE_TX)
 				RAIL_StopTxStream(rail);
-			RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
 			start_rx_dsp(rail);
 		}
-		//testnumber++; // to see if RAIL has stuck in some function
-
-		// TODO: receive commands from queue instead of polling with delay
-		vTaskDelay(200);
+		xSemaphoreTake(railtask_sem, portMAX_DELAY);
 	}
+}
+
+void railtask_rtos_init(void)
+{
+	railtask_sem = xSemaphoreCreateBinary();
 }

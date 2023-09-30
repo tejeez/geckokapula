@@ -26,6 +26,7 @@
 #include "rig.h"
 #include "dsp_driver.h"
 #include "power.h"
+#include "railtask.h"
 
 /* --------------------
  * Interrupt priorities
@@ -43,12 +44,9 @@
  * ---------------------------------
  */
 
-int testnumber=73;
-
 #define NTASKS 5
 TaskHandle_t taskhandles[NTASKS];
 
-void rail_task(void *);
 void slow_dsp_task(void *);
 void misc_fast_task(void *);
 
@@ -102,10 +100,11 @@ int main(void) {
 	dsp_rtos_init();
 	slow_dsp_rtos_init();
 	ui_rtos_init();
+	railtask_rtos_init();
 
 	xTaskCreate(misc_fast_task, "Misc", 0x100, NULL, 4, &taskhandles[3]);
 	xTaskCreate(display_task, "Display", 0x300, NULL, 2, &taskhandles[0]);
-	xTaskCreate(rail_task, "RAIL", 0x300, NULL, 2, &taskhandles[1]);
+	xTaskCreate(railtask_main, "RAIL", 0x300, NULL, 2, &taskhandles[1]);
 	xTaskCreate(fast_dsp_task, "Fast DSP", 0x300, NULL, 4, &taskhandles[4]);
 	xTaskCreate(slow_dsp_task, "Slow DSP", 0x300, NULL, 2, &taskhandles[2]);
 
@@ -120,14 +119,6 @@ int main(void) {
  * ---------------------
  */
 
-extern char rail_watchdog;
-
-static inline void restart_rail_task() {
-	vTaskDelete(taskhandles[1]);
-	xTaskCreate(rail_task, "rail_task", 0x200, NULL, 2, &taskhandles[1]);
-}
-
-
 /* Task to do various "small" things which have to run regularly,
  * don't take much CPU time and don't need a dedicated task.
  * These are typically things that poll for something.
@@ -141,7 +132,6 @@ void misc_fast_task(void *arg) {
 	for(;;) {
 		ui_check_buttons();
 		ui_control_backlight();
-		//testnumber++;
 		int ti;
 		for(ti=0; ti<NTASKS; ti++) {
 #if 0
@@ -151,8 +141,6 @@ void misc_fast_task(void *arg) {
 			if(ti == NTASKS-1) printf("\n");
 #endif
 		}
-		if(++rail_watchdog >= 200)
-			restart_rail_task();
 		vTaskDelay(10);
 	}
 }

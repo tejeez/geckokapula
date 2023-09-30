@@ -84,6 +84,9 @@
 #define TX_BUF_BLOCKS 2
 
 
+// TODO: move this in some common plane as it's also in railtask.c
+#define MIDDLECHANNEL 32
+
 /* ----------------------
  * Buffers and data types
  * ---------------------- */
@@ -299,6 +302,9 @@ int start_rx_dsp(RAIL_Handle_t rail)
 	// TODO clear the audio buffer for first round
 	unsigned r;
 	ADC_IntDisable(ADC0, ADC_IF_SINGLE);
+	// TODO: stop microphone ADC?
+	RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
+
 #ifdef MIC_EN_PIN
 	GPIO_PinOutClear(MIC_EN_PORT, MIC_EN_PIN);
 #endif
@@ -308,7 +314,11 @@ int start_rx_dsp(RAIL_Handle_t rail)
 #endif
 	RAIL_ResetFifo(rail, false, true);
 	RAIL_SetRxFifoThreshold(rail, sizeof(iq_in_t) * RX_SAMPLE_RATIO);
-	r = RAIL_StartRx(rail, 32, NULL);
+	// Setting channel through RAIL does not always seem to work
+	// after writing directly to the channel register,
+	// so write the channel register too.
+	synth_set_channel(MIDDLECHANNEL);
+	r = RAIL_StartRx(rail, MIDDLECHANNEL, NULL);
 	printf("RAIL_StartRx: %u\n", r);
 	return r;
 }
@@ -325,6 +335,8 @@ int start_tx_dsp(RAIL_Handle_t rail)
 	GPIO_PinOutClear(RX_EN_PORT, RX_EN_PIN);
 	GPIO_PinOutSet(TX_EN_PORT, TX_EN_PIN);
 #endif
+	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
+	RAIL_StartTxStream(rail, MIDDLECHANNEL, RAIL_STREAM_CARRIER_WAVE);
 	NVIC_EnableIRQ(ADC0_IRQn);
 	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
 	ADC_Start(ADC0, adcStartSingle);
@@ -373,9 +385,6 @@ void fast_dsp_task(void *arg)
 			if (xQueueReceive(q, &msg, 0)) {
 				dsp_fast_rx(msg.in, msg.in_len, msg.out, msg.out_len);
 				++diag.rx_blocks_task;
-				// Make sure synth is in the middle channel during RX.
-				// This may not be the best place to do it but it works.
-				synth_set_channel(32);
 			}
 		} else if (q == fast_dsp_tx_q) {
 			struct fast_dsp_tx_msg msg;
