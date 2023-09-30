@@ -27,8 +27,10 @@ Font is from https://github.com/dhepper/font8x8/
 The project includes configuration for Visual Studio Code and the
 Cortex-Debug extension.
 To develop with Visual Studio Code, install the extensions
-*Arm toolchain Linux* (or *Arm toolchain Windows* or *Arm toolchain macOS*)
-from *Chipcode* and *Cortex-Debug* from *marus25*.
+**Arm toolchain Linux** (or **Arm toolchain Windows** or **Arm toolchain macOS**)
+from **Chipcode**,
+**Cortex-Debug** from **marus25**,
+and **RTOS Views** from **mcu-debug**.
 
 Install OpenOCD. On Ubuntu or Debian, do
 `sudo apt install openocd` .

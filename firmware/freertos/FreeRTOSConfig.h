@@ -47,6 +47,7 @@
 	#include <stdint.h>
 	extern uint32_t SystemCoreClock;
 #endif
+#include "em_device.h"
 
 #define configUSE_PREEMPTION			1
 #define configUSE_IDLE_HOOK				1
@@ -54,7 +55,7 @@
 #define configCPU_CLOCK_HZ				( 38400000 )
 #define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES			( 5 )
-#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 130 )
+#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 32 )
 #define configTOTAL_HEAP_SIZE			( ( size_t ) ( 16 * 1024 ) )
 #define configMAX_TASK_NAME_LEN			( 10 )
 #define configUSE_TRACE_FACILITY		1
@@ -67,8 +68,19 @@
 #define configUSE_MALLOC_FAILED_HOOK	1
 #define configUSE_APPLICATION_TASK_TAG	0
 #define configUSE_COUNTING_SEMAPHORES	1
-#define configGENERATE_RUN_TIME_STATS	0
+#define configGENERATE_RUN_TIME_STATS	1
 #define configUSE_QUEUE_SETS            1
+#define configRECORD_STACK_HIGH_ADDRESS 1
+
+/* Cycle counter is already used elsewhere so use it for run time stats too.
+ * One problem is it does not handle counter wrapping around,
+ * so it stops working after 111 seconds.
+ * Well, it works if stats are checked one minute after reset,
+ * so it is still somewhat useful. */
+#define portGET_RUN_TIME_COUNTER_VALUE() (DWT->CYCCNT)
+/* Empty macro since cycle counter is already enabled
+ * before vTaskStartScheduler() */
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 		0

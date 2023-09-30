@@ -3,58 +3,70 @@
 #include <string.h>
 #include <stdint.h>
 
-#define DEBUGBUFFER_SIZE 0x200
-
 /* The debug buffer is somewhat compatible with SEGGER RTT,
- * so it can be read with the RTT reader script for OpenOCD at
- * https://gist.github.com/tejeez/ccdf3d03740bdffaf93b992b114aeb51
- *
+ * so it can be read with at least some RTT readers.
  * Not tested yet with Segger software.
- *
- * We could also add a function which prints contents of the debug
- * buffer to an UART when called regularly from main loop,
- * allowing both UART and JLink based debug printing.
  */
+
+#define DEBUGBUFFER_SIZE 0x200
+#define DOWNBUFFER_SIZE 4
 
 struct debugbuffer {
 	char acID[16];
 	uint32_t MaxNumUpBuffers, MaxNumDownBuffers;
+	// Up buffer info (MCU to debugger)
 	char *sName, *pBuffer;
 	uint32_t size, wrOff;
 	volatile uint32_t rdOff;
 	uint32_t Flags;
+	// Dummy down buffer info
+	// because some RTT readers do not work without one
+	char *sNameUp, *pBufferUp;
+	uint32_t sizeUp, wrOffUp;
+	volatile uint32_t rdOffUp;
+	uint32_t FlagsUp;
+	// Buffers
 	char buffer[DEBUGBUFFER_SIZE];
+	char bufferUp[DOWNBUFFER_SIZE];
 };
 
-struct debugbuffer debugbuffer;
+/* Cortex-Debug RTT reader looks for a symbol named _SEGGER_RTT
+ * so use that name for the struct. */
+struct debugbuffer _SEGGER_RTT;
 
 void debug_init(void)
 {
-	memset(&debugbuffer, 0, (void*)debugbuffer.buffer - (void*)&debugbuffer);
-	debugbuffer.pBuffer = debugbuffer.buffer;
-	debugbuffer.wrOff = 0;
-	debugbuffer.size = DEBUGBUFFER_SIZE;
-	debugbuffer.MaxNumUpBuffers = 1;
-	strcpy(debugbuffer.acID, " EGGER RTT");
-	debugbuffer.acID[0] = 'S';
+	struct debugbuffer *b = &_SEGGER_RTT;
+	memset(b, 0, (void*)b->buffer - (void*)b);
+	b->sName = "Debug print";
+	b->pBuffer = b->buffer;
+	b->size = DEBUGBUFFER_SIZE;
+	b->sNameUp = b->sName;
+	b->pBufferUp = b->bufferUp;
+	b->sizeUp = DOWNBUFFER_SIZE;
+	b->MaxNumUpBuffers = 1;
+	b->MaxNumDownBuffers = 1;
+	strcpy(b->acID, " EGGER RTT");
+	b->acID[0] = 'S';
 }
 
 int _write(int file, const char *ptr, int len)
 {
 	if (!(file == 1 || file == 2))
 		return -1;
-	unsigned pos = debugbuffer.wrOff;
+	struct debugbuffer *b = &_SEGGER_RTT;
+	unsigned pos = b->wrOff;
 	int i;
 
 	if (pos >= DEBUGBUFFER_SIZE)
 		pos = 0;
 
 	for (i = 0; i < len; i++) {
-		debugbuffer.buffer[pos] = ptr[i];
+		b->buffer[pos] = ptr[i];
 		++pos;
 		if(pos >= DEBUGBUFFER_SIZE)
 			pos = 0;
 	}
-	debugbuffer.wrOff = pos;
+	b->wrOff = pos;
 	return len;
 }

@@ -7,6 +7,21 @@
             "executable": "./build_v2/gekkofirmis.elf",
             "request": "attach",
             "type": "cortex-debug",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            },
+            "rttConfig": {
+                "enabled": true,
+                "address": "auto",
+                "decoders": [
+                    {
+                        "label": "Debug print",
+                        "port": 0,
+                        "type": "console"
+                    }
+                ]
+            },
             "servertype": "openocd",
             "device": "EFR32MG1P232F256GM48",
             "configFiles": [
