@@ -131,6 +131,19 @@ void config_channel() {
 	RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, FIFO_MODE, FIFO_MODE };
 	r = RAIL_ConfigData(rail, &dataConfig);
 	printf("RAIL_ConfigData: %u\n", r);
+
+	// 2.4 GHz needs different PA configuration
+	RAIL_TxPowerConfig_t txPowerConfig = {
+		.mode = divider == 1 ?
+			RAIL_TX_POWER_MODE_2P4GIG_HP :
+			RAIL_TX_POWER_MODE_SUBGIG,
+		.voltage = 3300,
+		.rampTime = 10,
+	};
+	r = RAIL_ConfigTxPower(rail, &txPowerConfig);
+	printf("RAIL_ConfigTxPower: %u\n", r);
+	r = RAIL_SetTxPower(rail, RAIL_TX_POWER_LEVEL_HP_MAX);
+	printf("RAIL_SetTxPower: %u\n", r);
 }
 
 
@@ -145,21 +158,6 @@ void initRadio() {
 	rail = RAIL_Init(&railCfg, NULL);
 	r = RAIL_ConfigCal(rail, RAIL_CAL_ALL);
 	printf("RAIL_ConfigCal: %u\n", r);
-
-	RAIL_TxPowerConfig_t txPowerConfig = {
-#if RIG_DEFAULT_FREQUENCY < 2000000000UL
-		.mode = RAIL_TX_POWER_MODE_SUBGIG,
-#else
-		.mode = RAIL_TX_POWER_MODE_2P4GIG_HP,
-#endif
-		.voltage = 3300,
-		.rampTime = 10,
-	};
-	r = RAIL_ConfigTxPower(rail, &txPowerConfig);
-	printf("RAIL_ConfigTxPower: %u\n", r);
-	r = RAIL_SetTxPower(rail, RAIL_TX_POWER_LEVEL_HP_MAX);
-	printf("RAIL_SetTxPower: %u\n", r);
-
 	r = RAIL_ConfigEvents(rail, RAIL_EVENTS_ALL, RAIL_EVENT_RX_FIFO_ALMOST_FULL);
 	printf("RAIL_ConfigEvents: %u\n", r);
 }

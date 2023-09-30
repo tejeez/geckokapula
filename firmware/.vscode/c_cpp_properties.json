@@ -10,6 +10,7 @@
                 "${workspaceFolder}",
                 "${workspaceFolder}/inc",
                 "${workspaceFolder}/freertos",
+                "${workspaceFolder}/../railconfig_v2",
                 "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/emlib/inc",
                 "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/Device/SiliconLabs/EFR32FG14P/Include",
                 "${workspaceFolder}/../gecko_sdk_suite/v2.7/platform/CMSIS/Include",
