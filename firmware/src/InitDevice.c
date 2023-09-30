@@ -857,4 +857,5 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	GPIO_PinModeSet(MIC_EN_PORT, MIC_EN_PIN, gpioModePushPull, 0);
 #endif
 
+	GPIO_PinModeSet(TEST_PORT, TEST_PIN, gpioModeInputPull, 1);
 }

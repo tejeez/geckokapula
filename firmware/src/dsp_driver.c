@@ -13,6 +13,7 @@
 #include "queue.h"
 
 #include "dsp.h"
+#include "dsp_driver.h"
 
 #include <stdio.h>
 

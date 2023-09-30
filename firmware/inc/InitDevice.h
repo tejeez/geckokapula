@@ -124,6 +124,9 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 #define TFT_EN_PIN          (11)
 #define TFT_EN_PORT         (gpioPortC)
 
+#define TEST_PIN          (11)
+#define TEST_PORT         (gpioPortB)
+
 // [User-defined pin name abstraction]$
 
 #endif

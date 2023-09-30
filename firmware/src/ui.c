@@ -13,6 +13,7 @@
 #include "dsp.h"
 #include "power.h"
 #include "railtask.h"
+#include "config.h"
 
 #include "font8x8_basic.h"
 
@@ -207,7 +208,12 @@ void ui_check_buttons(void)
 		backlight_timer = 0;
 	}
 	if (pos_diff != 0 || ptt != ptt_prev) {
-		p.keyed = ui_keyed ? 1 : ptt;
+		if (tx_freq_allowed(p.frequency)) {
+			p.keyed = ui_keyed || ptt;
+		} else {
+			p.keyed = 0;
+			ui_keyed = 0;
+		}
 		if (p.keyed != keyed_prev)
 			xSemaphoreGive(railtask_sem);
 		keyed_prev = p.keyed;
