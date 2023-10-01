@@ -23,6 +23,15 @@
  */
 void shutdown(void)
 {
+	// Debugger also uses system reset. To avoid going to sleep after
+	// reset from debugger, use the RESETSTATE bit to indicate that
+	// the system reset was done from here.
+	// A variable (in a section which is not cleared by startup code)
+	// could be also used, but since only one bit is needed,
+	// this is simpler.
+	// (And even if a variable was used, using RESETSTATE to indicate
+	// the variable has been written might be a good idea.)
+	RMU_UserResetStateSet(1);
 	NVIC_SystemReset();
 }
 
@@ -54,6 +63,7 @@ static void go_to_sleep(void)
 void maybe_sleep(void)
 {
 	CMU_ClockEnable(cmuClock_GPIO, true);
+	// Set GPIO pins to prepare for sleep.
 	// Make sure all extra hardware is turned off
 	// or in a state that should consume minimum current.
 	GPIO_PinModeSet(TFT_EN_PORT, TFT_EN_PIN, gpioModePushPull, 1);
@@ -64,16 +74,21 @@ void maybe_sleep(void)
 	// Check the reset cause.
 	uint32_t cause = RMU_ResetCauseGet();
 	RMU_ResetCauseClear();
+	uint32_t resetstate = RMU_UserResetStateGet();
+	RMU_UserResetStateSet(0);
 
 	if (cause == RMU_RSTCAUSE_SYSREQRST) {
-		// Calling shutdown() causes a system reset, so if the cause is
-		// system reset request, go to sleep.
-		// Wait a moment before going to sleep, so that it is
-		// still possible to use SWD. The delay also gives some time
-		// for the wakeup button debouncing capacitor to charge
-		// so the button is not erroneously seen as being pressed.
-		busy_delay(1000000);
-		go_to_sleep();
+		// Calling shutdown() causes a system reset.
+		// Debugger may also cause it, so check reset state bit
+		// to check whether to go to sleep.
+		if (resetstate) {
+			// Wait a moment before going to sleep, so that it is
+			// still possible to use SWD. The delay also gives some time
+			// for the wakeup button debouncing capacitor to charge
+			// so the button is not erroneously seen as being pressed.
+			busy_delay(1000000);
+			go_to_sleep();
+		}
 	} else if (cause == RMU_RSTCAUSE_EM4RST) {
 		// If the cause was a wakeup from this EM4 sleep, button
 		// has probably been pressed and the device should wake up.
