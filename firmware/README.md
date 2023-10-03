@@ -32,16 +32,11 @@ from **Chipcode**,
 **Cortex-Debug** from **marus25**,
 and **RTOS Views** from **mcu-debug**.
 
-Install OpenOCD. On Ubuntu or Debian, do
-`sudo apt install openocd` .
-On Windows, download it from
-https://github.com/xpack-dev-tools/openocd-xpack/releases/ .
-Some additional configuration may be needed for USB device permissions
-on Linux or to use the right USB driver on Windows.
+Install OpenOCD. See [flashing tutorial](flashing.md) for details.
 
 TODO: improve tasks.json and launch.json and write instructions to use it.
 
-## Alternative way: using command line tools only
+## Alternative way: using command line tools only (on Linux)
 If you have installed the Arm toolchain as an extension for VS Code,
 you can also use it from command line by first doing:
 
@@ -50,6 +45,8 @@ you can also use it from command line by first doing:
 If not, install the toolchain first. For example, on Ubuntu:
 
     sudo apt install make gcc-arm-none-eabi libnewlib-arm-none-eabi gdb-multiarch openocd
+
+See [flashing tutorial](flashing.md) for details on setting up OpenOCD.
 
 Compiling the firmware:
 
@@ -68,7 +65,8 @@ from 2.4 GHz radio modules. The first version has had some problems
 with flashing but try this a couple of times if it does not work
 the first time:
 
-    openocd -f openocd/v1_flash_rtt.cfg
+    cd openocd
+    openocd -f flash_v1.cfg
 
 If you have an ST-Link or CMSIS-DAP instead of J-Link as your SWD adapter,
 do this before flashing or starting OpenOCD:

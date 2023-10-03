@@ -19,6 +19,8 @@ The second version is built on a custom PCB and uses a dual band EFR32 chip.
 See [hardware_v2/pcb/](hardware_v2/pcb/) for a KiCad schematic and PCB design.
 Construction is documented in [hardware_v2 README file](hardware_v2/README.md).
 
+There is also a [tutorial for flashing firmware](firmware/flashing.md).
+
 ## Frequency range for the dual band model
 The second version was designed for the 70 cm (432 MHz) and 13 cm (2.3 GHz)
 amateur radio bands.

@@ -34,5 +34,5 @@ Here's a mirrored pinout to help:
 ![](brd4151a-pinout.png)
 
 ## Flashing
-See [firmware README](../firmware/README.md).
+See [flashing tutorial](../firmware/flashing.md).
 Should I just add compiled firmware binaries here in the repository?

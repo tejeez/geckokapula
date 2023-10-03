@@ -87,6 +87,8 @@ additional configuration for OpenOCD.
 I can try to add configuration for more adapters
 if you can give me an adapter to test with.
 
+See [flashing tutorial](../firmware/flashing.md) for details
+on installation and use of flashing software.
 
 ## Optional parts
 
