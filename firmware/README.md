@@ -34,7 +34,15 @@ and **RTOS Views** from **mcu-debug**.
 
 Install OpenOCD. See [flashing tutorial](flashing.md) for details.
 
-TODO: improve tasks.json and launch.json and write instructions to use it.
+Choose *File -> Open Folder* and open this firmware directory in VS Code.
+
+To build or flash the firmware, press *Ctrl+Shift+B*.
+The build task will ask for the hardware model, SWD adapter type
+and whether you want to only build or also flash the firmware.
+
+To use the debugger, press *F5*.
+If you have made changes to code, remember to flash the new firmware
+before starting debugging.
 
 ## Alternative way: using command line tools only (on Linux)
 If you have installed the Arm toolchain as an extension for VS Code,
@@ -65,8 +73,7 @@ from 2.4 GHz radio modules. The first version has had some problems
 with flashing but try this a couple of times if it does not work
 the first time:
 
-    cd openocd
-    openocd -f flash_v1.cfg
+    openocd -f openocd/flash_v1.cfg
 
 If you have an ST-Link or CMSIS-DAP instead of J-Link as your SWD adapter,
 do this before flashing or starting OpenOCD:

@@ -175,6 +175,7 @@ CP = $(PREFIX)objcopy
 SZ = $(PREFIX)size
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
+OPENOCD = openocd
 
 
 #######################################
@@ -182,8 +183,10 @@ BIN = $(CP) -O binary -S
 #######################################
 
 # default action: build all
-#all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin
+all: build
+
+#build: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+build: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin
 
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
@@ -215,9 +218,9 @@ clean:
 	-rm -fR $(BUILD_DIR)
 
 flash: $(BUILD_DIR)/$(TARGET).elf
-	openocd -f openocd/adapter.cfg -c 'program "$(BUILD_DIR)/$(TARGET).elf" verify reset'
+	$(OPENOCD) -f openocd/adapter.cfg -c init -c 'program "$(BUILD_DIR)/$(TARGET).elf" verify reset' -c exit
 
-.PHONY: all clean flash
+.PHONY: all build clean flash
 
 # Dependencies
 -include $(wildcard $(BUILD_DIR)/*.d)

@@ -11,7 +11,8 @@ for connections between SWD adapter and board.
 
 ### J-Link
 Some J-Link compatible adapters that could work:
-* Genuine J-Link from SEGGER (really expensive)
+* Genuine J-Link from SEGGER (really expensive). Also works with
+  [SEGGER J-Flash](https://gist.github.com/2ftg/d324652f54836944ba25492ce89025fc).
 * [A cheap "J-Link" clone](https://www.ebay.com/itm/256009191453).
   These do not work with SEGGER software but work fine with OpenOCD.
 * J-Link integrated on a development board such as Silicon Labs WSTK.
@@ -54,9 +55,8 @@ so it may get difficult if you are not an experienced Linux user.
 ## Flashing using OpenOCD software
 OpenOCD is good in that it supports a lot of different SWD adapters
 and can do a lot of things.
-Its downside is that it can feel somewhat complicated to configure
-and use due to its command line user interface and use of TCL
-language for configuration, scripting and commanding.
+Its downside is that it can feel somewhat complicated to use
+if you are not familiar with it.
 I try to provide straightforward instructions here so you do not need
 to learn too much about OpenOCD just to get your firmware flashed.
 
@@ -71,9 +71,15 @@ https://raw.githubusercontent.com/openocd-org/openocd/master/contrib/60-openocd.
 and copy it to the right place:
 
     sudo cp 60-openocd.rules /etc/udev/rules.d/
-	sudo udevadm control --reload
+    sudo udevadm control --reload
 
 Connect your SWD adapter after copying these udev rules.
+
+If it does not work, a common reason is that openocd does not have
+permissions to use your SWD adapter, maybe because the udev rule
+does not work on your system for some reason.
+In this case, you could try adding `sudo ` in front of openocd
+commands (which is not good practice though).
 
 ### Installing on Windows
 [OpenOCD website](https://openocd.org/pages/getting-openocd.html#unofficial-binary-packages)
@@ -93,17 +99,18 @@ OpenOCD needs to know which SWD adapter you have.
 The [openocd/](openocd/) directory here contains an OpenOCD script
 with configuration for a few different adapters.
 The adapter can be selected by setting a SWD_ADAPTER environment
-variable before starting OpenOCD. For example:
+variable before starting OpenOCD.
+To test it, `cd` to this firmware directory and do:
 
-    export SWD_ADAPTER=st-link
-    cd openocd
-    openocd -f adapter.cfg -c init -c "program path_to_firmware.bin verify reset" -c exit
+    # Replace with stlink or cmsis-dap if needed
+    export SWD_ADAPTER=jlink
+    openocd -f openocd/adapter.cfg
 
-Replace st-link with jlink or cmsis-dap depending on your SWD adapter.
+To flash a firmware binary, do:
+
+    openocd -f openocd/adapter.cfg -c init -c 'program "path_to_firmware.bin" verify reset' -c exit
+
 Replace path_to_firmware.bin with the filename of your firmware binary.
-If you [compiled firmware yourself](README.md), you can also do:
-
-    openocd -f flash_v2.cfg
 
 ## Other software options
 Some other software you could try if OpenOCD does not work for you:
@@ -113,7 +120,7 @@ Some other software you could try if OpenOCD does not work for you:
   up to date knowledge on it. It worked well, but installing SiLabs
   software was complicated.
 * SEGGER J-Flash: Only works with genuine SEGGER J-Link adapters.
-  I have never tried it but heard it is really easy to use.
+  See [instructions to flash using J-Flash](https://gist.github.com/2ftg/d324652f54836944ba25492ce89025fc).
 * pyOCD: Sort of an alternative to OpenOCD. Might be easier to use,
   work better for some usecases or something, but does not seem to
   support as many SWD adapters as OpenOCD does.

@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "label": "Build for v2 model",
+        "label": "Build or flash firmware",
         "type": "shell",
-        "command": "make KAPULA=v2 -j4",
+        "command": "make ${input:make_target} KAPULA=${input:KAPULA} SWD_ADAPTER=${input:SWD_ADAPTER} -j4",
         "group": {
             "kind": "build",
             "isDefault": true,
@@ -43,47 +43,28 @@
           },
         },
       },
+    ],
+    "inputs": [
       {
-        "label": "Build for v1 model",
-        "type": "shell",
-        "command": "make KAPULA=eka -j4",
-        "group": {
-            "kind": "build",
-            "isDefault": false,
-          },
-        "problemMatcher": "$gcc",
-
-        /* The following options are needed if the ARM toolchain
-          * is installed as a VS Code extension.
-          * If you want to use a toolchain installed somewhere else,
-          * comment the options out. */
-        "options": {
-          "env": {
-            "INCLUDE": "${config:arm-none-eabi.include}",
-            "LIB": "${config:arm-none-eabi.lib}",
-          }
-        },
-        "osx": {
-          "options": {
-            "env": {
-              "PATH": "${config:arm-none-eabi.bin}:${env:PATH}",
-            }
-          },
-        },
-        "linux": {
-          "options": {
-            "env": {
-              "PATH": "${config:arm-none-eabi.bin}:${env:PATH}",
-            }
-          },
-        },
-        "windows": {
-          "options": {
-            "env": {
-              "PATH": "${config:arm-none-eabi.bin};${env:PATH}",
-            }
-          },
-        },
+        "id": "make_target",
+        "type": "pickString",
+        "description": "What to do",
+        "options": ["build", "flash"],
+        "default": "build"
+      },
+      {
+        "id": "KAPULA",
+        "type": "pickString",
+        "description": "Gekkokapula hardware model",
+        "options": ["eka", "v2"],
+        "default": "v2"
+      },
+      {
+        "id": "SWD_ADAPTER",
+        "type": "pickString",
+        "description": "SWD adapter type",
+        "options": ["jlink", "stlink", "cmsis-dap"],
+        "default": "jlink"
       }
     ]
 }
