@@ -26,21 +26,24 @@ Font is from https://github.com/dhepper/font8x8/
 ## Using Visual Studio Code
 The project includes configuration for Visual Studio Code and the
 Cortex-Debug extension.
-To develop with Visual Studio Code, install the extensions
-**Arm toolchain Linux** (or **Arm toolchain Windows** or **Arm toolchain macOS**)
-from **Chipcode**,
-**Cortex-Debug** from **marus25**,
-and **RTOS Views** from **mcu-debug**.
+To develop with Visual Studio Code, choose *File -> Open Folder*
+and open this firmware directory
+(note: not the upper directory of the whole repository).
+
+Install the following VS Code extensions:
+* **C/C++** from **Microsoft**
+* **Arm toolchain Linux**, **Arm toolchain Windows** or **Arm toolchain macOS**
+  (depending on your operating system) from **Chipcode**
+* **Cortex-Debug** from **marus25**
+* **RTOS Views** from **mcu-debug**
 
 Install OpenOCD. See [flashing tutorial](flashing.md) for details.
 
-Choose *File -> Open Folder* and open this firmware directory in VS Code.
-
-To build or flash the firmware, press *Ctrl+Shift+B*.
+To build or flash the firmware, press **Ctrl+Shift+B**.
 The build task will ask for the hardware model, SWD adapter type
 and whether you want to only build or also flash the firmware.
 
-To use the debugger, press *F5*.
+To use the debugger, press **F5**.
 If you have made changes to code, remember to flash the new firmware
 before starting debugging.
 
@@ -60,12 +63,13 @@ Compiling the firmware:
 
     make -j4 KAPULA=v2
 
-Compiling and flashing the firmware:
+Compiling and flashing the firmware (replace `jlink` with `stlink` or `cmsis-dap` if needed):
 
-    make -j4 flash KAPULA=v2
+    make -j4 flash KAPULA=v2 SWD_ADAPTER=jlink
 
 Running OpenOCD to use a debugger or to view RTT debug prints:
 
+    export SWD_ADAPTER=jlink
     openocd -f openocd/rtt.cfg
 
 Replace KAPULA=v2 with KAPULA=eka for the first version built
@@ -73,11 +77,5 @@ from 2.4 GHz radio modules. The first version has had some problems
 with flashing but try this a couple of times if it does not work
 the first time:
 
+    export SWD_ADAPTER=jlink
     openocd -f openocd/flash_v1.cfg
-
-If you have an ST-Link or CMSIS-DAP instead of J-Link as your SWD adapter,
-do this before flashing or starting OpenOCD:
-
-    export SWD_ADAPTER=stlink
-    # or
-    export SWD_ADAPTER=cmsis-dap

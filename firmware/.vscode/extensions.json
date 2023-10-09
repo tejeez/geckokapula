@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "ms-vscode.cpptools",
+        "chipcode-nl.gcc-arm-windows",
+        "chipcode-nl.gcc-arm-linux",
+        "chipcode-nl.gcc-arm-mac",
+        "marus25.cortex-debug",
+        "mcu-debug.rtos-views"
+    ]
+}
