@@ -8,7 +8,7 @@
 KAPULA ?= v2
 
 # Name of the binary
-TARGET = gekkofirmis
+TARGET = gekkofirmis_$(KAPULA)
 
 BUILD_DIR = build_$(KAPULA)
 
@@ -91,7 +91,7 @@ C_INCLUDES += -I$(GECKOSDK)/platform/emlib/inc
 ### ASM_SOURCES, C_SOURCES: Startup and system code for the EFR32
 ### LDSCRIPT: Linker script for memory map of the EFR32
 
-ifeq ($(KAPULA), eka)
+ifeq ($(KAPULA), v1)
   # First hardware version built from a radio module
   C_DEFS += -DEFR32MG1P232F256GM48
 
@@ -184,6 +184,10 @@ OPENOCD = openocd
 
 # default action: build all
 all: build
+
+# More descriptive alternative target names for use in build task
+build_only: build
+build_and_flash: flash
 
 #build: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 build: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin

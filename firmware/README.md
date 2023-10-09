@@ -24,9 +24,10 @@ Font is from https://github.com/dhepper/font8x8/
 
 # Compiling and flashing
 ## Using Visual Studio Code
-The project includes configuration for Visual Studio Code and the
-Cortex-Debug extension.
-To develop with Visual Studio Code, choose *File -> Open Folder*
+The project includes configuration for
+[Visual Studio Code](https://code.visualstudio.com/download)
+and the Cortex-Debug extension.
+To develop with Visual Studio Code, choose **File -> Open Folder**
 and open this firmware directory
 (note: not the upper directory of the whole repository).
 
@@ -55,6 +56,7 @@ you can also use it from command line by first doing:
 
 If not, install the toolchain first. For example, on Ubuntu:
 
+    # Skip this if you followed VS Code instructions above
     sudo apt install make gcc-arm-none-eabi libnewlib-arm-none-eabi gdb-multiarch openocd
 
 See [flashing tutorial](flashing.md) for details on setting up OpenOCD.
@@ -72,7 +74,7 @@ Running OpenOCD to use a debugger or to view RTT debug prints:
     export SWD_ADAPTER=jlink
     openocd -f openocd/rtt.cfg
 
-Replace KAPULA=v2 with KAPULA=eka for the first version built
+Replace KAPULA=v2 with KAPULA=v1 for the first version built
 from 2.4 GHz radio modules. The first version has had some problems
 with flashing but try this a couple of times if it does not work
 the first time:

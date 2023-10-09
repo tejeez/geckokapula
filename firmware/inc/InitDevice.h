@@ -44,7 +44,7 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
-#if KAPULA_eka
+#if KAPULA_v1
 	#define ENC1_PIN            (11)
 	#define ENC1_PORT           (gpioPortD)
 	#define ENC1_TIM1_CC0       TIMER_ROUTELOC0_CC0LOC_LOC19
