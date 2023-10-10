@@ -100,6 +100,9 @@ struct diagnostics {
 
 	// Cycle counters to estimate CPU usage of fast DSP
 	uint32_t cycles_dsp, cycles_nodsp;
+
+	// Estimate of CPU time used by fast DSP
+	float dsp_cpu_use;
 };
 struct diagnostics diag;
 
@@ -374,6 +377,7 @@ void fast_dsp_task(void *arg)
 {
 	(void)arg;
 	uint32_t cyc1, cyc2;
+	uint32_t cycles_dsp_prev = 0, cycles_nodsp_prev = 0;
 	dsp_update_params();
 	cyc2 = DWT->CYCCNT;
 	for (;;) {
@@ -396,5 +400,16 @@ void fast_dsp_task(void *arg)
 		}
 		cyc2 = DWT->CYCCNT;
 		diag.cycles_dsp += cyc2 - cyc1;
+		// Update estimate of CPU usage. This is more useful than
+		// FreeRTOS run time counters and rtos-views for benchmarking
+		// because this one handles wrapping counters properly
+		// and updates results without having to stop the program.
+		uint32_t diff_dsp   = diag.cycles_dsp   - cycles_dsp_prev;
+		uint32_t diff_nodsp = diag.cycles_nodsp - cycles_nodsp_prev;
+		if (diff_dsp + diff_nodsp >= 38400000UL) {
+			diag.dsp_cpu_use = (float)diff_dsp / (float)(diff_dsp + diff_nodsp);
+			cycles_dsp_prev = diag.cycles_dsp;
+			cycles_nodsp_prev = diag.cycles_nodsp;
+		}
 	}
 }
