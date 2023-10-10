@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 
+#ifndef DSP_TEST
 // CMSIS
 #include "arm_math.h"
 #include "arm_const_structs.h"
@@ -10,25 +11,37 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+#endif
 
 // rig
 #include "rig.h"
+#ifndef DSP_TEST
 #include "ui.h"
 #include "ui_parameters.h"
+#endif
 
 #include "dsp.h"
 #include <math.h>
+#include <string.h>
 
 #define AUDIO_MAXLEN 32
 #define IQ_MAXLEN (AUDIO_MAXLEN * 2)
 
 extern rig_parameters_t p;
 
-/* Waterfall FFT related things */
+/* Waterfall FFT related things.
+ *
+ * Disable waterfall when testing because it depends on ARM FFT
+ * library and FreeRTOS, making it more complicated to test outside
+ * of microcontroller environment.
+ * Testing audio processing code is good enough.
+ */
+#ifndef DSP_TEST
 const arm_cfft_instance_f32 *fftS = &arm_cfft_sR_f32_len256;
+QueueHandle_t fft_queue;
+#endif
 #define SIGNALBUFLEN 512
 int16_t signalbuf[2*SIGNALBUFLEN];
-QueueHandle_t fft_queue;
 
 
 // State of a biquad filter
@@ -155,10 +168,12 @@ void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
 		acc += s1i * s1i + s1q * s1q;
 		fp = (fp + 2) & (SIGNALBUFLEN-2);
 		if (fp == 0 || fp == 171*2 || fp == 341*2) {
+#ifndef DSP_TEST
 			uint16_t msg = fp;
 			if (!xQueueSend(fft_queue, &msg, 0)) {
 				//++diag.fft_overflows;
 			}
+#endif
 		}
 	}
 	if((ds->smeter_count += len) >= 0x4000) {
@@ -167,8 +182,10 @@ void demod_store(struct demod *ds, iq_in_t *in, unsigned len)
 		acc = 0;
 		ds->smeter_count = 0;
 
+#ifndef DSP_TEST
 		display_ev.text_changed = 1;
 		xSemaphoreGive(display_sem);
+#endif
 	}
 	ds->signalbufp = fp;
 	ds->smeter_acc = acc;
@@ -567,9 +584,11 @@ int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 			out[i] = 32;
 		}
 	}
+	return 0;
 }
 
 
+#ifndef DSP_TEST
 static void calculate_waterfall_line(unsigned sbp)
 {
 	extern uint8_t displaybuf2[3*(FFT_BIN2-FFT_BIN1)];
@@ -655,3 +674,4 @@ void slow_dsp_rtos_init(void)
 {
 	fft_queue = xQueueCreate(1, sizeof(uint16_t));
 }
+#endif
