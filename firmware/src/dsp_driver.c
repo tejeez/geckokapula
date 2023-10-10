@@ -200,13 +200,16 @@ static inline void synth_set_channel(uint32_t ch)
 
 
 /* ADC interrupt, used for transmission */
-void ADC0_IRQHandler(void)
+void WTIMER0_IRQHandler(void)
 {
 	BaseType_t yield = 0;
 	struct dsp_driver *d = &dsp_driver;
 	unsigned i = d->tx_i;
 	synth_set_channel(d->fm_out[i]);
+	// ADC data should be available by now if ADC was started
+	// in the previous timer interrupt.
 	d->audio_in[i] = ADC0->SINGLEDATA;
+	ADC_Start(ADC0, adcStartSingle);
 
 	if (i % TX_DSP_BLOCK == TX_DSP_BLOCK - 1) {
 		// Index of the first sample in the block
@@ -227,9 +230,56 @@ void ADC0_IRQHandler(void)
 		i = 0;
 	d->tx_i = i;
 
-	ADC_IntClear(ADC0, ADC_IF_SINGLE);
+	TIMER_IntClear(WTIMER0, TIMER_IF_CC0);
 	portYIELD_FROM_ISR(yield);
 }
+
+
+int start_rx_dsp(RAIL_Handle_t rail)
+{
+	// TODO clear the audio buffer for first round
+	unsigned r;
+	TIMER_IntDisable(WTIMER0, TIMER_IF_CC0);
+	RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
+
+#ifdef MIC_EN_PIN
+	GPIO_PinOutClear(MIC_EN_PORT, MIC_EN_PIN);
+#endif
+#ifdef RX_EN_PIN
+	GPIO_PinOutClear(TX_EN_PORT, TX_EN_PIN);
+	GPIO_PinOutSet(RX_EN_PORT, RX_EN_PIN);
+#endif
+	RAIL_ResetFifo(rail, false, true);
+	RAIL_SetRxFifoThreshold(rail, sizeof(iq_in_t) * RX_SAMPLE_RATIO);
+	// Setting channel through RAIL does not always seem to work
+	// after writing directly to the channel register,
+	// so write the channel register too.
+	synth_set_channel(MIDDLECHANNEL);
+	r = RAIL_StartRx(rail, MIDDLECHANNEL, NULL);
+	printf("RAIL_StartRx: %u\n", r);
+	return r;
+}
+
+
+int start_tx_dsp(RAIL_Handle_t rail)
+{
+	(void)rail;
+	// TODO clear the FM buffer for first round
+#ifdef MIC_EN_PIN
+	GPIO_PinOutSet(MIC_EN_PORT, MIC_EN_PIN);
+#endif
+#ifdef RX_EN_PIN
+	GPIO_PinOutClear(RX_EN_PORT, RX_EN_PIN);
+	GPIO_PinOutSet(TX_EN_PORT, TX_EN_PIN);
+#endif
+	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
+	RAIL_StartTxStream(rail, MIDDLECHANNEL, RAIL_STREAM_CARRIER_WAVE);
+	NVIC_EnableIRQ(WTIMER0_IRQn);
+	TIMER_IntEnable(WTIMER0, TIMER_IF_CC0);
+	ADC_Start(ADC0, adcStartSingle);
+	return 0;
+}
+
 
 
 void setup_opamps(void)
@@ -311,57 +361,79 @@ void setup_opamps(void)
 }
 
 
-int start_rx_dsp(RAIL_Handle_t rail)
+void setup_adc(void)
 {
-	// TODO clear the audio buffer for first round
-	unsigned r;
-	ADC_IntDisable(ADC0, ADC_IF_SINGLE);
-	// TODO: stop microphone ADC?
-	RAIL_Idle(rail, RAIL_IDLE_ABORT, false);
+	CMU_ClockEnable(cmuClock_WTIMER0, true);
+	CMU_ClockEnable(cmuClock_ADC0, true);
 
-#ifdef MIC_EN_PIN
-	GPIO_PinOutClear(MIC_EN_PORT, MIC_EN_PIN);
-#endif
-#ifdef RX_EN_PIN
-	GPIO_PinOutClear(TX_EN_PORT, TX_EN_PIN);
-	GPIO_PinOutSet(RX_EN_PORT, RX_EN_PIN);
-#endif
-	RAIL_ResetFifo(rail, false, true);
-	RAIL_SetRxFifoThreshold(rail, sizeof(iq_in_t) * RX_SAMPLE_RATIO);
-	// Setting channel through RAIL does not always seem to work
-	// after writing directly to the channel register,
-	// so write the channel register too.
-	synth_set_channel(MIDDLECHANNEL);
-	r = RAIL_StartRx(rail, MIDDLECHANNEL, NULL);
-	printf("RAIL_StartRx: %u\n", r);
-	return r;
-}
+	// Use timer to make an accurate 24 kHz sample rate for ADC.
+	// Maybe TIMER1 could be used instead of WTIMER0 if
+	// encoder decoding would be done using PCNT instead of TIMER1.
+	// This would lave WTIMER0 still free for other future use.
+	TIMER_Init(WTIMER0, &(const TIMER_Init_TypeDef) {
+		.enable = 1,
+		.debugRun = 0,
+		.prescale = timerPrescale64,
+		.clkSel = timerClkSelHFPerClk,
+		.count2x = 0,
+		.ati = 0,
+		.fallAction = timerInputActionNone,
+		.riseAction = timerInputActionNone,
+		.mode = timerModeUp,
+		.dmaClrAct = 0,
+		.quadModeX4 = 0,
+		.oneShot = 0,
+		.sync = 0,
+	});
+	TIMER_InitCC(WTIMER0, 0, &(const TIMER_InitCC_TypeDef) {
+		.eventCtrl = timerEventRising,
+		.edge = timerEdgeNone,
+		.prsSel = timerPRSSELCh0,
+		.cufoa = timerOutputActionNone,
+		.cofoa = timerOutputActionNone,
+		.cmoa = timerOutputActionNone,
+		.mode = timerCCModeCompare,
+		.filter = 0,
+		.prsInput = 0,
+		.coist  = 0,
+		.outInvert = 0,
+		.prsOutput = timerPrsOutputDefault,
+	});
+	TIMER_TopSet(WTIMER0, 25);
+	TIMER_CompareSet(WTIMER0, 0, 0);
+	// TODO: maybe enable it only during TX
+	TIMER_Enable(WTIMER0, 1);
 
+	ADC_Init(ADC0, &(const ADC_Init_TypeDef) {
+		.ovsRateSel = adcOvsRateSel8,
+		.warmUpMode = adcWarmupKeepADCWarm,
+		.timebase = ADC_TimebaseCalc(0),
+		.prescale = ADC_PrescaleCalc(4000000, 0),
+		.tailgate = 0,
+		.em2ClockConfig = adcEm2Disabled,
+	});
 
-int start_tx_dsp(RAIL_Handle_t rail)
-{
-	(void)rail;
-	// TODO clear the FM buffer for first round
-#ifdef MIC_EN_PIN
-	GPIO_PinOutSet(MIC_EN_PORT, MIC_EN_PIN);
-#endif
-#ifdef RX_EN_PIN
-	GPIO_PinOutClear(RX_EN_PORT, RX_EN_PIN);
-	GPIO_PinOutSet(TX_EN_PORT, TX_EN_PIN);
-#endif
-	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
-	RAIL_StartTxStream(rail, MIDDLECHANNEL, RAIL_STREAM_CARRIER_WAVE);
-	NVIC_EnableIRQ(ADC0_IRQn);
-	ADC_IntEnable(ADC0, ADC_IF_SINGLE);
-	ADC_Start(ADC0, adcStartSingle);
-	return 0;
+	ADC_InitSingle(ADC0, &(const ADC_InitSingle_TypeDef) {
+		.prsSel = adcPRSSELCh0,
+		.acqTime = adcAcqTime4,
+		.reference = adcRef1V25,
+		.resolution = adcResOVS,
+		.posSel = MIC_APORT,
+		.negSel = adcNegSelVSS,
+		.diff = 0,
+		.prsEnable = 0,
+		.leftAdjust = 1,
+		.rep = 0,
+		.singleDmaEm2Wu = 0,
+		.fifoOverwrite = 0,
+	});
 }
 
 
 // Initialize hardware used for signal I/O.
 void dsp_hw_init(void)
 {
-	// TODO: move other related hardware init code here
+	setup_adc();
 	setup_opamps();
 #ifdef SPK_EN_PIN
 	// Make the speaker pin open drain since it is pulled up

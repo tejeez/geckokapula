@@ -41,7 +41,6 @@ extern void enter_DefaultMode_from_RESET(void) {
 
 	EMU_enter_DefaultMode_from_RESET();
 	CMU_enter_DefaultMode_from_RESET();
-	ADC0_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
 	USART1_enter_DefaultMode_from_RESET();
 	LDMA_enter_DefaultMode_from_RESET();
@@ -187,48 +186,6 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	CMU->ROUTEPEN &= ~CMU_ROUTEPEN_CLKOUT1PEN;
 
 	// [CMU_IO]$
-
-}
-
-//================================================================================
-// ADC0_enter_DefaultMode_from_RESET
-//================================================================================
-extern void ADC0_enter_DefaultMode_from_RESET(void) {
-
-	// $[ADC0_Init]
-	ADC_Init_TypeDef ADC0_init = ADC_INIT_DEFAULT;
-
-	ADC0_init.ovsRateSel = adcOvsRateSel16;
-	ADC0_init.warmUpMode = adcWarmupKeepADCWarm;
-	ADC0_init.timebase = ADC_TimebaseCalc(0);
-	ADC0_init.prescale = ADC_PrescaleCalc(4000000, 0);
-	ADC0_init.tailgate = 0;
-	ADC0_init.em2ClockConfig = adcEm2Disabled;
-
-	ADC_Init(ADC0, &ADC0_init);
-	// [ADC0_Init]$
-
-	// $[ADC0_InputConfiguration]
-	ADC_InitSingle_TypeDef ADC0_init_single = ADC_INITSINGLE_DEFAULT;
-
-	/* PRS settings */
-	ADC0_init_single.prsEnable = 0;
-	ADC0_init_single.prsSel = adcPRSSELCh0;
-	/* Input(s) */
-	ADC0_init_single.diff = 0;
-	ADC0_init_single.posSel = MIC_APORT;
-	ADC0_init_single.negSel = adcNegSelVSS;
-	ADC0_init_single.reference = adcRef1V25;
-	/* Generic conversion settings */
-	ADC0_init_single.acqTime = adcAcqTime2;
-	ADC0_init_single.resolution = adcResOVS;
-	ADC0_init_single.leftAdjust = 0;
-	ADC0_init_single.rep = 1;
-	ADC0_init_single.singleDmaEm2Wu = 0;
-	ADC0_init_single.fifoOverwrite = 0;
-
-	ADC_InitSingle(ADC0, &ADC0_init_single);
-	// [ADC0_InputConfiguration]$
 
 }
 

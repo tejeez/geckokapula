@@ -36,7 +36,7 @@
  */
 
 #define IRQPRI_RAIL 3
-#define IRQPRI_AUDIO_ADC 3
+#define IRQPRI_SAMPLE_RATE_TIMER 3
 
 
 /* ---------------------------------
@@ -85,7 +85,7 @@ int main(void) {
 	NVIC_SetPriority(PROTIMER_IRQn, IRQPRI_RAIL);
 	NVIC_SetPriority(   SYNTH_IRQn, IRQPRI_RAIL);
 	NVIC_SetPriority( RFSENSE_IRQn, IRQPRI_RAIL);
-	NVIC_SetPriority(    ADC0_IRQn, IRQPRI_AUDIO_ADC);
+	NVIC_SetPriority( WTIMER0_IRQn, IRQPRI_SAMPLE_RATE_TIMER);
 	{
 		LDMA_Init_t init = LDMA_INIT_DEFAULT;
 		LDMA_Init(&init);
