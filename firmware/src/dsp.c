@@ -44,6 +44,15 @@ QueueHandle_t fft_queue;
 int16_t signalbuf[2*SIGNALBUFLEN];
 
 
+static inline float clip(float v, float threshold)
+{
+	if (v < -threshold)
+		return -threshold;
+	if (v > threshold)
+		return threshold;
+	return v;
+}
+
 // State of a biquad filter
 struct biquad_state {
 	float s1_i, s1_q, s2_i, s2_q;
@@ -525,7 +534,7 @@ void dsp_update_params(void)
 
 /* Modulator state */
 struct modstate {
-	float lpf, hpf, agc_amp;
+	float lpf, hpf, hpf2, agc_amp, limitergain, clipint, qerr;
 };
 
 struct modstate modstate;
@@ -534,24 +543,28 @@ struct modstate modstate;
 /* Function to convert input audio to transmit frequency modulation */
 static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
 {
-	float hpf = modstate.hpf, lpf = modstate.lpf;
-	float agc_amp = modstate.agc_amp;
+	struct modstate *m = &modstate;
+	float hpf = m->hpf, lpf = m->lpf, hpf2 = m->hpf2;
+	float agc_amp = m->agc_amp, limitergain = m->limitergain;
+	float clipint = m->clipint, qerr = m->qerr;
 
 	int i;
 	for (i = 0; i < len; i++) {
-		float audioin = in[i];
-		// DC block, highpass for pre-emphasis
-		hpf += (audioin - hpf) * .1f;
-		audioin -= hpf;
-		// lowpass
-		lpf += (audioin - lpf) * .2f;
+		float audio = (float)in[i];
+		// DC block, 300 Hz highpass
+		hpf += (audio - hpf) * .076f;
+		audio -= hpf;
+		// 4 kHz lowpass
+		lpf += (audio - lpf) * .65f;
+		audio = lpf;
 
-		float amp = fabsf(audioin);
+		float amp = fabsf(audio);
 
-		const float agc_attack = 0.01f, agc_decay = 0.001f;
+		const float agc_attack = 0.001f, agc_decay = 0.0001f;
 		// Avoid NaN, clamp to a minimum value
-		if (agc_amp != agc_amp || agc_amp < .01f)
-			agc_amp = .01f;
+		const float agc_minimum = 10.0f;
+		if (agc_amp != agc_amp || agc_amp < agc_minimum)
+			agc_amp = agc_minimum;
 
 		float d = amp - agc_amp;
 		if (d >= 0)
@@ -559,15 +572,56 @@ static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
 		else
 			agc_amp = agc_amp + d * agc_decay;
 
-		int32_t audioout = audioin * (50.0f / agc_amp) + 32.0f;
-		if(audioout <= 6)  audioout = 6;
-		if(audioout >= 57) audioout = 57;
-		out[i] = audioout;
+		audio *= (200.0f / agc_amp);
+
+		// Preemphasis: 3500 Hz highpass
+		hpf2 += (audio - hpf2) * .6f;
+		audio -= hpf2;
+
+		// Pre-clip largest peaks, should not happen that often
+		audio = clip(audio, 100.0f);
+
+		const float limitergain_min = 0.2f, limitergain_max = 1.0f;
+
+		audio *= limitergain;
+
+		// Avoid producing DC offsets while clipping asymmetric waveforms
+		// by integrating the clipped signal and feeding it back into input.
+		// This works as a 300 Hz high pass filter while not clipping.
+		audio -= clipint * .076f;
+
+		// Also reduce limiter gain when it is getting close to clipping.
+		if (fabsf(audio) >= 20.0f) {
+			limitergain *= .95f;
+		} else {
+			limitergain *= 1.002f;
+			if(limitergain > limitergain_max)
+				limitergain = limitergain_max;
+		}
+		if (limitergain < limitergain_min)
+			limitergain = limitergain_min;
+
+		audio = clip(audio, 25.0f);
+		// DC offset integrator
+		clipint += audio;
+
+		audio += 32.0f;
+
+		// Dither using a delta sigma modulator based on
+		// quantization error from previous sample.
+		audio += qerr;
+		fm_out_t quantized = (fm_out_t)audio;
+		qerr = audio - (float)quantized;
+		out[i] = quantized;
 	}
 
-	modstate.lpf = lpf;
-	modstate.hpf = hpf;
-	modstate.agc_amp = agc_amp;
+	m->lpf = lpf;
+	m->hpf = hpf;
+	m->hpf2 = hpf2;
+	m->agc_amp = agc_amp;
+	m->limitergain = limitergain;
+	m->clipint = clipint;
+	m->qerr = qerr;
 	return len;
 }
 
