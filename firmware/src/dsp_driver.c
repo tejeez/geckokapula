@@ -106,16 +106,22 @@ struct diagnostics {
 };
 struct diagnostics diag;
 
-
-/* Receive-related buffers */
-audio_out_t buf_audio_out[RX_DSP_BLOCK * RX_BUF_BLOCKS];
-iq_in_t buf_iq_in[RX_DSP_BLOCK * RX_BUF_BLOCKS * RX_SAMPLE_RATIO];
-unsigned rx_buf_p = 0;
-
-/* Transmit-related buffers */
-audio_in_t buf_audio_in[TX_DSP_BLOCK * TX_BUF_BLOCKS];
-fm_out_t buf_fm_out[TX_DSP_BLOCK * TX_BUF_BLOCKS];
-unsigned tx_buf_p = 0;
+/* DSP driver state */
+struct dsp_driver {
+	// I/Q input and audio output buffers current index
+	unsigned rx_i;
+	// Audio input and FM output buffers current index
+	unsigned tx_i;
+	// Audio output buffer
+	audio_out_t audio_out[RX_DSP_BLOCK * RX_BUF_BLOCKS];
+	// I/Q input buffer
+	iq_in_t iq_in[RX_DSP_BLOCK * RX_BUF_BLOCKS * RX_SAMPLE_RATIO];
+	// Audio input buffer
+	audio_in_t audio_in[TX_DSP_BLOCK * TX_BUF_BLOCKS];
+	// FM output buffer
+	fm_out_t fm_out[TX_DSP_BLOCK * TX_BUF_BLOCKS];
+};
+struct dsp_driver dsp_driver;
 
 /* Message sent from interrupt to fast DSP task during receive */
 struct fast_dsp_rx_msg {
@@ -144,10 +150,11 @@ QueueSetHandle_t fast_dsp_qs;
 void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 {
 	BaseType_t yield = 0;
+	struct dsp_driver *d = &dsp_driver;
 	if (events & RAIL_EVENT_RX_FIFO_ALMOST_FULL) {
-		unsigned nread, p = rx_buf_p;
+		unsigned nread, i = d->rx_i;
 
-		uint32_t audio_out = buf_audio_out[p];
+		uint32_t audio_out = d->audio_out[i];
 		TIMER_CompareBufSet(TIMER0, 0, audio_out);
 #ifdef USE_OPAMPS
 		// DAC has more resolution than PWM so really bit depth
@@ -156,18 +163,18 @@ void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 		VDAC_Channel1OutputSet(VDAC0, audio_out * 20);
 #endif
 
-		nread = RAIL_ReadRxFifo(rail, (uint8_t*)(buf_iq_in + p * RX_SAMPLE_RATIO), sizeof(iq_in_t) * RX_SAMPLE_RATIO);
+		nread = RAIL_ReadRxFifo(rail, (uint8_t*)(d->iq_in + i * RX_SAMPLE_RATIO), sizeof(iq_in_t) * RX_SAMPLE_RATIO);
 		if (nread != sizeof(iq_in_t) * RX_SAMPLE_RATIO)
 			++diag.rx_rail_underruns;
 		++diag.rx_samples_isr;
 
-		if (p % RX_DSP_BLOCK == RX_DSP_BLOCK - 1) {
+		if (i % RX_DSP_BLOCK == RX_DSP_BLOCK - 1) {
 			// Index of the first sample in the latest received block
-			unsigned fp = p - (RX_DSP_BLOCK - 1);
+			unsigned fi = i - (RX_DSP_BLOCK - 1);
 
 			struct fast_dsp_rx_msg msg = {
-				buf_iq_in + fp * RX_SAMPLE_RATIO,
-				buf_audio_out + fp,
+				d->iq_in + fi * RX_SAMPLE_RATIO,
+				d->audio_out + fi,
 				RX_DSP_BLOCK * RX_SAMPLE_RATIO,
 				RX_DSP_BLOCK
 			};
@@ -177,9 +184,9 @@ void rail_callback(RAIL_Handle_t rail, RAIL_Events_t events)
 				++diag.rx_blocks_overflow;
 		}
 
-		if (++p >= RX_DSP_BLOCK * RX_BUF_BLOCKS)
-			p = 0;
-		rx_buf_p = p;
+		if (++i >= RX_DSP_BLOCK * RX_BUF_BLOCKS)
+			i = 0;
+		d->rx_i = i;
 	}
 	portYIELD_FROM_ISR(yield);
 }
@@ -193,18 +200,21 @@ static inline void synth_set_channel(uint32_t ch)
 
 
 /* ADC interrupt, used for transmission */
-void ADC0_IRQHandler() {
+void ADC0_IRQHandler(void)
+{
 	BaseType_t yield = 0;
-	unsigned p = tx_buf_p;
-	synth_set_channel(buf_fm_out[p]);
-	buf_audio_in[p] = ADC0->SINGLEDATA;
+	struct dsp_driver *d = &dsp_driver;
+	unsigned i = d->tx_i;
+	synth_set_channel(d->fm_out[i]);
+	d->audio_in[i] = ADC0->SINGLEDATA;
 
-	if (p % TX_DSP_BLOCK == TX_DSP_BLOCK - 1) {
-		unsigned fp = p - (TX_DSP_BLOCK - 1);
+	if (i % TX_DSP_BLOCK == TX_DSP_BLOCK - 1) {
+		// Index of the first sample in the block
+		unsigned fi = i - (TX_DSP_BLOCK - 1);
 
 		struct fast_dsp_tx_msg msg = {
-			buf_audio_in + fp,
-			buf_fm_out + fp,
+			d->audio_in + fi,
+			d->fm_out + fi,
 			TX_DSP_BLOCK
 		};
 		if (xQueueSendFromISR(fast_dsp_tx_q, &msg, &yield))
@@ -213,9 +223,9 @@ void ADC0_IRQHandler() {
 			++diag.tx_blocks_overflow;
 	}
 
-	if (++p >= TX_DSP_BLOCK * TX_BUF_BLOCKS)
-		p = 0;
-	tx_buf_p = p;
+	if (++i >= TX_DSP_BLOCK * TX_BUF_BLOCKS)
+		i = 0;
+	d->tx_i = i;
 
 	ADC_IntClear(ADC0, ADC_IF_SINGLE);
 	portYIELD_FROM_ISR(yield);
