@@ -304,8 +304,10 @@ void setup_opamps(void)
 
 	VDAC_Channel0OutputSet(VDAC0, 0x800);
 	VDAC_Channel1OutputSet(VDAC0, 0x800);
+	VDAC_Enable(VDAC0, 0, true);
 	VDAC_Enable(VDAC0, 1, true);
 
+	// Audio output
 	OPAMP_Enable(VDAC0, OPA1, &(const OPAMP_Init_TypeDef){
 		.negSel = opaNegSelResTap,
 		.posSel = opaPosSelDac,
@@ -332,13 +334,19 @@ void setup_opamps(void)
 		.offsetP = 0,
 	});
 
+	// Microphone input
 	OPAMP_Enable(VDAC0, OPA0, &(const OPAMP_Init_TypeDef){
 		.negSel = opaNegSelResTap,
 		.posSel = opaPosSelDac,
-		.outMode =  opaOutModeAPORT1YCH19, // PF3
+#if 0 // Opamp output on pin for measurements
+		.outMode = opaOutModeAPORT1YCH19, // PF3
+		.outPen = VDAC_OPA_OUT_APORTOUTSEL_APORT1YCH19,
+#else
+		.outMode = opaOutModeDisable,
+		.outPen = 0,
+#endif
 		.resSel = opaResSelR2eqR1, // may be changed to adjust mic gain
 		.resInMux = opaResInMuxNegPad,
-		.outPen = VDAC_OPA_OUT_ALTOUTPADEN_OUT0, // TODO?
 		.drvStr = opaDrvStrHighAccHighStr, // maybe adjust later to optimize power consumption
 		.gain3xEn = false,
 		.halfDrvStr = false,
