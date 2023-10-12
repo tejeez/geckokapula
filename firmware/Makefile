@@ -189,7 +189,6 @@ all: build
 build_only: build
 build_and_flash: flash
 
-#build: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 build: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin
 
 # list of objects
@@ -216,15 +215,15 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@
 
 $(BUILD_DIR):
-	mkdir $@
+	mkdir -p $@
 
 clean:
 	-rm -fR $(BUILD_DIR)
 
-flash: $(BUILD_DIR)/$(TARGET).elf
+flash: build
 	$(OPENOCD) -f openocd/adapter.cfg -c init -c 'program "$(BUILD_DIR)/$(TARGET).elf" verify reset' -c exit
 
-.PHONY: all build clean flash
+.PHONY: all build_only build_and_flash build clean flash
 
 # Dependencies
 -include $(wildcard $(BUILD_DIR)/*.d)
