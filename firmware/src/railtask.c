@@ -99,12 +99,11 @@ divider_found:
 }
 
 
-void railtask_config_channel(void)
+void railtask_config_channel(uint32_t freq)
 {
 	unsigned r;
 	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
 
-	uint32_t freq = p.frequency;
 	uint32_t basefreq = freq - MIDDLECHANNEL*CHANNELSPACING;
 
 	uint32_t ratio;
@@ -201,26 +200,28 @@ void railtask_main(void *arg)
 	railtask_init_radio();
 	for(;;) {
 		bool keyed = p.keyed;
-		bool channel_changed = p.channel_changed;
-		if (channel_changed) {
-			p.channel_changed = 0;
-			railtask_config_channel();
+		uint32_t frequency = p.frequency;
+		uint32_t split = p.split_freq;
+
+		if (keyed) {
+			frequency += split;
+		}
+
+		if (frequency != railtask.frequency) {
+			railtask_config_channel(frequency);
 		}
 
 		RAIL_RadioState_t rs = RAIL_GetRadioState(rail);
 		//printf("RAIL_GetRadioState: %08x\n", rs);
 
-		// UI might change p.frequency after frequency has been configured.
-		// To avoid a race condition, check the latest frequency that
-		// has been configured instead.
 		if (keyed
-			&& ((rs & RAIL_RF_STATE_TX) == 0 || channel_changed)
+			&& ((rs & RAIL_RF_STATE_TX) == 0)
 			&& railtask.config_ok
 			&& tx_freq_allowed(railtask.frequency)
 		) {
 			start_tx_dsp(rail);
 		} else if ((!keyed)
-			&& ((rs & RAIL_RF_STATE_RX) == 0 || channel_changed)
+			&& ((rs & RAIL_RF_STATE_RX) == 0)
 			&& railtask.config_ok
 		) {
 			if (rs & RAIL_RF_STATE_TX)

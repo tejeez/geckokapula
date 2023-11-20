@@ -10,12 +10,14 @@ enum rig_mode { MODE_NONE, MODE_FM, MODE_AM, MODE_DSB, MODE_NONE2, MODE_OFF };
 // parameters communicated from UI to RAIL and DSP parts
 typedef struct {
 	//int channel;
-	char channel_changed, keyed;
+	char keyed;
 	enum rig_mode mode;
 	uint32_t frequency;
+	// Repeater split
+	int32_t split_freq;
+	// BFO offset for SSB
 	int32_t offset_freq;
 	uint8_t volume;
-	//int volume2;
 	uint8_t waterfall_averages;
 	unsigned squelch;
 } rig_parameters_t;

@@ -22,11 +22,11 @@
 #include <math.h>
 
 rig_parameters_t p = {
-	.channel_changed = 1,
 	.keyed = 0,
 	.mode = MODE_FM,
 	.frequency = RIG_DEFAULT_FREQUENCY,
-	.offset_freq = 0UL,
+	.split_freq = 0,
+	.offset_freq = 0,
 	.volume = 10,
 	.waterfall_averages = 20,
 	.squelch = 15
@@ -131,8 +131,11 @@ void ui_update_text() {
 	int pos1, pos2;
 	int s_dB = 10.0*log10(rs.smeter);
 
+	unsigned freq_display = p.frequency + (p.keyed ? p.split_freq : 0);
+	if (p.mode == MODE_DSB)
+		freq_display += p.offset_freq;
 	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d%2d%3d%6d|%2d",
-			(unsigned)p.frequency, p_mode_names[p.mode], p_keyed_text[(int)p.keyed],
+			freq_display, p_mode_names[p.mode], p_keyed_text[(int)p.keyed],
 			p.volume, p.waterfall_averages, p.squelch, (int)p.offset_freq,
 			s_dB);
 	for(; i<32; i++) textline[i] = ' ';
@@ -150,7 +153,6 @@ static const int ui_steps[] = { 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9
 static void ui_knob_turned(int cursor, int diff) {
 	if(cursor >= 0 && cursor <= 9) { // frequency
 		p.frequency += diff * ui_steps[9 - ui_cursor];
-		p.channel_changed = 1;
 		xSemaphoreGive(railtask_sem);
 	} else if(cursor == 10) { // mode
 		p.mode = wrap(p.mode + diff, sizeof(p_mode_names) / sizeof(p_mode_names[0]));
@@ -208,7 +210,7 @@ void ui_check_buttons(void)
 		backlight_timer = 0;
 	}
 	if (pos_diff != 0 || ptt != ptt_prev) {
-		if (tx_freq_allowed(p.frequency)) {
+		if (tx_freq_allowed(p.frequency + p.split_freq)) {
 			p.keyed = ui_keyed || ptt;
 		} else {
 			p.keyed = 0;
