@@ -17,6 +17,7 @@
 
 #include "font8x8_basic.h"
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -90,7 +91,7 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 	display_transfer(displaybuf, 3*8*8);
 }
 
-#define TEXT_LEN 49
+#define TEXT_LEN 64
 char textline[TEXT_LEN+1] = "geckokapula";
 char textprev[TEXT_LEN+1] = "";
 
@@ -103,7 +104,7 @@ typedef struct {
 	char pos1, pos2, color;
 	const char *tip;
 } ui_field_t;
-#define N_UI_FIELDS 19
+#define N_UI_FIELDS 21
 const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{ 0, 0, 0, "Freq GHz" },
 	{ 1, 1, 0, "Freq 100 MHz" },
@@ -118,12 +119,14 @@ const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{11,13, 1, "Mode" }, // mode
 	{14,15, 2, "PTT" }, // rx/tx
 	{16,17, 1, "Volume" }, // volume
-	{18,19, 2, "Waterfall" }, // averages
-	{20,22, 1, "Squelch" }, // squelch
-	{23,25, 0, "Offset kHz" }, // offset frequency
-	{26,26, 0, "Offset 100 Hz" }, // offset frequency
-	{27,27, 0, "Offset 10 Hz" }, // offset frequency
-	{28,28, 0, "Offset Hz" }, // offset frequency
+	{19,20, 2, "Waterfall" }, // averages
+	{22,23, 1, "Squelch" }, // squelch
+	{25,27, 1, "TX split MHz"},
+	{28,28, 1, "TX split 100 kHz"},
+	{32,34, 0, "SSB finetune kHz" }, // offset frequency
+	{35,35, 0, "Finetune 100 Hz" }, // offset frequency
+	{36,36, 0, "Finetune 10 Hz" }, // offset frequency
+	{37,37, 0, "SSB finetune Hz" }, // offset frequency
 };
 
 void ui_update_text() {
@@ -131,15 +134,24 @@ void ui_update_text() {
 	int pos1, pos2;
 	int s_dB = 10.0*log10(rs.smeter);
 
-	unsigned freq_display = p.frequency + (p.keyed ? p.split_freq : 0);
+	int split = p.split_freq;
+	int keyed = p.keyed;
+	enum rig_mode mode = p.mode;
+
+	unsigned freq = p.frequency;
+	if (keyed)
+		freq += p.split_freq;
 	if (p.mode == MODE_DSB)
-		freq_display += p.offset_freq;
-	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d%2d%3d%6d|%2d",
-			freq_display, p_mode_names[p.mode], p_keyed_text[(int)p.keyed],
-			p.volume, p.waterfall_averages, p.squelch, (int)p.offset_freq,
+		freq += p.offset_freq;
+
+	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d %2d %2d %4d   %6d RSSI: %2d",
+			freq, p_mode_names[mode], p_keyed_text[keyed],
+			p.volume, p.waterfall_averages, p.squelch,
+			split / 100000,
+			(int)p.offset_freq,
 			s_dB);
-	for(; i<32; i++) textline[i] = ' ';
-	i = 32 + snprintf(textline + 32, TEXT_LEN+1-32, "%s",
+	for (; i < 48; i++) textline[i] = ' ';
+	i = 48 + snprintf(textline + 48, TEXT_LEN+1-48, "%s",
 		ui_fields[ui_cursor].tip);
 	for(; i<TEXT_LEN; i++) textline[i] = ' ';
 
@@ -150,7 +162,8 @@ void ui_update_text() {
 
 
 static const int ui_steps[] = { 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9 };
-static void ui_knob_turned(int cursor, int diff) {
+static void ui_knob_turned(int cursor, int diff)
+{
 	if(cursor >= 0 && cursor <= 9) { // frequency
 		p.frequency += diff * ui_steps[9 - ui_cursor];
 		xSemaphoreGive(railtask_sem);
@@ -167,8 +180,12 @@ static void ui_knob_turned(int cursor, int diff) {
 	} else if(cursor == 14) {
 		p.squelch = wrap(p.squelch + diff, 100);
 		dsp_update_params();
-	} else if(cursor >= 15 && cursor <= 18) {
-		p.offset_freq = wrap_signed(p.offset_freq + ui_steps[18-cursor] * diff, 10000);
+	} else if(cursor >= 15 && cursor <= 16) {
+		int step = cursor == 15 ? 1000000 : 100000;
+		p.split_freq = wrap_signed(p.split_freq + step * diff, 100000000);
+		xSemaphoreGive(railtask_sem);
+	} else if(cursor >= 17 && cursor <= 20) {
+		p.offset_freq = wrap_signed(p.offset_freq + ui_steps[20-cursor] * diff, 10000);
 		dsp_update_params();
 	}
 }
@@ -269,7 +286,6 @@ static void ui_display_waterfall(void)
 }
 
 
-//static const uint8_t offset_cursor_erase[3*9];
 static const uint8_t offset_cursor_data[3*9] = {
 	255,255,  0,  255,255,  0,  255,255,  0,
 	  0,255,  0,  255,255,  0,    0,255,  0,
@@ -279,30 +295,20 @@ static const uint8_t offset_cursor_data[3*9] = {
 /* Draw the offset frequency cursor above waterfall */
 void ui_display_offset_cursor(void)
 {
-#if 0
-	static int old_x = 1;
-
-	// Erase the old cursor
-	display_area(old_x-1, 16, old_x+1, 18);
+	display_area(0, 24, 127, 26);
 	display_start();
-	display_transfer(offset_cursor_erase, 3*9);
-#endif
-
-	display_area(0, 16, 127, 18);
-	display_start();
+	// First 33*8 bytes of font data is zeros
 	int i;
-	// Let's see what kind of pattern this makes :D
-	for (i = 0; i < 3; i++)
-		display_transfer((const uint8_t*)font8x8_basic[0], 3*128);
+	for (i = 0; i < 128 * 3 * 3 / (8*16); i++)
+		display_transfer((const uint8_t*)font8x8_basic[0], 8*16);
 
 	// Calculate the position based on sample rate and FFT size
 	int x = 64 + p.offset_freq * 256 / (RX_IQ_FS/2);
 	if (x < 1) x = 1;
 	if (x > 127) x = 127;
-	display_area(x-1, 16, x+1, 18);
+	display_area(x-1, 24, x+1, 26);
 	display_start();
 	display_transfer(offset_cursor_data, 3*9);
-	//old_x = x;
 }
 
 
@@ -324,8 +330,10 @@ static void ui_display_text(void)
 				ui_character(i*8, 0, c&0x7F, (c&0x80) != 0);
 			else if (i < 32) // second line
 				ui_character((i-16)*8, 8, c&0x7F, (c&0x80) != 0);
+			else if(i < 48) // third line
+				ui_character((i-32)*8, 16, c&0x7F, (c&0x80) != 0);
 			else // bottom line
-				ui_character((i-32)*8, 160-8, c&0x7F, (c&0x80) != 0);
+				ui_character((i-48)*8, 160-8, c&0x7F, (c&0x80) != 0);
 			textprev[i] = c;
 			ui_display_waterfall();
 		}
