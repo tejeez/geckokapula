@@ -56,10 +56,10 @@ static int wrap(int a, int b) {
 	return a;
 }
 
-// Wrap number between -b and b-1
+// Wrap number between -b+1 and b
 static int wrap_signed(int a, int b) {
-	while(a < -b) a += 2*b;
-	while(a >= b) a -= 2*b;
+	while (a <= -b) a += 2*b;
+	while (a >   b) a -= 2*b;
 	return a;
 }
 
@@ -123,10 +123,10 @@ const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{22,23, 1, "Squelch" }, // squelch
 	{25,27, 1, "TX split MHz"},
 	{28,28, 1, "TX split 100 kHz"},
-	{32,34, 0, "SSB finetune kHz" }, // offset frequency
-	{35,35, 0, "Finetune 100 Hz" }, // offset frequency
-	{36,36, 0, "Finetune 10 Hz" }, // offset frequency
-	{37,37, 0, "SSB finetune Hz" }, // offset frequency
+	{32,33, 0, "SSB finetune kHz" }, // offset frequency
+	{34,34, 0, "Finetune 100 Hz" }, // offset frequency
+	{35,35, 0, "Finetune 10 Hz" }, // offset frequency
+	{36,36, 0, "SSB finetune Hz" }, // offset frequency
 };
 
 void ui_update_text() {
@@ -144,7 +144,7 @@ void ui_update_text() {
 	if (p.mode == MODE_DSB)
 		freq += p.offset_freq;
 
-	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d %2d %2d %4d   %6d RSSI: %2d",
+	i = snprintf(textline, TEXT_LEN+1, "%10u %3s%2s%2d %2d %2d %4d   %5d   RSSI=%2d",
 			freq, p_mode_names[mode], p_keyed_text[keyed],
 			p.volume, p.waterfall_averages, p.squelch,
 			split / 100000,
