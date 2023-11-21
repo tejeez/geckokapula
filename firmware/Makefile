@@ -52,7 +52,8 @@ LIBS =
 #LDSCRIPT =
 
 # Other linker flags
-LD_FLAGS = -Wl,--wrap=RAILINT_999bd22c50df2f99ce048cba68f11c3a
+# Allow multiple definitions so we can replace RAIL internal functions
+LD_FLAGS = -Wl,-z,muldefs
 
 
 #######################################

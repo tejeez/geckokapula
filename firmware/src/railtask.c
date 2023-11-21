@@ -14,6 +14,7 @@
 #include "dsp_driver.h"
 #include "config.h"
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #define CHANNELSPACING 147 // 38.4 MHz / 2^18
@@ -60,6 +61,16 @@ const RAIL_ChannelConfig_t channelConfig = {
  * Return 0 if no possible combination was found. */
 static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 {
+	// Find a divider values that gets VCO frequency closest to
+	// the approximate middle of its tuning range, vco_mid.
+	const long long vco_mid = 2600000000LL;
+	// Smallest distance from vco_mid found.
+	// Initial value determines the maximum allowed distance.
+	// If no divider values getting closer than that are found,
+	// d1m, d2m and d3m will stay 0 and the function will return 0.
+	long long dmin = 600000001LL;
+	// Divider values from the combination that achieves dmin.
+	uint32_t d1m = 0, d2m = 0, d3m = 0;
 	uint32_t d1, d2, d3;
 #ifdef KAPULA_v2
 	// Try all the possible combinations
@@ -80,22 +91,22 @@ static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 			for (d3 = 1; d3 <= 5; d3++) {
 #endif
 				// VCO frequency with these divider values
-				uint64_t vco = (uint64_t)f * d1 * d2 * d3;
-				// RAIL only accepts VCO frequencies in the range 2.3-2.9 GHz.
-				// If it's within the range, use this combination of dividers.
-				// Use goto to break from all 3 nested loops.
-				if (vco > 2300000000ULL && vco < 2900000000ULL)
-					goto divider_found;
+				long long vco = (long long)f * d1 * d2 * d3;
+				// Distance from middle of VCO tuning range
+				long long d = llabs(vco - vco_mid);
+				if (d < dmin) {
+					dmin = d;
+					d1m = d1;
+					d2m = d2;
+					d3m = d3;
+				}
 			}
 		}
 	}
-	// Divider combination not found
-	return 0;
-divider_found:
-	*ratio = d1 * d2 * d3;
-	if (d1 == 1) d1 = 0;
-	if (d2 == 1) d2 = 0;
-	return (d1 << 6) | (d2 << 3) | d3;
+	*ratio = d1m * d2m * d3m;
+	if (d1m == 1) d1m = 0;
+	if (d2m == 1) d2m = 0;
+	return (d1m << 6) | (d2m << 3) | d3m;
 }
 
 
@@ -171,17 +182,19 @@ void railtask_init_radio(void)
 }
 
 
-/* RAIL 2 allows implementing an assert failed function, so it doesn't only
- * get stuck in a infinite loop inside RAIL anymore.
- * This, however, still doesn't let us tune outside the "allowed" range,
- * so wrapping the internal assert may still be needed. Even that, however,
- * doesn't seem to help anymore! */
-
-/* Skip RAIL asserts to extend the tuning range.
- * Needs linker parameter -Wl,--wrap=RAILINT_999bd22c50df2f99ce048cba68f11c3a */
-uint32_t __wrap_RAILINT_999bd22c50df2f99ce048cba68f11c3a(uint32_t r0, uint32_t r1, uint32_t r2, uint32_t r3)
+// Extend tuning range by skipping VCO range checks, allowing tuning a bit
+// outside of the supported range. Of course the real tuning range will be
+// limited by the real tuning range of the VCO, but it is slightly wider
+// than the RAIL limits, so this extends it a bit.
+// This is done by replacing RAIL internal SYNTH_VcoRangeIsValid function,
+// named RAILINT_e1b152b40e799f9ebf7071a91afb3afe in the library.
+// Needs linker flag -Wl,-z,muldefs to prevent error
+// from multiple definitions of a function with the same name.
+uint32_t RAILINT_e1b152b40e799f9ebf7071a91afb3afe(unsigned r0, unsigned r1)
 {
-	printf("RAILInt_Assert: %08lx %08lx %08lx %08lx\n", r0, r1, r2, r3);
+	(void)r0; (void)r1;
+	//printf("SYNTH_VcoRangeIsValid: %u %u\n", r0, r1);
+	// Always return 1 to pretend VCO range is always valid.
 	return 1;
 }
 
