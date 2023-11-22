@@ -34,9 +34,19 @@ rig_parameters_t p = {
 };
 rig_status_t rs = {0};
 
+struct ui_state {
+	// Previous encoder position
+	unsigned pos_prev;
+	int backlight_timer;
+	// Number of currently selected field
+	unsigned char cursor;
+	unsigned char keyed;
+	unsigned char button_prev, ptt_prev, keyed_prev;
+};
+struct ui_state ui;
+
 #define BACKLIGHT_ON_TIME 2000
 #define BACKLIGHT_DIM_LEVEL 50
-int backlight_timer = 0;
 
 #define DISPLAYBUF_SIZE 384
 #define DISPLAYBUF2_SIZE 384
@@ -95,10 +105,8 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted) {
 char textline[TEXT_LEN+1] = "geckokapula";
 char textprev[TEXT_LEN+1] = "";
 
-static unsigned char ui_cursor = 6, ui_keyed = 0;
-
-const char *p_mode_names[] = { "---", " FM", " AM", "SSB", "---", "off" };
-const char *p_keyed_text[] = { "rx", "tx" };
+static const char *const p_mode_names[] = { "---", " FM", " AM", "SSB", "---", "off" };
+static const char *const p_keyed_text[] = { "rx", "tx" };
 
 typedef struct {
 	char pos1, pos2, color;
@@ -129,10 +137,13 @@ const ui_field_t ui_fields[N_UI_FIELDS] = {
 	{36,36, 0, "SSB finetune Hz" }, // offset frequency
 };
 
-void ui_update_text() {
+void ui_update_text()
+{
 	int i;
 	int pos1, pos2;
 	int s_dB = 10.0*log10(rs.smeter);
+
+	int cursor = ui.cursor;
 
 	int split = p.split_freq;
 	int keyed = p.keyed;
@@ -152,11 +163,11 @@ void ui_update_text() {
 			s_dB);
 	for (; i < 48; i++) textline[i] = ' ';
 	i = 48 + snprintf(textline + 48, TEXT_LEN+1-48, "%s",
-		ui_fields[ui_cursor].tip);
+		ui_fields[ui.cursor].tip);
 	for(; i<TEXT_LEN; i++) textline[i] = ' ';
 
-	pos1 = ui_fields[ui_cursor].pos1;
-	pos2 = ui_fields[ui_cursor].pos2;
+	pos1 = ui_fields[cursor].pos1;
+	pos2 = ui_fields[cursor].pos2;
 	for(i=pos1; i<=pos2; i++) textline[i] |= 0x80;
 }
 
@@ -165,13 +176,13 @@ static const int ui_steps[] = { 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9
 static void ui_knob_turned(int cursor, int diff)
 {
 	if(cursor >= 0 && cursor <= 9) { // frequency
-		p.frequency += diff * ui_steps[9 - ui_cursor];
+		p.frequency += diff * ui_steps[9 - cursor];
 		xSemaphoreGive(railtask_sem);
 	} else if(cursor == 10) { // mode
 		p.mode = wrap(p.mode + diff, sizeof(p_mode_names) / sizeof(p_mode_names[0]));
 		dsp_update_params();
 	} else if(cursor == 11) { // keyed
-		ui_keyed = wrap(ui_keyed + diff, 2);
+		ui.keyed = wrap(ui.keyed + diff, 2);
 	} else if(cursor == 12) { // volume
 		p.volume = wrap(p.volume + diff, 20);
 		dsp_update_params();
@@ -199,20 +210,19 @@ static void ui_knob_turned(int cursor, int diff)
  * read the updated data */
 void ui_check_buttons(void)
 {
-	static unsigned pos_prev;
-	static unsigned char button_prev, ptt_prev, keyed_prev;
+
 	int pos_now, pos_diff;
 	char button = get_encoder_button(), ptt = get_ptt();
 	pos_now = get_encoder_position() / ENCODER_DIVIDER;
-	pos_diff = pos_now - pos_prev;
+	pos_diff = pos_now - ui.pos_prev;
 
-	if (p.mode == MODE_OFF && button_prev && (!button)) {
+	if (p.mode == MODE_OFF && ui.button_prev && (!button)) {
 		// Shut down after button has been released.
 		shutdown();
 	}
 
 	if(button)
-		backlight_timer = 0;
+		ui.backlight_timer = 0;
 	if(pos_diff) {
 		if(pos_diff >= 0x8000 / ENCODER_DIVIDER)
 			pos_diff -= 0x10000 / ENCODER_DIVIDER;
@@ -220,22 +230,22 @@ void ui_check_buttons(void)
 			pos_diff += 0x10000 / ENCODER_DIVIDER;
 
 		if(button) {
-			ui_cursor = wrap(ui_cursor + pos_diff, N_UI_FIELDS);
+			ui.cursor = wrap(ui.cursor + pos_diff, N_UI_FIELDS);
 		} else {
-			ui_knob_turned(ui_cursor, pos_diff);
+			ui_knob_turned(ui.cursor, pos_diff);
 		}
-		backlight_timer = 0;
+		ui.backlight_timer = 0;
 	}
-	if (pos_diff != 0 || ptt != ptt_prev) {
+	if (pos_diff != 0 || ptt != ui.ptt_prev) {
 		if (tx_freq_allowed(p.frequency + p.split_freq)) {
-			p.keyed = ui_keyed || ptt;
+			p.keyed = ui.keyed || ptt;
 		} else {
 			p.keyed = 0;
-			ui_keyed = 0;
+			ui.keyed = 0;
 		}
-		if (p.keyed != keyed_prev)
+		if (p.keyed != ui.keyed_prev)
 			xSemaphoreGive(railtask_sem);
-		keyed_prev = p.keyed;
+		ui.keyed_prev = p.keyed;
 
 
 		/* Something on the display may have changed at this point,
@@ -244,18 +254,18 @@ void ui_check_buttons(void)
 		xSemaphoreGive(display_sem);
 	}
 
-	pos_prev = pos_now;
-	ptt_prev = ptt;
-	button_prev = button;
+	ui.pos_prev = pos_now;
+	ui.ptt_prev = ptt;
+	ui.button_prev = button;
 }
 
 
 /* ui_control_backlight is regularly called from the misc task. */
 void ui_control_backlight(void)
 {
-	if(backlight_timer <= BACKLIGHT_ON_TIME) {
-		display_backlight(BACKLIGHT_DIM_LEVEL + BACKLIGHT_ON_TIME - backlight_timer);
-		backlight_timer++;
+	if (ui.backlight_timer <= BACKLIGHT_ON_TIME) {
+		display_backlight(BACKLIGHT_DIM_LEVEL + BACKLIGHT_ON_TIME - ui.backlight_timer);
+		ui.backlight_timer++;
 	}
 }
 
