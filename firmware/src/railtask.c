@@ -61,14 +61,17 @@ const RAIL_ChannelConfig_t channelConfig = {
  * Return 0 if no possible combination was found. */
 static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 {
-	// Find a divider values that gets VCO frequency closest to
+	// Shift all frequencies right by 10 so they fit in 32 bits
+	// even after multiplying by all possible divider values.
+	f >>= 10;
+	// Find divider values that get VCO frequency closest to
 	// the approximate middle of its tuning range, vco_mid.
-	const long long vco_mid = 2600000000LL;
+	const int32_t vco_mid = (int32_t)(2600000000UL >> 10);
 	// Smallest distance from vco_mid found.
-	// Initial value determines the maximum allowed distance.
+	// Initial value determines the maximum allowed distance + 1.
 	// If no divider values getting closer than that are found,
 	// d1m, d2m and d3m will stay 0 and the function will return 0.
-	long long dmin = 600000001LL;
+	int32_t dmin = (int32_t)(600000000UL >> 10) + 1;
 	// Divider values from the combination that achieves dmin.
 	uint32_t d1m = 0, d2m = 0, d3m = 0;
 	uint32_t d1, d2, d3;
@@ -91,9 +94,9 @@ static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 			for (d3 = 1; d3 <= 5; d3++) {
 #endif
 				// VCO frequency with these divider values
-				long long vco = (long long)f * d1 * d2 * d3;
+				int32_t vco = (int32_t)f * d1 * d2 * d3;
 				// Distance from middle of VCO tuning range
-				long long d = llabs(vco - vco_mid);
+				int32_t d = abs(vco - vco_mid);
 				if (d < dmin) {
 					dmin = d;
 					d1m = d1;
@@ -113,12 +116,13 @@ static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 void railtask_config_channel(uint32_t freq)
 {
 	unsigned r;
-	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
-
 	uint32_t basefreq = freq - MIDDLECHANNEL*CHANNELSPACING;
 
 	uint32_t ratio;
 	uint32_t divider = find_divider(basefreq, &ratio);
+
+	RAIL_Idle(rail, RAIL_IDLE_ABORT, true);
+
 	if (!divider) {
 		// This frequency isn't possible.
 		railtask.config_ok = 0;
