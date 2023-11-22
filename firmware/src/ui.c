@@ -274,7 +274,7 @@ void ui_update_text(void)
 
 	char *textbegin = ui.text;
 	char *text = textbegin;
-	size_t maxlen = TEXT_LEN;
+	size_t maxlen = TEXT_LEN + 1;
 
 	r = ui_view_common_text(text, maxlen);
 	text += r;
@@ -334,10 +334,10 @@ static void ui_knob_turned(enum ui_field_name f, int diff)
 		dsp_update_params();
 		ui_choose_view();
 	}
-	else if(f == UI_FIELD_PTT) {
+	else if (f == UI_FIELD_PTT) {
 		ui.keyed = wrap(ui.keyed + diff, 2);
 	}
-	else if(f == UI_FIELD_VOL) {
+	else if (f == UI_FIELD_VOL) {
 		p.volume = wrap(p.volume + diff, 20);
 		dsp_update_params();
 	}
@@ -353,11 +353,11 @@ static void ui_knob_turned(enum ui_field_name f, int diff)
 		);
 		xSemaphoreGive(railtask_sem);
 	}
-	else if(f == UI_FIELD_SQ) {
+	else if (f == UI_FIELD_SQ) {
 		p.squelch = wrap(p.squelch + diff, 100);
 		dsp_update_params();
 	}
-	else if(f >= UI_FIELD_FT0 && f <= UI_FIELD_FT3) {
+	else if (f >= UI_FIELD_FT0 && f <= UI_FIELD_FT3) {
 		p.offset_freq = wrap_signed(
 			p.offset_freq +
 			ui_steps[UI_FIELD_FT3 - f] * diff,
