@@ -69,7 +69,7 @@ enum ui_field_name {
 
 struct ui_field {
 	enum ui_field_name name;
-	char pos1, pos2, color;
+	unsigned char pos1, pos2, color;
 	const char *tip;
 };
 
@@ -85,22 +85,22 @@ struct ui_view {
 // UI fields common to every mode.
 // To simplify code, these are repeated in every ui_view struct.
 #define UI_FIELDS_COMMON \
-	{ UI_FIELD_FREQ0,     0, 0, 0, "Freq GHz"         },\
-	{ UI_FIELD_FREQ1,     1, 1, 0, "Freq 100 MHz"     },\
-	{ UI_FIELD_FREQ2,     2, 2, 0, "Freq 10 MHz"      },\
-	{ UI_FIELD_FREQ3,     3, 3, 0, "Freq MHz"         },\
-	{ UI_FIELD_FREQ4,     4, 4, 0, "Freq 100 kHz"     },\
-	{ UI_FIELD_FREQ5,     5, 5, 0, "Freq 10 kHz"      },\
-	{ UI_FIELD_FREQ6,     6, 6, 0, "Freq kHz"         },\
-	{ UI_FIELD_FREQ7,     7, 7, 0, "Freq 100 Hz"      },\
-	{ UI_FIELD_FREQ8,     8, 8, 0, "Freq 10 Hz"       },\
-	{ UI_FIELD_FREQ9,     9, 9, 0, "Freq 1 Hz"        },\
-	{ UI_FIELD_MODE,     11,13, 1, "Mode"             },\
+	{ UI_FIELD_FREQ0,     0, 0, 3, "Freq GHz"         },\
+	{ UI_FIELD_FREQ1,     1, 1, 2, "Freq 100 MHz"     },\
+	{ UI_FIELD_FREQ2,     2, 2, 2, "Freq 10 MHz"      },\
+	{ UI_FIELD_FREQ3,     3, 3, 2, "Freq MHz"         },\
+	{ UI_FIELD_FREQ4,     4, 4, 3, "Freq 100 kHz"     },\
+	{ UI_FIELD_FREQ5,     5, 5, 3, "Freq 10 kHz"      },\
+	{ UI_FIELD_FREQ6,     6, 6, 3, "Freq kHz"         },\
+	{ UI_FIELD_FREQ7,     7, 7, 2, "Freq 100 Hz"      },\
+	{ UI_FIELD_FREQ8,     8, 8, 2, "Freq 10 Hz"       },\
+	{ UI_FIELD_FREQ9,     9, 9, 2, "Freq 1 Hz"        },\
+	{ UI_FIELD_MODE,     11,13, 3, "Mode"             },\
 	{ UI_FIELD_PTT,      14,15, 2, "PTT"              },\
-	{ UI_FIELD_VOL,      16,17, 1, "Volume"           },\
+	{ UI_FIELD_VOL,      16,17, 3, "Volume"           },\
 	{ UI_FIELD_WF,       18,19, 2, "Waterfall"        },\
-	{ UI_FIELD_SPLIT0,   20,22, 1, "TX split MHz"     },\
-	{ UI_FIELD_SPLIT1,   23,23, 1, "TX split 100 kHz" }
+	{ UI_FIELD_SPLIT0,   20,22, 3, "TX split MHz"     },\
+	{ UI_FIELD_SPLIT1,   23,23, 3, "TX split 100 kHz" }
 
 #define UI_FIELDS_COMMON_N 16
 
@@ -142,7 +142,7 @@ const struct ui_view ui_view_fm = {
 	ui_view_fm_text,
 	{
 	UI_FIELDS_COMMON,
-	{ UI_FIELD_SQ,       24,25, 1, "Squelch"          },
+	{ UI_FIELD_SQ,       24,25, 2, "Squelch"          },
 	}
 };
 
@@ -160,10 +160,10 @@ const struct ui_view ui_view_ssb = {
 	ui_view_ssb_text,
 	{
 	UI_FIELDS_COMMON,
-	{ UI_FIELD_FT0,      24,25, 0, "SSB finetune kHz" },
-	{ UI_FIELD_FT1,      26,26, 0, "Finetune 100 Hz"  },
-	{ UI_FIELD_FT2,      27,27, 0, "Finetune 10 Hz"   },
-	{ UI_FIELD_FT3,      28,28, 0, "SSB finetune Hz"  },
+	{ UI_FIELD_FT0,      24,25, 2, "SSB finetune kHz" },
+	{ UI_FIELD_FT1,      26,26, 2, "Finetune 100 Hz"  },
+	{ UI_FIELD_FT2,      27,27, 2, "Finetune 10 Hz"   },
+	{ UI_FIELD_FT3,      28,28, 2, "SSB finetune Hz"  },
 	}
 };
 
@@ -195,7 +195,9 @@ struct ui_state {
 	unsigned char keyed;
 	unsigned char button_prev, ptt_prev, keyed_prev;
 	char text[TEXT_LEN+1];
+	unsigned char color[TEXT_LEN+1];
 	char textprev[TEXT_LEN+1];
+	unsigned char colorprev[TEXT_LEN+1];
 };
 
 struct ui_state ui = {
@@ -233,29 +235,44 @@ static int wrap_signed(int a, int b)
 	return a;
 }
 
-#define display_buf_pixel(r,g,b) do{ *bufp++ = r; *bufp++ = g; *bufp++ = b; }while(0)
+struct ui_text_color {
+	// Foreground
+	uint8_t fr, fg, fb;
+	// Background
+	uint8_t br, bg, bb;
+};
 
-void ui_character(int x1, int y1, unsigned char c, int highlighted)
+const struct ui_text_color ui_text_colors[] = {
+	{ 0xE0, 0xE0, 0xE0,  0x40, 0x40, 0x40 },
+	{ 0x00, 0x00, 0x00,  0xFF, 0xFF, 0xFF },
+	{ 0x80, 0xFF, 0x80,  0x60, 0x60, 0xC0 },
+	{ 0x80, 0xFF, 0x80,  0x00, 0x00, 0x80 },
+};
+
+void ui_character(int x1, int y1, unsigned char c, unsigned char color)
 {
 	int x, y;
 	if(!display_ready()) return;
 
+	struct ui_text_color colors = ui_text_colors[color];
+	if (c > 0x80)
+		c = 0;
+	const char *font = font8x8_basic[c];
+
 	display_area(x1, y1, x1+7, y1+7);
 	display_start();
-	const char *font = font8x8_basic[c];
+
 	uint8_t *bufp = displaybuf;
-	for(y=0; y<8; y++) {
-		for(x=0; x<8; x++) {
-			if(font[y] & (1<<x)) {
-				if(highlighted)
-					display_buf_pixel(0,0,0);
-				else
-					display_buf_pixel(128,255,128);
+	for (y=0; y<8; y++) {
+		for (x=0; x<8; x++) {
+			if (font[y] & (1<<x)) {
+				*bufp++ = colors.fr;
+				*bufp++ = colors.fg;
+				*bufp++ = colors.fb;
 			} else {
-				if(highlighted)
-					display_buf_pixel(255,255,255);
-				else
-					display_buf_pixel(0,0,128);
+				*bufp++ = colors.br;
+				*bufp++ = colors.bg;
+				*bufp++ = colors.bb;
 			}
 		}
 	}
@@ -265,7 +282,6 @@ void ui_character(int x1, int y1, unsigned char c, int highlighted)
 void ui_update_text(void)
 {
 	int r;
-	int pos1, pos2;
 	// TODO: put signal strength back somewhere
 	//int s_dB = 10.0*log10(rs.smeter);
 
@@ -298,13 +314,22 @@ void ui_update_text(void)
 	for (; maxlen > 0; text++, maxlen--)
 		*text = ' ';
 
-	// Highlight cursor
-	if (cursor < view->n) {
-		pos1 = view->fields[cursor].pos1;
-		pos2 = view->fields[cursor].pos2;
-		int i;
+	size_t n, i;
+	for (i = 0; i < TEXT_LEN; i++) {
+		ui.color[i] = 0;
+	}
+	for (n = 0; n < view->n; n++) {
+		char c = 0;
+		if (cursor == n) {
+			// Highlight cursor
+			c = 1;
+		} else {
+			c = view->fields[n].color;
+		}
+		size_t pos1 = view->fields[n].pos1;
+		size_t pos2 = view->fields[n].pos2;
 		for (i = pos1; i <= pos2; i++)
-			textbegin[i] |= 0x80;
+			ui.color[i] = c;
 	}
 }
 
@@ -504,17 +529,21 @@ static void ui_display_text(void)
 	ui_update_text();
 	int i;
 	for (i = 0; i < TEXT_LEN; i++) {
-		char c = ui.text[i], cp = ui.textprev[i];
-		if (c != cp) {
+		char c = ui.text[i],  cp = ui.textprev[i];
+		unsigned char v = ui.color[i], vp = ui.colorprev[i];
+		if (c != cp || v != vp) {
 			if (i < 16) // first line
-				ui_character(i*8, 0, c&0x7F, (c&0x80) != 0);
+				ui_character(i*8, 0, c, v);
 			else if (i < 32) // second line
-				ui_character((i-16)*8, 8, c&0x7F, (c&0x80) != 0);
+				ui_character((i-16)*8, 8, c, v);
 			else if(i < 48) // third line
-				ui_character((i-32)*8, 16, c&0x7F, (c&0x80) != 0);
+				ui_character((i-32)*8, 16, c, v);
 			else // bottom line
-				ui_character((i-48)*8, 160-8, c&0x7F, (c&0x80) != 0);
+				ui_character((i-48)*8, 160-8, c, v);
+
 			ui.textprev[i] = c;
+			ui.colorprev[i] = v;
+
 			ui_display_waterfall();
 		}
 	}
