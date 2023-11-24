@@ -175,7 +175,7 @@ static int ui_view_other_text(char *text, size_t maxlen)
 }
 
 const struct ui_view ui_view_other = {
-	UI_FIELDS_COMMON_N + 4,
+	UI_FIELDS_COMMON_N,
 	ui_view_other_text,
 	{
 	UI_FIELDS_COMMON
