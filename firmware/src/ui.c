@@ -104,7 +104,9 @@ struct ui_view {
 
 #define UI_FIELDS_COMMON_N 16
 
-static const char *const p_mode_names[] = { "---", " FM", " AM", "SSB", "---", "off" };
+static const char *const p_mode_names[] = {
+	"---", " FM", " AM", "USB", "LSB", "CWU", "CWL", "---", "off"
+};
 static const char *const p_keyed_text[] = { "rx", "tx" };
 
 // Format text common for all views
@@ -117,7 +119,7 @@ static int ui_view_common_text(char *text, size_t maxlen)
 
 	if (keyed)
 		freq += p.split_freq;
-	if (mode == MODE_DSB)
+	if (mode >= MODE_USB && mode <= MODE_CWL)
 		freq += p.offset_freq;
 
 	return snprintf(text, maxlen,
@@ -339,7 +341,10 @@ static void ui_choose_view(void)
 	case MODE_FM:
 		ui.view = &ui_view_fm;
 		break;
-	case MODE_DSB:
+	case MODE_USB:
+	case MODE_LSB:
+	case MODE_CWU:
+	case MODE_CWL:
 		ui.view = &ui_view_ssb;
 		break;
 	default:

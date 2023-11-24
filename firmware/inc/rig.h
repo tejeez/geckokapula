@@ -5,7 +5,21 @@
 
 #include <stdint.h>
 
-enum rig_mode { MODE_NONE, MODE_FM, MODE_AM, MODE_DSB, MODE_NONE2, MODE_OFF };
+enum rig_mode {
+	// No demodulation
+	MODE_NONE,
+	MODE_FM,
+	MODE_AM,
+	MODE_USB,
+	MODE_LSB,
+	// Upper sideband CW
+	MODE_CWU,
+	// Lower sideband CW
+	MODE_CWL,
+	MODE_NONE2,
+	// Power off
+	MODE_OFF
+};
 
 // parameters communicated from UI to RAIL and DSP parts
 typedef struct {

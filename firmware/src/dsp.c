@@ -139,6 +139,8 @@ struct demod {
 
 	unsigned signalbufp;
 
+	enum rig_mode mode;
+
 	// Biquad filter states, used in SSB demodulation
 	struct biquad_state bq1, bq2;
 
@@ -387,17 +389,29 @@ static const struct biquad_coeff biquad1_ssb = {
 	.b2 =  0.01466487f
 };
 
+// 100 Hz, sample rate 24000 Hz, Q 0.6
+static const struct biquad_coeff biquad1_cw = {
+	.a1 = -1.95663243f,
+	.a2 = 0.95730315f,
+	.b0 = 1.67679726e-4f,
+	.b1 = 3.35359452e-4f,
+	.b2 = 1.67679726e-4f
+};
+
 /* Demodulate SSB.
  * The Weaver method is used.
  */
 void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 {
 	iq_float_t buf[IQ_MAXLEN];
+	const struct biquad_coeff *filter =
+		(ds->mode == MODE_CWU || ds->mode == MODE_CWL)
+		? &biquad1_cw : &biquad1_ssb;
 
 	demod_ddc(ds, in, buf, len);
 	len /= 2;
-	biquad_filter(&ds->bq1, &biquad1_ssb, buf, len);
-	biquad_filter(&ds->bq2, &biquad1_ssb, buf, len);
+	biquad_filter(&ds->bq1, filter, buf, len);
+	biquad_filter(&ds->bq2, filter, buf, len);
 	demod_dsb_f(ds, buf, out, len);
 }
 
@@ -471,7 +485,7 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 
 	demod_store(&demodstate, in, in_len);
 
-	enum rig_mode mode = p.mode;
+	enum rig_mode mode = demodstate.mode;
 	float audio[AUDIO_MAXLEN];
 	switch(mode) {
 	case MODE_FM:
@@ -480,7 +494,10 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 	case MODE_AM:
 		demod_am(&demodstate, in, audio, in_len);
 		break;
-	case MODE_DSB:
+	case MODE_USB:
+	case MODE_LSB:
+	case MODE_CWU:
+	case MODE_CWL:
 		demod_ssb(&demodstate, in, audio, in_len);
 		break;
 	/*case MODE_SSB:
@@ -507,14 +524,36 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 
 void dsp_update_params(void)
 {
-	const float bfo_hz = 1200.0f;
-	float f;
+	enum rig_mode mode = p.mode;
 
-	f = (6.2831853f * 2.0f / RX_IQ_FS) * bfo_hz;
+	float bfo = 0.0f, ddc_offset = 0.0f;
+	switch (mode) {
+	case MODE_USB:
+		bfo = 1200.0f;
+		ddc_offset = bfo;
+		break;
+	case MODE_LSB:
+		bfo = -1200.0f;
+		ddc_offset = bfo;
+		break;
+	case MODE_CWU:
+		bfo = 698.46f;
+		ddc_offset = 0.0f;
+		break;
+	case MODE_CWL:
+		bfo = -698.46f;
+		ddc_offset = 0.0f;
+		break;
+	default:
+		break;
+	}
+
+	float f;
+	f = (6.2831853f * 2.0f / RX_IQ_FS) * bfo;
 	demodstate.bfofreq_i = cosf(f);
 	demodstate.bfofreq_q = sinf(f);
 
-	f = (-6.2831853f / RX_IQ_FS) * ((float)p.offset_freq + bfo_hz);
+	f = (-6.2831853f / RX_IQ_FS) * ((float)p.offset_freq + ddc_offset);
 	demodstate.ddcfreq_i = cosf(f);
 	demodstate.ddcfreq_q = sinf(f);
 
@@ -523,7 +562,7 @@ void dsp_update_params(void)
 
 	demodstate.squelch = 1.0f * p.squelch;
 
-	enum rig_mode mode = p.mode;
+	demodstate.mode = mode;
 	/* Reset state after mode change */
 	if (mode != demodstate.prev_mode) {
 		demod_reset(&demodstate);

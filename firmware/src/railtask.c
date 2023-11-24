@@ -216,12 +216,17 @@ void railtask_main(void *arg)
 	(void)arg;
 	railtask_init_radio();
 	for(;;) {
-		bool keyed = p.keyed;
+		bool keyed         = p.keyed;
+		enum rig_mode mode = p.mode;
 		uint32_t frequency = p.frequency;
-		uint32_t split = p.split_freq;
+		int32_t split      = p.split_freq;
+		int32_t offset     = p.offset_freq;
 
 		if (keyed) {
 			frequency += split;
+		}
+		if (keyed && mode >= MODE_USB && mode <= MODE_CWL) {
+			frequency += offset;
 		}
 
 		if (frequency != railtask.frequency) {
