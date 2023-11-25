@@ -17,8 +17,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define CHANNELSPACING 147 // 38.4 MHz / 2^18
+// Exact channel spacing is 38.4 MHz / 2**18.
+// RAIL takes the value as an integer so CHANNELSPACING is rounded.
+#define CHANNELSPACING 147
 #define MIDDLECHANNEL 32
+// Frequency offset of middle channel from base frequency.
+// Define it separately instead of calculating from
+// CHANNELSPACING*MIDDLECHANNEL to reduce rounding error.
+#define MIDDLEFREQ 4688
 
 RAIL_Handle_t rail;
 xSemaphoreHandle railtask_sem;
@@ -115,8 +121,8 @@ static inline uint32_t find_divider(uint32_t f, uint32_t *ratio)
 
 void railtask_config_channel(uint32_t freq)
 {
-	unsigned r;
-	uint32_t basefreq = freq - MIDDLECHANNEL*CHANNELSPACING;
+	unsigned r __attribute__((unused));
+	uint32_t basefreq = freq - MIDDLEFREQ;
 
 	uint32_t ratio;
 	uint32_t divider = find_divider(basefreq, &ratio);
@@ -147,12 +153,18 @@ void railtask_config_channel(uint32_t freq)
 	// Then the normal RAIL configuration
 	channelconfig_entry[0].baseFrequency = basefreq;
 	r = RAIL_ConfigChannels(rail, &channelConfig, NULL);
-	printf("RAIL_ConfigChannels (2): %u\n", r);
+	//printf("RAIL_ConfigChannels (2): %u\n", r);
 	railtask.frequency = freq;
+
+	// Make sure channel spacing is exactly the same with all dividers
+	// by setting SYNTH_CHSP register value here. RAIL calculates
+	// the register value from CHANNELSPACING which has been rounded,
+	// resulting in slightly different spacing for some dividers.
+	*((uint32_t*)0x4008303c) = ratio * 2;
 
 	RAIL_DataConfig_t dataConfig = { TX_PACKET_DATA, RX_IQDATA_FILTLSB, FIFO_MODE, FIFO_MODE };
 	r = RAIL_ConfigData(rail, &dataConfig);
-	printf("RAIL_ConfigData: %u\n", r);
+	//printf("RAIL_ConfigData: %u\n", r);
 
 	// 2.4 GHz needs different PA configuration
 	RAIL_TxPowerConfig_t txPowerConfig = {
@@ -163,9 +175,9 @@ void railtask_config_channel(uint32_t freq)
 		.rampTime = 10,
 	};
 	r = RAIL_ConfigTxPower(rail, &txPowerConfig);
-	printf("RAIL_ConfigTxPower: %u\n", r);
+	//printf("RAIL_ConfigTxPower: %u\n", r);
 	r = RAIL_SetTxPower(rail, RAIL_TX_POWER_LEVEL_HP_MAX);
-	printf("RAIL_SetTxPower: %u\n", r);
+	//printf("RAIL_SetTxPower: %u\n", r);
 }
 
 
