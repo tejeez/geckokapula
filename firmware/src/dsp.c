@@ -522,66 +522,42 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 }
 
 
-void dsp_update_params(void)
-{
-	enum rig_mode mode = p.mode;
-
-	float bfo = 0.0f, ddc_offset = 0.0f;
-	switch (mode) {
-	case MODE_USB:
-		bfo = 1200.0f;
-		ddc_offset = bfo;
-		break;
-	case MODE_LSB:
-		bfo = -1200.0f;
-		ddc_offset = bfo;
-		break;
-	case MODE_CWU:
-		bfo = 698.46f;
-		ddc_offset = 0.0f;
-		break;
-	case MODE_CWL:
-		bfo = -698.46f;
-		ddc_offset = 0.0f;
-		break;
-	default:
-		break;
-	}
-
-	float f;
-	f = (6.2831853f * 2.0f / RX_IQ_FS) * bfo;
-	demodstate.bfofreq_i = cosf(f);
-	demodstate.bfofreq_q = sinf(f);
-
-	f = (-6.2831853f / RX_IQ_FS) * ((float)p.offset_freq + ddc_offset);
-	demodstate.ddcfreq_i = cosf(f);
-	demodstate.ddcfreq_q = sinf(f);
-
-	unsigned vola = p.volume;
-	demodstate.audiogain = ((vola&1) ? (3<<(vola/2)) : (2<<(vola/2))) * 10.0f;
-
-	demodstate.squelch = 1.0f * p.squelch;
-
-	demodstate.mode = mode;
-	/* Reset state after mode change */
-	if (mode != demodstate.prev_mode) {
-		demod_reset(&demodstate);
-		demodstate.prev_mode = mode;
-	}
-}
-
-
 /* Modulator state */
 struct modstate {
-	float lpf, hpf, hpf2, agc_amp, limitergain, clipint, qerr;
+	// Input audio processing
+	float lpf, hpf, hpf2, agc_amp;
+
+	// FM specific processing
+	float limitergain, clipint, qerr;
+
+	// SSB specific processing
+
+	// Phase accumulator for I/Q to FM conversion
+	uint32_t pha;
+
+	// Phase of the first oscillator in SSB modulation
+	float bfo_i, bfo_q;
+	// Frequency of the first oscillator in SSB modulation
+	float bfofreq_i, bfofreq_q;
+
+	enum rig_mode mode;
+
+	// Biquad filter states
+	struct biquad_state bq1, bq2;
 };
 
-struct modstate modstate;
+static void mod_reset(struct modstate *m)
+{
+	m->bfo_i = 1.0f; m->bfo_q = 0.0f;
+	memset(&m->bq1, 0, sizeof(m->bq1));
+	memset(&m->bq2, 0, sizeof(m->bq2));
+	// TODO: maybe reset everything else too
+}
 
 
 /* Preprocess transmit audio.
  * This includes some filtering and AGC. */
-void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned len)
+static void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned len)
 {
 	const float agc_minimum = 10.0f;
 	const float agc_attack = 0.03f, agc_decay = 0.003f;
@@ -623,7 +599,7 @@ void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned 
 		agc_amp = agc_amp + d * agc_decay;
 
 	m->agc_amp = agc_amp;
-	float gain = 200.0f / agc_amp;
+	float gain = 1.0f / agc_amp;
 
 	for (i = 0; i < len; i++) {
 		out[i] *= gain;
@@ -632,7 +608,7 @@ void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned 
 
 
 /* Modulate FM from preprocessed audio */
-void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
+static void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 {
 	const float limitergain_min = 0.2f, limitergain_max = 1.0f;
 
@@ -642,7 +618,7 @@ void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 
 	unsigned i;
 	for (i = 0; i < len; i++) {
-		float audio = in[i];
+		float audio = in[i] * 200.0f;
 
 		// Preemphasis: 3500 Hz highpass
 		hpf2 += (audio - hpf2) * .6f;
@@ -690,6 +666,104 @@ void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 }
 
 
+/* Modulate DSB from preprocessed audio.
+ * This works similarly to demod_dsb_f
+ * but from real-valued audio to I/Q samples. */
+static void mod_dsb(struct modstate *m, float *in, iq_float_t *out, unsigned len)
+{
+	// Add a bit of carrier to have something to transmit
+	// when audio is quiet. Some of this gets filtered so
+	// the actual carrier level will be lower than this value.
+	const float carrier = 0.15f;
+
+	float osc1i, osc1q;
+	float osc0i = m->bfo_i, osc0q = m->bfo_q;
+	const float oscfi = m->bfofreq_i, oscfq = m->bfofreq_q;
+
+	unsigned i;
+	for (i = 0; i < len; i+=2) {
+		float audio = (float)in[i];
+		audio += carrier;
+		out[i  ].i = osc0i * audio;
+		out[i  ].q = osc0q * audio;
+		osc1i = osc0i * oscfi - osc0q * oscfq;
+		osc1q = osc0i * oscfq + osc0q * oscfi;
+
+		audio = (float)in[i+1];
+		audio += carrier;
+		out[i+1].i = osc1i * audio;
+		out[i+1].q = osc1q * audio;
+		osc0i = osc1i * oscfi - osc1q * oscfq;
+		osc0q = osc1i * oscfq + osc1q * oscfi;
+	}
+	float ms = osc0i * osc0i + osc0q * osc0q;
+	ms = (3.0f - ms) * 0.5f;
+	m->bfo_i = ms * osc0i;
+	m->bfo_q = ms * osc0q;
+}
+
+/* Convert I/Q to FM modulation.
+ * This uses only the phase angle from I/Q samples and modulates
+ * frequency so that resulting phase tracks that of I/Q input. */
+static void mod_iq_to_fm(struct modstate *m, iq_float_t *in, fm_out_t *out, unsigned len, int fm_offset)
+{
+	// Phase accumulator change per sample per FM quantization step.
+	// 2**32 * (38.4 MHz / (2**18)) / 24 kHz
+	const int32_t phdev = 26214400;
+
+	// Maximum frequency deviation in steps
+	const int32_t fm_max = 15;
+
+	uint32_t pha = m->pha;
+
+	unsigned i;
+	for (i = 0; i < len; i++) {
+		// Represent phase as uint32_t so we can avoid computing modulos
+		// by letting the numbers wrap around.
+		uint32_t ph = (uint32_t)(atan2f(in[i].i, in[i].q) * 6.8356528e+08f);
+
+		// Phase difference from current phase accumulator
+		int32_t phdiff = (int32_t)(ph - pha);
+
+		// Quantize to FM modulation steps
+		int32_t fm = phdiff / phdev;
+
+		// Clamp to maximum deviation
+		if (fm < -fm_max)
+			fm = -fm_max;
+		if (fm >  fm_max)
+			fm =  fm_max;
+
+		out[i] = fm + fm_offset;
+
+		// Output phase does not exactly follow I/Q phase
+		// due to frequency clamping and quantization.
+		// Make the phase accumulator follow the actual output phase.
+		pha += fm * phdev;
+	}
+
+	m->pha = pha;
+}
+
+// Center frequency for SSB modulation in FM quantization steps
+#define MOD_SSB_CENTER 13
+
+/* Modulate SSB from preprocessed audio */
+static void mod_ssb(struct modstate *m, float *in, fm_out_t *out, unsigned len)
+{
+	iq_float_t buf[AUDIO_MAXLEN];
+
+	mod_dsb(m, in, buf, len);
+	biquad_filter(&m->bq1, &biquad1_ssb, buf, len);
+	biquad_filter(&m->bq2, &biquad1_ssb, buf, len);
+	mod_iq_to_fm(m, buf, out, len,
+		m->mode == MODE_USB ?
+		(32+MOD_SSB_CENTER) : (32-MOD_SSB_CENTER));
+}
+
+
+struct modstate modstate;
+
 /* Function to convert input audio to transmit frequency modulation */
 int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 {
@@ -698,16 +772,85 @@ int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 
 	mod_process_audio(m, in, audio, len);
 
-	if (p.mode == MODE_FM) {
+	int i;
+
+	switch (p.mode) {
+	case MODE_FM:
 		mod_fm(m, audio, out, len);
-	} else {
+		break;
+	case MODE_USB:
+	case MODE_LSB:
+		mod_ssb(m, audio, out, len);
+		break;
+	default:
 		// Transmit unmodulated carrier on other modes
-		int i;
 		for (i = 0; i < len; i++) {
 			out[i] = 32;
 		}
 	}
 	return 0;
+}
+
+
+void dsp_update_params(void)
+{
+	enum rig_mode mode = p.mode;
+
+	float bfo = 0.0f, ddc_offset = 0.0f;
+	float bfo_tx = 0.0f;
+	switch (mode) {
+	case MODE_USB:
+		bfo = 1200.0f;
+		ddc_offset = bfo;
+		bfo_tx = -146.48438f * MOD_SSB_CENTER;
+		break;
+	case MODE_LSB:
+		bfo = -1200.0f;
+		ddc_offset = bfo;
+		bfo_tx =  146.48438f * MOD_SSB_CENTER;
+		break;
+	case MODE_CWU:
+		bfo = 698.46f;
+		ddc_offset = 0.0f;
+		break;
+	case MODE_CWL:
+		bfo = -698.46f;
+		ddc_offset = 0.0f;
+		break;
+	default:
+		break;
+	}
+
+	float f;
+	f = (6.2831853f * 2.0f / RX_IQ_FS) * bfo;
+	demodstate.bfofreq_i = cosf(f);
+	demodstate.bfofreq_q = sinf(f);
+
+	f = (-6.2831853f / RX_IQ_FS) * ((float)p.offset_freq + ddc_offset);
+	demodstate.ddcfreq_i = cosf(f);
+	demodstate.ddcfreq_q = sinf(f);
+
+	// I thought it should be the other way around.
+	// Do a quick fix here until I figure out where I have made a mistake.
+	bfo_tx = -bfo_tx;
+
+	f = (6.2831853f / TX_FS) * bfo_tx;
+	modstate.bfofreq_i = cosf(f);
+	modstate.bfofreq_q = sinf(f);
+
+	unsigned vola = p.volume;
+	demodstate.audiogain = ((vola&1) ? (3<<(vola/2)) : (2<<(vola/2))) * 10.0f;
+
+	demodstate.squelch = 1.0f * p.squelch;
+
+	demodstate.mode = mode;
+	modstate.mode = mode;
+	/* Reset state after mode change */
+	if (mode != demodstate.prev_mode) {
+		demod_reset(&demodstate);
+		mod_reset(&modstate);
+		demodstate.prev_mode = mode;
+	}
 }
 
 

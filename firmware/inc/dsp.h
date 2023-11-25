@@ -30,6 +30,9 @@ typedef struct {
 // I/Q sample rate
 #define RX_IQ_FS 48000
 
+// TX sample rate
+#define TX_FS 24000
+
 int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len);
 int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len);
 void dsp_update_params(void);

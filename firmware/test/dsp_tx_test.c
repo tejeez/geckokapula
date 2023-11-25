@@ -13,7 +13,7 @@
 
 rig_parameters_t p = {
 	.keyed = 0,
-	.mode = MODE_FM,
+	.mode = MODE_USB,
 	.frequency = RIG_DEFAULT_FREQUENCY,
 	.split_freq = 0,
 	.offset_freq = 0,
@@ -56,6 +56,8 @@ int main(int argc, char *argv[])
 	FILE *iq_out_file = fopen(argv[2], "wb");
 	if (iq_out_file == NULL)
 		return 3;
+
+	dsp_update_params();
 
 	float phase = 0.0f;
 	for (;;) {
