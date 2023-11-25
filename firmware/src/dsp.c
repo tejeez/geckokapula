@@ -579,15 +579,17 @@ struct modstate {
 struct modstate modstate;
 
 
-/* Function to convert input audio to transmit frequency modulation */
-static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
+/* Preprocess transmit audio.
+ * This includes some filtering and AGC. */
+void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned len)
 {
-	struct modstate *m = &modstate;
-	float hpf = m->hpf, lpf = m->lpf, hpf2 = m->hpf2;
-	float agc_amp = m->agc_amp, limitergain = m->limitergain;
-	float clipint = m->clipint, qerr = m->qerr;
+	const float agc_minimum = 10.0f;
+	const float agc_attack = 0.001f, agc_decay = 0.0001f;
 
-	int i;
+	float hpf = m->hpf, lpf = m->lpf;
+	float agc_amp = m->agc_amp;
+
+	unsigned i;
 	for (i = 0; i < len; i++) {
 		float audio = (float)in[i];
 		// DC block, 300 Hz highpass
@@ -599,9 +601,7 @@ static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
 
 		float amp = fabsf(audio);
 
-		const float agc_attack = 0.001f, agc_decay = 0.0001f;
 		// Avoid NaN, clamp to a minimum value
-		const float agc_minimum = 10.0f;
 		if (agc_amp != agc_amp || agc_amp < agc_minimum)
 			agc_amp = agc_minimum;
 
@@ -612,6 +612,27 @@ static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
 			agc_amp = agc_amp + d * agc_decay;
 
 		audio *= (200.0f / agc_amp);
+		out[i] = audio;
+	}
+
+	m->lpf = lpf;
+	m->hpf = hpf;
+	m->agc_amp = agc_amp;
+}
+
+
+/* Modulate FM from preprocessed audio */
+void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
+{
+	const float limitergain_min = 0.2f, limitergain_max = 1.0f;
+
+	float hpf2 = m->hpf2;
+	float limitergain = m->limitergain;
+	float clipint = m->clipint, qerr = m->qerr;
+
+	unsigned i;
+	for (i = 0; i < len; i++) {
+		float audio = in[i];
 
 		// Preemphasis: 3500 Hz highpass
 		hpf2 += (audio - hpf2) * .6f;
@@ -619,8 +640,6 @@ static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
 
 		// Pre-clip largest peaks, should not happen that often
 		audio = clip(audio, 100.0f);
-
-		const float limitergain_min = 0.2f, limitergain_max = 1.0f;
 
 		audio *= limitergain;
 
@@ -654,22 +673,23 @@ static int dsp_fast_tx_fm(audio_in_t *in, fm_out_t *out, int len)
 		out[i] = quantized;
 	}
 
-	m->lpf = lpf;
-	m->hpf = hpf;
 	m->hpf2 = hpf2;
-	m->agc_amp = agc_amp;
 	m->limitergain = limitergain;
 	m->clipint = clipint;
 	m->qerr = qerr;
-	return len;
 }
 
 
 /* Function to convert input audio to transmit frequency modulation */
 int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 {
+	struct modstate *m = &modstate;
+	float audio[AUDIO_MAXLEN];
+
+	mod_process_audio(m, in, audio, len);
+
 	if (p.mode == MODE_FM) {
-		dsp_fast_tx_fm(in, out, len);
+		mod_fm(m, audio, out, len);
 	} else {
 		// Transmit unmodulated carrier on other modes
 		int i;
