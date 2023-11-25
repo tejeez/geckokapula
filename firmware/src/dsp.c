@@ -584,11 +584,12 @@ struct modstate modstate;
 void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned len)
 {
 	const float agc_minimum = 10.0f;
-	const float agc_attack = 0.001f, agc_decay = 0.0001f;
+	const float agc_attack = 0.03f, agc_decay = 0.003f;
 
 	float hpf = m->hpf, lpf = m->lpf;
 	float agc_amp = m->agc_amp;
 
+	float amp = 0.0f;
 	unsigned i;
 	for (i = 0; i < len; i++) {
 		float audio = (float)in[i];
@@ -599,25 +600,34 @@ void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned 
 		lpf += (audio - lpf) * .65f;
 		audio = lpf;
 
-		float amp = fabsf(audio);
+		amp += fabsf(audio);
 
-		// Avoid NaN, clamp to a minimum value
-		if (agc_amp != agc_amp || agc_amp < agc_minimum)
-			agc_amp = agc_minimum;
-
-		float d = amp - agc_amp;
-		if (d >= 0)
-			agc_amp = agc_amp + d * agc_attack;
-		else
-			agc_amp = agc_amp + d * agc_decay;
-
-		audio *= (200.0f / agc_amp);
 		out[i] = audio;
 	}
-
 	m->lpf = lpf;
 	m->hpf = hpf;
+
+	// Update AGC values once per block, so most of the AGC code
+	// runs at a lower sample rate.
+
+	amp /= (float)len;
+
+	// Avoid NaN, clamp to a minimum value
+	if (agc_amp != agc_amp || agc_amp < agc_minimum)
+		agc_amp = agc_minimum;
+
+	float d = amp - agc_amp;
+	if (d >= 0)
+		agc_amp = agc_amp + d * agc_attack;
+	else
+		agc_amp = agc_amp + d * agc_decay;
+
 	m->agc_amp = agc_amp;
+	float gain = 200.0f / agc_amp;
+
+	for (i = 0; i < len; i++) {
+		out[i] *= gain;
+	}
 }
 
 
