@@ -574,8 +574,8 @@ static void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, un
 	unsigned i;
 	for (i = 0; i < len; i++) {
 		float audio = (float)in[i];
-		// DC block, 300 Hz highpass
-		hpf += (audio - hpf) * .076f;
+		// DC block, 600 Hz highpass
+		hpf += (audio - hpf) * .145f;
 		audio -= hpf;
 		// 4 kHz lowpass
 		lpf += (audio - lpf) * .65f;
@@ -709,7 +709,8 @@ static void mod_dsb(struct modstate *m, float *in, iq_float_t *out, iq_float_t *
  * This gives something to transmit when audio is quiet. */
 static void mod_ssb_add_carrier(struct modstate *m, iq_float_t *buf, const iq_float_t *carrier, unsigned len)
 {
-	const float pthreshold = 0.01f, carrier_level = 0.05f;
+	//const float pthreshold = 0.1f, carrier_level = 0.05f;
+	const float pthreshold = 0.2f, carrier_level = 0.03f;
 
 	float plpf = m->plpf;
 
@@ -721,7 +722,7 @@ static void mod_ssb_add_carrier(struct modstate *m, iq_float_t *buf, const iq_fl
 		power += vi * vi + vq * vq;
 	}
 	// Lowpass filter the estimate
-	plpf += (power - plpf) * 0.1f;
+	plpf += (power - plpf) * 0.5f;
 	// Amount of carrier to add
 	float c = 0.0f;
 	if (plpf < pthreshold) {
@@ -747,7 +748,7 @@ static void mod_iq_to_fm(struct modstate *m, iq_float_t *in, fm_out_t *out, unsi
 	const int32_t phdev = 26214400;
 
 	// Maximum frequency deviation in steps
-	const int32_t fm_max = 20;
+	const int32_t fm_max = 21;
 
 	uint32_t pha = m->pha;
 
@@ -782,7 +783,7 @@ static void mod_iq_to_fm(struct modstate *m, iq_float_t *in, fm_out_t *out, unsi
 }
 
 // Center frequency for SSB modulation in FM quantization steps
-#define MOD_SSB_CENTER 11
+#define MOD_SSB_CENTER 10
 
 /* Modulate SSB from preprocessed audio */
 static void mod_ssb(struct modstate *m, float *in, fm_out_t *out, unsigned len)
