@@ -2,6 +2,8 @@
 
 #include "dsp.h"
 #include "rig.h"
+
+#include <assert.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -46,6 +48,15 @@ static void fm_to_iq(float *phase, fm_out_t *in, iq_float_t *out, size_t length)
 	*phase = ph;
 }
 
+// Check that FM modulation samples are in allowed range
+static void check_fm_limits(fm_out_t *fm, size_t length)
+{
+	size_t i;
+	for (i = 0; i < length; i++) {
+		assert(fm[i] <= 63);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	if (argc < 3)
@@ -67,6 +78,7 @@ int main(int argc, char *argv[])
 		if (fread(audio_in, sizeof(audio_in), 1, stdin) != 1)
 			break;
 		dsp_fast_tx(audio_in, fm_out, TX_DSP_BLOCK);
+		check_fm_limits(fm_out, TX_DSP_BLOCK);
 		fm_to_iq(&phase, fm_out, iq_out, TX_DSP_BLOCK);
 		(void)fwrite(fm_out, sizeof(fm_out), 1, fm_out_file);
 		(void)fwrite(iq_out, sizeof(iq_out), 1, iq_out_file);

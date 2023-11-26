@@ -542,6 +542,8 @@ struct modstate {
 	float bfo_i, bfo_q;
 	// Frequency of the first oscillator in SSB modulation
 	float bfofreq_i, bfofreq_q;
+	// SSB power estimate for adding carrier in quiet moments
+	float plpf;
 
 	enum rig_mode mode;
 
@@ -671,14 +673,10 @@ static void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 
 /* Modulate DSB from preprocessed audio.
  * This works similarly to demod_dsb_f
- * but from real-valued audio to I/Q samples. */
-static void mod_dsb(struct modstate *m, float *in, iq_float_t *out, unsigned len)
+ * but from real-valued audio to I/Q samples.
+ * Carrier is written to a buffer to be used later. */
+static void mod_dsb(struct modstate *m, float *in, iq_float_t *out, iq_float_t *carrier, unsigned len)
 {
-	// Add a bit of carrier to have something to transmit
-	// when audio is quiet. Some of this gets filtered so
-	// the actual carrier level will be lower than this value.
-	const float carrier = 0.15f;
-
 	float osc1i, osc1q;
 	float osc0i = m->bfo_i, osc0q = m->bfo_q;
 	const float oscfi = m->bfofreq_i, oscfq = m->bfofreq_q;
@@ -686,14 +684,16 @@ static void mod_dsb(struct modstate *m, float *in, iq_float_t *out, unsigned len
 	unsigned i;
 	for (i = 0; i < len; i+=2) {
 		float audio = (float)in[i];
-		audio += carrier;
+		carrier[i  ].i = osc0i;
+		carrier[i  ].q = osc0q;
 		out[i  ].i = osc0i * audio;
 		out[i  ].q = osc0q * audio;
 		osc1i = osc0i * oscfi - osc0q * oscfq;
 		osc1q = osc0i * oscfq + osc0q * oscfi;
 
 		audio = (float)in[i+1];
-		audio += carrier;
+		carrier[i+1].i = osc0i;
+		carrier[i+1].q = osc0q;
 		out[i+1].i = osc1i * audio;
 		out[i+1].q = osc1q * audio;
 		osc0i = osc1i * oscfi - osc1q * oscfq;
@@ -705,6 +705,38 @@ static void mod_dsb(struct modstate *m, float *in, iq_float_t *out, unsigned len
 	m->bfo_q = ms * osc0q;
 }
 
+/* Add some carrier to SSB signal when its power is low.
+ * This gives something to transmit when audio is quiet. */
+static void mod_ssb_add_carrier(struct modstate *m, iq_float_t *buf, const iq_float_t *carrier, unsigned len)
+{
+	const float pthreshold = 0.01f, carrier_level = 0.05f;
+
+	float plpf = m->plpf;
+
+	// Estimate power
+	float power = 0.0f;
+	unsigned i;
+	for (i = 0; i < len; i++) {
+		float vi = buf[i].i, vq = buf[i].q;
+		power += vi * vi + vq * vq;
+	}
+	// Lowpass filter the estimate
+	plpf += (power - plpf) * 0.1f;
+	// Amount of carrier to add
+	float c = 0.0f;
+	if (plpf < pthreshold) {
+		c = (1.0f - plpf / pthreshold) * carrier_level;
+	}
+	// Add carrier
+	for (i = 0; i < len; i++) {
+		buf[i].i += carrier[i].i * c;
+		buf[i].q += carrier[i].q * c;
+	}
+
+	m->plpf = plpf;
+}
+
+
 /* Convert I/Q to FM modulation.
  * This uses only the phase angle from I/Q samples and modulates
  * frequency so that resulting phase tracks that of I/Q input. */
@@ -715,7 +747,7 @@ static void mod_iq_to_fm(struct modstate *m, iq_float_t *in, fm_out_t *out, unsi
 	const int32_t phdev = 26214400;
 
 	// Maximum frequency deviation in steps
-	const int32_t fm_max = 15;
+	const int32_t fm_max = 20;
 
 	uint32_t pha = m->pha;
 
@@ -750,16 +782,18 @@ static void mod_iq_to_fm(struct modstate *m, iq_float_t *in, fm_out_t *out, unsi
 }
 
 // Center frequency for SSB modulation in FM quantization steps
-#define MOD_SSB_CENTER 13
+#define MOD_SSB_CENTER 11
 
 /* Modulate SSB from preprocessed audio */
 static void mod_ssb(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 {
 	iq_float_t buf[AUDIO_MAXLEN];
+	iq_float_t carrier[AUDIO_MAXLEN];
 
-	mod_dsb(m, in, buf, len);
+	mod_dsb(m, in, buf, carrier, len);
 	biquad_filter(&m->bq1, &biquad1_ssb, buf, len);
 	biquad_filter(&m->bq2, &biquad1_ssb, buf, len);
+	mod_ssb_add_carrier(m, buf, carrier, len);
 	mod_iq_to_fm(m, buf, out, len,
 		m->mode == MODE_USB ?
 		(32+MOD_SSB_CENTER) : (32-MOD_SSB_CENTER));
@@ -773,6 +807,7 @@ int dsp_fast_tx(audio_in_t *in, fm_out_t *out, int len)
 {
 	struct modstate *m = &modstate;
 	float audio[AUDIO_MAXLEN];
+	assert (len <= AUDIO_MAXLEN);
 
 	mod_process_audio(m, in, audio, len);
 
