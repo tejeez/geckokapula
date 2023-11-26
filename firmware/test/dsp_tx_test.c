@@ -38,7 +38,7 @@ static void fm_to_iq(float *phase, fm_out_t *in, iq_float_t *out, size_t length)
 	for (i = 0; i < length * IQ_OVERSAMP; i++)
 	{
 		float f = dev * (((float)in[i / IQ_OVERSAMP]) - 32.0f);
-		ph = ph + fmodf(f, (float)(M_PI*2.0));
+		ph = fmodf(ph + f, (float)(M_PI*2.0));
 		out[i].i = cosf(ph);
 		out[i].q = sinf(ph);
 	}

@@ -21,6 +21,9 @@
 #endif
 
 #include "dsp.h"
+#include "dsp_math.h"
+
+#include <assert.h>
 #include <math.h>
 #include <string.h>
 
@@ -720,7 +723,8 @@ static void mod_iq_to_fm(struct modstate *m, iq_float_t *in, fm_out_t *out, unsi
 	for (i = 0; i < len; i++) {
 		// Represent phase as uint32_t so we can avoid computing modulos
 		// by letting the numbers wrap around.
-		uint32_t ph = (uint32_t)(atan2f(in[i].i, in[i].q) * 6.8356528e+08f);
+		//uint32_t ph = (uint32_t)(atan2f(in[i].q, in[i].i) * 6.8356528e+08f);
+		uint32_t ph = approx_angle(in[i].q, in[i].i);
 
 		// Phase difference from current phase accumulator
 		int32_t phdiff = (int32_t)(ph - pha);
@@ -829,10 +833,6 @@ void dsp_update_params(void)
 	f = (-6.2831853f / RX_IQ_FS) * ((float)p.offset_freq + ddc_offset);
 	demodstate.ddcfreq_i = cosf(f);
 	demodstate.ddcfreq_q = sinf(f);
-
-	// I thought it should be the other way around.
-	// Do a quick fix here until I figure out where I have made a mistake.
-	bfo_tx = -bfo_tx;
 
 	f = (6.2831853f / TX_FS) * bfo_tx;
 	modstate.bfofreq_i = cosf(f);
