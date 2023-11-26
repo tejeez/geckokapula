@@ -9,11 +9,14 @@
 int main(void)
 {
 	float angle;
-	for (angle = 0; angle < (float)(M_PI*2); angle += 0.1f) {
+	for (angle = 0; angle < (float)(M_PI*2); angle += (float)(M_PI/32)) {
 		float x = cosf(angle), y = sinf(angle);
 		uint32_t exact = (uint32_t)(atan2f(y, x) * 6.8356528e+08f);
 		uint32_t approx = approx_angle(y,x);
-		printf("%10.7f %8x %8x\n", angle, exact, approx);
+		printf("%10.7f %8x %8x %10d\n",
+			angle, exact, approx,
+			(int)((int32_t)(approx - exact))
+		);
 	}
 	return 0;
 }

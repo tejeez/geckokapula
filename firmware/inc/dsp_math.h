@@ -8,20 +8,35 @@ static inline uint32_t approx_angle(float y, float x)
 {
 	uint32_t angle = 0;
 	if (x < 0.0f) {
-		angle += 0x80000000UL;
 		x = -x;
 		y = -y;
+		angle += 0x80000000UL;
 	}
 	if (y < 0.0f) {
-		angle -= 0x40000000UL;
 		float x_temp = x;
 		x = -y;
-		y = x_temp;
+		y =  x_temp;
+		angle -= 0x40000000UL;
 	}
 	if (y > x) {
+		float x_temp = x;
+		x =  x      + y;
+		y = -x_temp + y;
 		angle += 0x20000000UL;
 	}
-	// TODO: approximate a bit better
+	// Rotate by -pi/8
+	float x_temp = x;
+	const float c = 0.4142135623730951f;
+	x =  x + c * y;
+	y =  y - c * x_temp;
+	angle += 0x10000000UL;
+
+	//printf("%f %f\n", atan2f(y, x), y / x);
+
+	// Prevent division by zero
+	if (x != 0.0f && x != -0.0f) {
+		angle += (uint32_t)(648060518.497f * y / x);
+	}
 	return angle;
 }
 
