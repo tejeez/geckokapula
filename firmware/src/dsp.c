@@ -123,6 +123,7 @@ static inline float biquad_sample_r(struct biquad_state_r *s, const struct biqua
 	return out;
 }
 
+#define BIQUADS_SSB_N 3
 
 /* Demodulator state */
 struct demod {
@@ -161,7 +162,7 @@ struct demod {
 	enum rig_mode mode;
 
 	// Biquad filter states, used in SSB demodulation
-	struct biquad_state bq1, bq2;
+	struct biquad_state bq[BIQUADS_SSB_N];
 
 	enum rig_mode prev_mode;
 };
@@ -175,8 +176,7 @@ static void demod_reset(struct demod *ds)
 	ds->diff_avg = 0;
 	ds->bfo_i = 1; ds->bfo_q = 0;
 	ds->ddc_i = 1; ds->ddc_q = 0;
-	memset(&ds->bq1, 0, sizeof(ds->bq1));
-	memset(&ds->bq2, 0, sizeof(ds->bq2));
+	memset(&ds->bq, 0, sizeof(ds->bq));
 }
 
 
@@ -396,25 +396,28 @@ void demod_dsb_f(struct demod *ds, iq_float_t *in, float *out, unsigned len)
 }
 
 
-/* Coefficients from https://arachnoid.com/BiQuadDesigner/
- * with: 1000 Hz, sample rate 24000 Hz, Q 0.8.
- * Now the same coefficients are used for two stages, but a better
- * response could be obtained by designing a proper 2-stage filter. */
-static const struct biquad_coeff biquad1_ssb = {
-	.a1 = -1.66286366f,
-	.a2 =  0.72152314f,
-	.b0 =  0.01466487f,
-	.b1 =  0.02932974f,
-	.b2 =  0.01466487f
+/* Coefficients from python3:
+from scipy import signal
+def p(s): print(',\n'.join("\t{%Ef,%Ef,%Ef,%Ef,%Ef}" % (c[4], c[5], c[0], c[1], c[2]) for c in s))
+
+# SSB
+p(signal.cheby1(6, 1, 1200, output='sos', fs=24000))
+# CW
+p(signal.bessel(6, 200, output='sos', fs=24000))
+*/
+
+// Biquad coefficients for SSB
+static const struct biquad_coeff biquads_ssb[BIQUADS_SSB_N] = {
+	{-1.851822E+00f,8.634449E-01f,8.073224E-07f,1.614645E-06f,8.073224E-07f},
+	{-1.846798E+00f,8.992076E-01f,1.000000E+00f,2.000000E+00f,1.000000E+00f},
+	{-1.867114E+00f,9.622861E-01f,1.000000E+00f,2.000000E+00f,1.000000E+00f}
 };
 
-// 100 Hz, sample rate 24000 Hz, Q 0.6
-static const struct biquad_coeff biquad1_cw = {
-	.a1 = -1.95663243f,
-	.a2 = 0.95730315f,
-	.b0 = 1.67679726e-4f,
-	.b1 = 3.35359452e-4f,
-	.b2 = 1.67679726e-4f
+// Biquad coefficients for CW
+static const struct biquad_coeff biquads_cw[BIQUADS_SSB_N] = {
+	{-1.906874E+00f,9.091286E-01f,2.867042E-10f,5.734084E-10f,2.867042E-10f},
+	{-1.917145E+00f,9.196586E-01f,1.000000E+00f,2.000000E+00f,1.000000E+00f},
+	{-1.941944E+00f,9.451818E-01f,1.000000E+00f,2.000000E+00f,1.000000E+00f}
 };
 
 /* Demodulate SSB.
@@ -425,12 +428,14 @@ void demod_ssb(struct demod *ds, iq_in_t *in, float *out, unsigned len)
 	iq_float_t buf[IQ_MAXLEN];
 	const struct biquad_coeff *filter =
 		(ds->mode == MODE_CWU || ds->mode == MODE_CWL)
-		? &biquad1_cw : &biquad1_ssb;
+		? biquads_cw : biquads_ssb;
 
 	demod_ddc(ds, in, buf, len);
 	len /= 2;
-	biquad_filter(&ds->bq1, filter, buf, len);
-	biquad_filter(&ds->bq2, filter, buf, len);
+	unsigned n;
+	for (n = 0; n < BIQUADS_SSB_N; n++) {
+		biquad_filter(&ds->bq[n], &filter[n], buf, len);
+	}
 	demod_dsb_f(ds, buf, out, len);
 }
 
@@ -602,15 +607,14 @@ struct modstate {
 	// Audio preprocess biquad filter states
 	struct biquad_state_r bqa[BIQUADS_AUDIO_N];
 	// SSB biquad filter states
-	struct biquad_state bq1, bq2;
+	struct biquad_state bq[BIQUADS_SSB_N];
 };
 
 static void mod_reset(struct modstate *m)
 {
 	m->bfo_i = 1.0f; m->bfo_q = 0.0f;
 	memset(&m->bqa, 0, sizeof(m->bqa));
-	memset(&m->bq1, 0, sizeof(m->bq1));
-	memset(&m->bq2, 0, sizeof(m->bq2));
+	memset(&m->bq, 0, sizeof(m->bq));
 	// TODO: maybe reset everything else too
 }
 
@@ -857,8 +861,11 @@ static void mod_ssb(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 	iq_float_t carrier[AUDIO_MAXLEN];
 
 	mod_dsb(m, in, buf, carrier, len);
-	biquad_filter(&m->bq1, &biquad1_ssb, buf, len);
-	biquad_filter(&m->bq2, &biquad1_ssb, buf, len);
+
+	unsigned n;
+	for (n = 0; n < BIQUADS_SSB_N; n++) {
+		biquad_filter(&m->bq[n], &biquads_ssb[n], buf, len);
+	}
 	mod_ssb_add_carrier(m, buf, carrier, len);
 	mod_iq_to_fm(m, buf, out, len,
 		m->mode == MODE_USB ?
@@ -905,12 +912,12 @@ void dsp_update_params(void)
 	float bfo_tx = 0.0f;
 	switch (mode) {
 	case MODE_USB:
-		bfo = 1200.0f;
+		bfo = 1400.0f;
 		ddc_offset = bfo;
 		bfo_tx = -146.48438f * MOD_SSB_CENTER;
 		break;
 	case MODE_LSB:
-		bfo = -1200.0f;
+		bfo = -1400.0f;
 		ddc_offset = bfo;
 		bfo_tx =  146.48438f * MOD_SSB_CENTER;
 		break;
