@@ -61,6 +61,11 @@ struct biquad_state {
 	float s1_i, s1_q, s2_i, s2_q;
 };
 
+// State of a biquad filter for a real-valued signal
+struct biquad_state_r {
+	float s1, s2;
+};
+
 // Coefficients of a biquad filter
 struct biquad_coeff {
 	float a1, a2, b0, b1, b2;
@@ -105,6 +110,17 @@ void biquad_filter(struct biquad_state *s, const struct biquad_coeff *c, iq_floa
 	s->s1_q = s1_q;
 	s->s2_i = s2_i;
 	s->s2_q = s2_q;
+}
+
+
+/* Apply a biquad filter to one real-valued sample. */
+static inline float biquad_sample_r(struct biquad_state_r *s, const struct biquad_coeff *c, float in)
+{
+	float out;
+	out   = s->s1 + c->b0 * in;
+	s->s1 = s->s2 + c->b1 * in - c->a1 * out;
+	s->s2 =         c->b2 * in - c->a2 * out;
+	return out;
 }
 
 
@@ -525,10 +541,46 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 }
 
 
+#define BIQUADS_AUDIO_N 3
+/* Biquad filters for audio preprocessing.
+ *
+ * Sample rate: 24000 Hz
+ * First stage: Lowpass, 2200 Hz, Q=1.5, Gain=0 dB
+ * Coefficients from https://arachnoid.com/BiQuadDesigner/
+ *
+ * Second and third stages: Allpass, 700 Hz, Q=2, Gain=0
+ * https://www.earlevel.com/main/2021/09/02/biquad-calculator-v3/
+ * Note that this calculator swaps naming of a and b.
+ * Not sure if this allpass is a good idea but let's give it a try.
+ */
+static const struct biquad_coeff biquads_audio[BIQUADS_AUDIO_N] = {
+{
+	.a1 = -1.41961519f,
+	.a2 =  0.69269704f,
+	.b0 =  0.06827046f,
+	.b1 =  0.13654093f,
+	.b2 =  0.06827046f
+},
+{
+	.a1 = -1.8808216831800728f,
+	.a2 =  0.9128525763882213,
+	.b0 =  0.9128525763882213f,
+	.b1 =  -1.8808216831800728f,
+	.b2 =  1.0f
+},
+{
+	.a1 = -1.8808216831800728f,
+	.a2 =  0.9128525763882213,
+	.b0 =  0.9128525763882213f,
+	.b1 =  -1.8808216831800728f,
+	.b2 =  1.0f
+},
+};
+
 /* Modulator state */
 struct modstate {
 	// Input audio processing
-	float lpf, hpf, hpf2, agc_amp;
+	float hpf, hpf2, agc_lpf, agc_amp;
 
 	// FM specific processing
 	float limitergain, clipint, qerr;
@@ -547,28 +599,33 @@ struct modstate {
 
 	enum rig_mode mode;
 
-	// Biquad filter states
+	// Audio preprocess biquad filter states
+	struct biquad_state_r bqa[BIQUADS_AUDIO_N];
+	// SSB biquad filter states
 	struct biquad_state bq1, bq2;
 };
 
 static void mod_reset(struct modstate *m)
 {
 	m->bfo_i = 1.0f; m->bfo_q = 0.0f;
+	memset(&m->bqa, 0, sizeof(m->bqa));
 	memset(&m->bq1, 0, sizeof(m->bq1));
 	memset(&m->bq2, 0, sizeof(m->bq2));
 	// TODO: maybe reset everything else too
 }
-
 
 /* Preprocess transmit audio.
  * This includes some filtering and AGC. */
 static void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, unsigned len)
 {
 	const float agc_minimum = 10.0f;
-	const float agc_attack = 0.03f, agc_decay = 0.003f;
+	const float agc_lpf_a = 0.2f;
+	const float agc_attack = 0.1f, agc_decay = 0.002f;
 
-	float hpf = m->hpf, lpf = m->lpf;
-	float agc_amp = m->agc_amp;
+	float hpf = m->hpf;
+	struct biquad_state_r bqa[BIQUADS_AUDIO_N] = {
+		m->bqa[0], m->bqa[1], m->bqa[2]
+	};
 
 	float amp = 0.0f;
 	unsigned i;
@@ -577,21 +634,30 @@ static void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, un
 		// DC block, 600 Hz highpass
 		hpf += (audio - hpf) * .145f;
 		audio -= hpf;
-		// 4 kHz lowpass
-		lpf += (audio - lpf) * .65f;
-		audio = lpf;
+
+		unsigned n;
+		for (n = 0; n < BIQUADS_AUDIO_N; n++) {
+			audio = biquad_sample_r(&bqa[n], &biquads_audio[n], audio);
+		}
 
 		amp += fabsf(audio);
 
 		out[i] = audio;
 	}
-	m->lpf = lpf;
 	m->hpf = hpf;
+	m->bqa[0] = bqa[0];
+	m->bqa[1] = bqa[1];
+	m->bqa[2] = bqa[2];
 
 	// Update AGC values once per block, so most of the AGC code
 	// runs at a lower sample rate.
 
 	amp /= (float)len;
+
+	float agc_lpf = m->agc_lpf, agc_amp = m->agc_amp;
+	agc_lpf += (amp - agc_lpf) * agc_lpf_a;
+	m->agc_lpf = agc_lpf;
+	amp = agc_lpf;
 
 	// Avoid NaN, clamp to a minimum value
 	if (agc_amp != agc_amp || agc_amp < agc_minimum)
@@ -625,8 +691,8 @@ static void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 	for (i = 0; i < len; i++) {
 		float audio = in[i] * 200.0f;
 
-		// Preemphasis: 3500 Hz highpass
-		hpf2 += (audio - hpf2) * .6f;
+		// Preemphasis: 2000 Hz highpass
+		hpf2 += (audio - hpf2) * .4f;
 		audio -= hpf2;
 
 		// Pre-clip largest peaks, should not happen that often
@@ -636,8 +702,8 @@ static void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 
 		// Avoid producing DC offsets while clipping asymmetric waveforms
 		// by integrating the clipped signal and feeding it back into input.
-		// This works as a 300 Hz high pass filter while not clipping.
-		audio -= clipint * .076f;
+		// This works as a 200 Hz high pass filter while not clipping.
+		audio -= clipint * .051f;
 
 		// Also reduce limiter gain when it is getting close to clipping.
 		if (fabsf(audio) >= 20.0f) {
@@ -709,8 +775,7 @@ static void mod_dsb(struct modstate *m, float *in, iq_float_t *out, iq_float_t *
  * This gives something to transmit when audio is quiet. */
 static void mod_ssb_add_carrier(struct modstate *m, iq_float_t *buf, const iq_float_t *carrier, unsigned len)
 {
-	//const float pthreshold = 0.1f, carrier_level = 0.05f;
-	const float pthreshold = 0.2f, carrier_level = 0.03f;
+	const float pthreshold = 0.3f, carrier_level = 0.05f;
 
 	float plpf = m->plpf;
 

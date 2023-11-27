@@ -5,6 +5,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 
 /* How many transmit samples to process at a time */
@@ -15,7 +16,7 @@
 
 rig_parameters_t p = {
 	.keyed = 0,
-	.mode = MODE_USB,
+	.mode = MODE_FM,
 	.frequency = RIG_DEFAULT_FREQUENCY,
 	.split_freq = 0,
 	.offset_freq = 0,
@@ -59,12 +60,15 @@ static void check_fm_limits(fm_out_t *fm, size_t length)
 
 int main(int argc, char *argv[])
 {
-	if (argc < 3)
+	if (argc < 4)
 		return 1;
-	FILE *fm_out_file = fopen(argv[1], "wb");
+	if (strcmp(argv[1], "USB") == 0) {
+		p.mode = MODE_USB;
+	}
+	FILE *fm_out_file = fopen(argv[2], "wb");
 	if (fm_out_file == NULL)
 		return 2;
-	FILE *iq_out_file = fopen(argv[2], "wb");
+	FILE *iq_out_file = fopen(argv[3], "wb");
 	if (iq_out_file == NULL)
 		return 3;
 
