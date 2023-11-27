@@ -407,7 +407,8 @@ void setup_adc(void)
 		.outInvert = 0,
 		.prsOutput = timerPrsOutputDefault,
 	});
-	TIMER_TopSet(WTIMER0, 25);
+	// Cycle length is top value + 1
+	TIMER_TopSet(WTIMER0, 24);
 	TIMER_CompareSet(WTIMER0, 0, 0);
 	// TODO: maybe enable it only during TX
 	TIMER_Enable(WTIMER0, 1);

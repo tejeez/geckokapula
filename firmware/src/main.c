@@ -91,7 +91,7 @@ int main(void) {
 		LDMA_Init(&init);
 	}
 
-	TIMER_TopSet(TIMER0, 200);
+	TIMER_TopSet(TIMER0, 199);
 	TIMER_CompareBufSet(TIMER0, 0, 33);
 	TIMER_CompareBufSet(TIMER0, 1, 20);
 	dsp_hw_init();
