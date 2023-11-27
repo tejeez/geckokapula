@@ -30,9 +30,16 @@ rig_parameters_t p = {
 	.offset_freq = 0,
 	.volume = 10,
 	.waterfall_averages = 20,
-	.squelch = 15
+	.squelch = 15,
+	.ctcss = 0.0f,
 };
 rig_status_t rs = {0};
+
+// CTCSS frequencies in multiples of 0.1 Hz
+// List from https://en.wikipedia.org/wiki/Continuous_Tone-Coded_Squelch_System#List_of_tones
+const uint16_t ctcss_freqs[] = {
+	0, 670, 693, 719, 744, 770, 797, 825, 854, 885, 915, 948, 974, 1000, 1035, 1072, 1109, 1148, 1188, 1230, 1273, 1318, 1365, 1413, 1462, 1500, 1514, 1567, 1598, 1622, 1655, 1679, 1713, 1738, 1773, 1799, 1835, 1862, 1899, 1928, 1966, 1995, 2035, 2065, 2107, 2181, 2257, 2291, 2336, 2418, 2503, 2541
+};
 
 enum ui_field_name {
 	// Common fields
@@ -57,6 +64,7 @@ enum ui_field_name {
 	// FM specific fields
 
 	UI_FIELD_SQ, // Squelch
+	UI_FIELD_CTCSS,
 
 	// SSB specific fields
 
@@ -81,6 +89,28 @@ struct ui_view {
 	// Array of fields
 	struct ui_field fields[];
 };
+
+#define TEXT_LEN 64
+
+struct ui_state {
+	// Current UI view
+	const struct ui_view *view;
+	// Previous encoder position
+	unsigned pos_prev;
+	int backlight_timer;
+	// Number of currently selected field
+	unsigned char cursor;
+	unsigned char keyed;
+	unsigned char button_prev, ptt_prev, keyed_prev;
+	// Index to ctcss_freqs
+	unsigned char ctcss;
+	char text[TEXT_LEN+1];
+	unsigned char color[TEXT_LEN+1];
+	char textprev[TEXT_LEN+1];
+	unsigned char colorprev[TEXT_LEN+1];
+};
+
+struct ui_state ui;
 
 // UI fields common to every mode.
 // To simplify code, these are repeated in every ui_view struct.
@@ -133,18 +163,28 @@ static int ui_view_common_text(char *text, size_t maxlen)
 // Format text specific to FM view
 static int ui_view_fm_text(char *text, size_t maxlen)
 {
-	return snprintf(text, maxlen,
-		"%2d",
-		p.squelch
-	);
+	int ctcss = ctcss_freqs[ui.ctcss];
+	if (ctcss != 0) {
+		return snprintf(text, maxlen,
+			"%2d%3d.%1d",
+			p.squelch,
+			ctcss / 10, ctcss % 10
+		);
+	} else {
+		return snprintf(text, maxlen,
+			"%2d off ",
+			p.squelch
+		);
+	}
 };
 
 const struct ui_view ui_view_fm = {
-	UI_FIELDS_COMMON_N + 1,
+	UI_FIELDS_COMMON_N + 2,
 	ui_view_fm_text,
 	{
 	UI_FIELDS_COMMON,
 	{ UI_FIELD_SQ,       24,25, 2, "Squelch"          },
+	{ UI_FIELD_CTCSS,    26,30, 3, "CTCSS Hz"         },
 	}
 };
 
@@ -182,24 +222,6 @@ const struct ui_view ui_view_other = {
 	{
 	UI_FIELDS_COMMON
 	}
-};
-
-#define TEXT_LEN 64
-
-struct ui_state {
-	// Current UI view
-	const struct ui_view *view;
-	// Previous encoder position
-	unsigned pos_prev;
-	int backlight_timer;
-	// Number of currently selected field
-	unsigned char cursor;
-	unsigned char keyed;
-	unsigned char button_prev, ptt_prev, keyed_prev;
-	char text[TEXT_LEN+1];
-	unsigned char color[TEXT_LEN+1];
-	char textprev[TEXT_LEN+1];
-	unsigned char colorprev[TEXT_LEN+1];
 };
 
 struct ui_state ui = {
@@ -387,11 +409,16 @@ static void ui_knob_turned(enum ui_field_name f, int diff)
 		p.squelch = wrap(p.squelch + diff, 100);
 		dsp_update_params();
 	}
+	else if (f == UI_FIELD_CTCSS) {
+		ui.ctcss = wrap(ui.ctcss + diff, sizeof(ctcss_freqs) / sizeof(ctcss_freqs[0]));
+		p.ctcss = 0.1f * (float)ctcss_freqs[ui.ctcss];
+		dsp_update_params();
+	}
 	else if (f >= UI_FIELD_FT0 && f <= UI_FIELD_FT3) {
 		p.offset_freq = wrap_signed(
 			p.offset_freq +
 			ui_steps[UI_FIELD_FT3 - f] * diff,
-			10000
+			6000
 		);
 		dsp_update_params();
 	}

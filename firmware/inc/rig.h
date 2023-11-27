@@ -34,6 +34,8 @@ typedef struct {
 	uint8_t volume;
 	uint8_t waterfall_averages;
 	unsigned squelch;
+	// CTCSS frequency in Hz, 0.0f for no CTCSS
+	float ctcss;
 } rig_parameters_t;
 extern rig_parameters_t p;
 

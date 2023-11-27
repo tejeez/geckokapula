@@ -22,7 +22,8 @@ rig_parameters_t p = {
 	.offset_freq = 0,
 	.volume = 10,
 	.waterfall_averages = 20,
-	.squelch = 15
+	.squelch = 15,
+	.ctcss = 123.0f,
 };
 rig_status_t rs = {0};
 

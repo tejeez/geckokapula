@@ -29,6 +29,8 @@
 
 #define AUDIO_MAXLEN 32
 #define IQ_MAXLEN (AUDIO_MAXLEN * 2)
+// Frequency step of FM modulator
+#define MOD_FM_STEP (38.4e6f / (1UL<<18))
 
 extern rig_parameters_t p;
 
@@ -524,9 +526,6 @@ int dsp_fast_rx(iq_in_t *in, int in_len, audio_out_t *out, int out_len)
 	case MODE_CWL:
 		demod_ssb(&demodstate, in, audio, in_len);
 		break;
-	/*case MODE_SSB:
-		demod_ssb(&demodstate, in, audio, in_len);
-		break;*/
 	default:
 		break;
 	}
@@ -590,6 +589,11 @@ struct modstate {
 	// FM specific processing
 	float limitergain, clipint, qerr;
 
+	// CTCSS oscillator
+	float ct_i, ct_q;
+	// CTCSS oscillator frequency
+	float ctfreq_i, ctfreq_q;
+
 	// SSB specific processing
 
 	// Phase accumulator for I/Q to FM conversion
@@ -612,6 +616,7 @@ struct modstate {
 
 static void mod_reset(struct modstate *m)
 {
+	m->ct_i  = 1.0f; m->ct_q  = 0.0f;
 	m->bfo_i = 1.0f; m->bfo_q = 0.0f;
 	memset(&m->bqa, 0, sizeof(m->bqa));
 	memset(&m->bq, 0, sizeof(m->bq));
@@ -686,10 +691,15 @@ static void mod_process_audio(struct modstate *m, audio_in_t *in, float *out, un
 static void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 {
 	const float limitergain_min = 0.2f, limitergain_max = 1.0f;
+	// CTCSS deviation
+	const float ctdev = 650.0f / MOD_FM_STEP;
 
 	float hpf2 = m->hpf2;
 	float limitergain = m->limitergain;
 	float clipint = m->clipint, qerr = m->qerr;
+
+	float ct_i = m->ct_i, ct_q = m->ct_q;
+	const float ctfreq_i = m->ctfreq_i, ctfreq_q = m->ctfreq_q;
 
 	unsigned i;
 	for (i = 0; i < len; i++) {
@@ -724,6 +734,12 @@ static void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 		// DC offset integrator
 		clipint += audio;
 
+		if (ctfreq_q != 0.0f) {
+			audio += ct_q * ctdev;
+			float new_i = ct_i * ctfreq_i - ct_q * ctfreq_q;
+			ct_q        = ct_i * ctfreq_q + ct_q * ctfreq_i;
+			ct_i = new_i;
+		}
 		audio += 32.0f;
 
 		// Dither using a delta sigma modulator based on
@@ -738,6 +754,11 @@ static void mod_fm(struct modstate *m, float *in, fm_out_t *out, unsigned len)
 	m->limitergain = limitergain;
 	m->clipint = clipint;
 	m->qerr = qerr;
+
+	float ms = ct_i * ct_i + ct_q * ct_q;
+	ms = (3.0f - ms) * 0.5f;
+	m->ct_i = ms * ct_i;
+	m->ct_q = ms * ct_q;
 }
 
 
@@ -945,6 +966,16 @@ void dsp_update_params(void)
 	f = (6.2831853f / TX_FS) * bfo_tx;
 	modstate.bfofreq_i = cosf(f);
 	modstate.bfofreq_q = sinf(f);
+
+	float ctcss = p.ctcss;
+	if (mode == MODE_FM && ctcss != 0.0f) {
+		f = (6.2831853f / TX_FS) * ctcss;
+		modstate.ctfreq_i = cosf(f);
+		modstate.ctfreq_q = sinf(f);
+	} else {
+		modstate.ctfreq_i = 1.0f;
+		modstate.ctfreq_q = 0.0f;
+	}
 
 	unsigned vola = p.volume;
 	demodstate.audiogain = ((vola&1) ? (3<<(vola/2)) : (2<<(vola/2))) * 10.0f;
