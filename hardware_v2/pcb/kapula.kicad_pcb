@@ -3766,7 +3766,7 @@
         (effects (font (size 0.7 0.7) (thickness 0.15)))
       (tstamp 0a4c6df1-92a3-4ec8-893d-e4b2ea1d2750)
     )
-    (fp_text value "DSB221SDN" (at 0 1 90 unlocked) (layer "F.Fab")
+    (fp_text value "TG2016SMN 38.4000M-MCGNNM3" (at 0 1 90 unlocked) (layer "F.Fab")
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 1e9b6729-68a2-4bc1-b676-6f53b885b56b)
     )

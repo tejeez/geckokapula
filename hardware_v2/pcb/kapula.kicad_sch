@@ -5463,7 +5463,7 @@
     (property "Reference" "U6" (at 104.14 279.4 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "DSB221SDN" (at 105.41 281.94 0)
+    (property "Value" "TG2016SMN 38.4000M-MCGNNM3" (at 105.41 281.94 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "kapula:TG2016SMN" (at 123.19 274.32 0)
