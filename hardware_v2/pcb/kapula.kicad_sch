@@ -4138,6 +4138,10 @@
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 1e4e0d50-d2f5-428d-bfbc-cebcf0e0af36)
   )
+  (label "1V8" (at 344.17 123.19 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 22b5bfcf-00b6-400f-8045-584fb01d38cd)
+  )
   (label "VDD" (at 247.65 26.67 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 23e61c73-5124-46fe-abc7-aea19191ee11)
@@ -10125,31 +10129,6 @@
       (project "kapula"
         (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
           (reference "R41") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:GND") (at 344.17 123.19 90) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
-    (uuid 6eb4b73d-e972-4b31-aa3e-87ace85ce9ce)
-    (property "Reference" "#PWR0101" (at 350.52 123.19 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "GND" (at 347.98 123.19 90)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Footprint" "" (at 344.17 123.19 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 344.17 123.19 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 13b44243-6832-443f-a021-66282c91013f))
-    (instances
-      (project "kapula"
-        (path "/f2315993-072e-45c9-8c85-e79c6d40aba4"
-          (reference "#PWR0101") (unit 1)
         )
       )
     )
