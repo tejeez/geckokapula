@@ -51,6 +51,7 @@
     (pad_to_mask_clearance 0.05)
     (solder_mask_min_width 0.25)
     (allow_soldermask_bridges_in_footprints yes)
+    (grid_origin 125 60)
     (pcbplotparams
       (layerselection 0x00010fc_ffffffff)
       (plot_on_all_layers_selection 0x0000000_00000000)
@@ -1156,7 +1157,7 @@
 
   (footprint "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical" locked (layer "F.Cu")
     (tstamp 00000000-0000-0000-0000-00005ecdb219)
-    (at 133.86 60 -90)
+    (at 133.89 60 -90)
     (descr "Through hole straight socket strip, 1x08, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
     (tags "Through hole socket strip THT 1x08 2.54mm single row")
     (property "Sheetfile" "kapula.kicad_sch")
@@ -4124,7 +4125,7 @@
 
   (footprint "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical" (layer "F.Cu")
     (tstamp 00000000-0000-0000-0000-00005ed001ef)
-    (at 128.78 113.34 -90)
+    (at 128.81 113.34 -90)
     (descr "Through hole straight socket strip, 1x04, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
     (tags "Through hole socket strip THT 1x04 2.54mm single row")
     (property "Sheetfile" "kapula.kicad_sch")
@@ -5402,7 +5403,7 @@
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical" (layer "F.Cu")
     (tstamp 3bec8822-0e83-45cf-ad8b-7f46de9720aa)
-    (at 105.93 105.71 180)
+    (at 105.95 105.72 180)
     (descr "Through hole straight pin header, 2x10, 2.54mm pitch, double rows")
     (tags "Through hole pin header THT 2x10 2.54mm double row")
     (property "Sheetfile" "kapula.kicad_sch")
@@ -5927,7 +5928,7 @@
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical" (layer "F.Cu")
     (tstamp 5ab13a98-5eec-4808-b3a3-b2a08e08cf9a)
-    (at 144.02 67.62)
+    (at 144.05 67.62)
     (descr "Through hole straight pin header, 2x05, 2.54mm pitch, double rows")
     (tags "Through hole pin header THT 2x05 2.54mm double row")
     (property "Sheetfile" "kapula.kicad_sch")
@@ -7226,7 +7227,7 @@
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical" (layer "F.Cu")
     (tstamp 8cf1fa31-9852-41ff-9bb3-0f8181c40fed)
-    (at 144.02 82.86)
+    (at 144.05 82.86)
     (descr "Through hole straight pin header, 2x10, 2.54mm pitch, double rows")
     (tags "Through hole pin header THT 2x10 2.54mm double row")
     (property "Sheetfile" "kapula.kicad_sch")
