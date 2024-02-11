@@ -133,10 +133,22 @@ int display_ready(void)
 }
 
 #define CMD(x) ((x)|0x100)
+#define DELAY(x) ((x)|0x400)
 #define INIT_LIST_END 0x200
 
 const uint16_t display_init_commands[] = {
-		CMD(0x01), CMD(0x01), CMD(0x11), CMD(0x11), CMD(0x29), CMD(0x29),
+		CMD(0x01), // Reset
+		DELAY(10),
+		// Repeat reset and add some delay just in case.
+		CMD(0x01),
+		DELAY(10),
+		CMD(0x11), // Sleep Out
+		CMD(0x29), // Display On
+		DELAY(120),
+		CMD(0x36), // Memory Data Access Control
+			0x00,
+		CMD(0x26), // Gamma Set
+			0x04,
 		CMD(0x33), // vertical scrolling definition
 			0, FFT_ROW1, 0, FFT_ROW2+1-FFT_ROW1, 0, 159-FFT_ROW2,
 		INIT_LIST_END
@@ -150,8 +162,9 @@ int display_init(void)
 		unsigned c = display_init_commands[i];
 		if (c == INIT_LIST_END)
 			break;
-		if (c & 0x100) {
-			vTaskDelay(30);
+		if (c & 0x400) {
+			vTaskDelay(c & 0xFF);
+		} else if (c & 0x100) {
 			writecommand(c & 0xFF);
 		} else {
 			writedata(c);
