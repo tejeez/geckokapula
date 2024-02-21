@@ -1,9 +1,37 @@
-# Hardware version 2.1
+# Hardware version 2.2
 
-## Basic parts
+## Overview
+
+The Gekkokapula kit currently includes:
+* Gekkokapula PCB v2.2
+* Display module
+* Pin header for display module
+* 2 U.FL-SMA cables
+
+To build a complete radio, you will additionally need:
+* Enclosure
+* Speaker
+* Quadrature encoder (may be added to kit in future)
+* Electret microphone (may be added to kit in future)
+* 1S Li-Ion (or 3S NiMH) battery
+* PTT button (optional)
+* Volume potentiometer (optional)
+* Power switch (optional)
+* Serial Wire Debug adapter (to update firmware)
+
+Most of these parts are connected to header J1 on the Gekkokapula PCB.
+Schematic diagram of wiring between header J1 and other parts:
+
+![](connections.png)
+
+It is a good idea to connect the battery last after connecting
+everything else. This reduces the risk of accidental short circuits
+during construction.
+
+## Detailed information
 
 ### Gekkokapula board
-The Gekkokapula PCB v2.1 contains most of the electronics.
+The Gekkokapula PCB contains most of the electronics.
 All SMD components are already placed on the board, so
 you only need to hand solder some through hole pin headers.
 All bigger and more "mechanical" parts are wired to these
@@ -11,13 +39,11 @@ pin headers. This lets you choose any enclosure
 you like and arrange all the knobs, buttons and connectors
 the way you like.
 
-Schematic diagram of wiring between header J1 and other parts:
-
-![](connections.png)
-
 ### Display
-A display can be mounted directly on top of a Gekkokapula board
-on header J9. The display is a
+Solder 8-pin female header to J9 on Gekkokapula board
+and plug display module into the header.
+
+The display is a
 [128x160 RGB TFT module with an 8-pin header](https://www.ebay.com/itm/403774302965).
 
 These display modules also include an SD card slot
@@ -37,6 +63,9 @@ Almost any speaker should work.
 A 4 Ω or 8 Ω speaker with a power handling of at least 1 W
 is recommended.
 
+Keep in mind that most speakers need an enclosure to work properly.
+A small speaker without an enclosure may sound too quiet.
+
 ### Microphone
 Connect an electret microphone capsule between MIC and GND
 (pins 9 and 10 on header J1).
@@ -44,17 +73,23 @@ Most electret microphones should work here.
 
 ### Battery
 The board includes a protection circuit and a charger for a single
-cell Li-Ion or Li-Po battery. Connect one between BAT+ and BAT-
-pins (pins 17 and 18 on header J1).
+cell Li-Ion or Li-Po battery with a nominal voltage of 3.6 or 3.7 V.
+For example, a flat cellphone battery or an 18650 cell can be used.
 
-Note that battery minus is not directly connected to ground
-(because of the protection circuit).
+Connect battery between BAT+ and BAT- pins
+(pins 17 and 18 on header J1). Note that battery minus is not
+directly connected to ground (because of the protection circuit).
+
+Although designed for Lithium batteries, the circuit also works
+with 3 NiMH cells in series, since their voltages are
+[close enough](https://www.ti.com/lit/an/slyt468/slyt468.pdf)
+to 1S Li-Ion.
 
 ### Charging
 The battery charger works with any supply voltage from 4 V to 9 V
 between VCharge pin and GND (pins 19 and 20 on header J1).
 
-5 V from a USB port or a cellphone charger should work fine.
+5 V from a USB port or a cellphone charger works fine.
 
 ### RF connections
 All RF connectors on the board are U.FL. Use pigtail cables
@@ -65,30 +100,6 @@ receiving and transmitting in the 2300-2900 MHz range.
 All lower frequency bands (13 MHz to 1.45 GHz) use the
 connector J5.
 
-### Flashing and debugging
-The board has two alternative connectors for SWD.
-One is a 4-pin 2.54 mm header with the pinout of
-[cheap "J-Link" clones](https://www.ebay.com/itm/256009191453).
-
-GND, SWCLK and SWDIO pins are required and shall be connected to
-corresponding pins on your SWD adapter.
-
-The VDD pin is an output meant for SWD adapters with a reference
-voltage input (used for level shifters or target detection).
-If your SWD adapter does not have a reference voltage input,
-leave the VDD pin unconnected.
-
-The other connector is a 10-pin 1.27 mm header with standard
-Cortex Debug pinout. It gives access to SWO and reset pins
-and could be also used for JTAG in addition to SWD.
-
-Any SWD adapter supported by OpenOCD should work but may need
-additional configuration for OpenOCD.
-I can try to add configuration for more adapters
-if you can give me an adapter to test with.
-
-See [flashing tutorial](../firmware/flashing.md) for details
-on installation and use of flashing software.
 
 ## Optional parts
 
@@ -128,14 +139,51 @@ series resistor or a voltage divider here.
 PCB v2.1 has its RF switch control lines swapped.
 This can be fixed by moving series resistors
 R76 and R77 to cross the lines.
+This has been fixed in version 2.2.
 
-This could have been fixed by swapping the pins in software,
-but swapping them in hardware keeps the new hardware more
-compatible with older firmware versions.
-Next PCB order (v2.2) will have this fixed.
+Sometimes the board does not power up after battery has been
+connected. Seems like the battery protection chip ends up in
+some state where it disconnects the battery. If this happens,
+try momentarily shorting GND and BAT- together to bypass the
+protection circuit. Usually it starts working and keeps working
+as long as battery is kept connected.
+
+Silkscreen marking of one expansion header pin in wrong in
+both v2.1 and v2.2: pin 2 of J2 is marked as GND but is
+actually connected to VBAT.
 
 
 ## Advanced use and modifications
+
+### Updating firmware and debugging
+The EFR32 chip on the board is flashed through
+Serial Wire Debug (SWD). The board has a 10-pin header with
+[Cortex Debug standard pinout](https://documentation-service.arm.com/static/5fce6c49e167456a35b36af1)
+but using 2.54 mm pitch instead of the standard 1.27 mm pitch
+(to make it easier to solder wires or connectors to it).
+
+GND, SWCLK and SWDIO pins are required and shall be connected to
+corresponding pins on your SWD adapter.
+
+The VDD pin is an output meant for SWD adapters with a reference
+voltage input (used for level shifters or target detection).
+If your SWD adapter does not have a reference voltage input,
+leave the VDD pin unconnected. Using this VDD pin to supply power
+to the Gekkokapula board is not recommended.
+
+If your SWD adapter has a 5 V output pin, it can be used to supply
+power to the board by connecting 5 V to pin 16 on J1
+(power switch pin).
+If you have a battery connected, you can also connect 5 V
+to pin 19 on J1 (VCharge) to charge the battery.
+
+Any SWD adapter supported by OpenOCD should work but may need
+additional configuration for OpenOCD.
+I can try to add configuration for more adapters
+if you can give me an adapter to test with.
+
+See [flashing tutorial](../firmware/flashing.md) for details
+on installation and use of flashing software.
 
 ### Using without battery
 If you want to directly use an external power supply and bypass
