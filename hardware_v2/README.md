@@ -74,7 +74,7 @@ Most electret microphones should work here.
 ### Battery
 The board includes a protection circuit and a charger for a single
 cell Li-Ion or Li-Po battery with a nominal voltage of 3.6 or 3.7 V.
-For example, a flat cellphone battery or an 18650 cell can be used.
+For example, a flat cellphone battery or a 18650 cell can be used.
 
 Connect battery between BAT+ and BAT- pins
 (pins 17 and 18 on header J1). Note that battery minus is not
@@ -100,6 +100,11 @@ receiving and transmitting in the 2300-2900 MHz range.
 All lower frequency bands (13 MHz to 1.45 GHz) use the
 connector J5.
 
+J4 is not connected by default but the board can be
+[modified to make it an RX connector](#separate-connectors-for-rx-and-tx).
+
+J6 (CLKOUT) is currently unused but may be used in future as a reference
+frequency output for transverters.
 
 ## Optional parts
 
@@ -250,6 +255,40 @@ TX/RX switch controls and some free EFR32 pins.
 These could be used to control an additional power amplifier
 or switched band filters. No such expansions exist at the moment
 but they might be developed in the future.
+
+During transmission, TX_EN (pin 19) is high (at 3.3 V) and
+RX_EN pin (pin 17) is low (at 0 V).
+During reception, TX_EN is low and RX_EN is high.
+These pins can be used to control an external power amplifier
+and RX/TX switching.
+
+VDD (pin 3) is directly connected to output of a 3.3 V regulator
+that powers most of the components on the board.
+VDDS (pin 5) is VDD through a power switch that turns off when
+the board is in sleep mode. These pins can be used to supply
+a few tens of milliamperes for external logic.
+
+DVDD (pin 7) is the output from an EFR32 internal switching
+regulator used to supply some parts of the EFR32 chip.
+Powering external circuits from this pin is not recommended
+since maximum current draw has not been determined yet.
+
+VBAT (pins 1 and 2) are battery voltage output pins.
+These can be used to supply an external power amplifier.
+
+PA0, PA1, PB11 and PB12 are free for use by expansion boards.
+PB11 and PB12 might be used in future for an I2C bus.
+For example, an I2C I/O expander could be used to add more I/O
+pins to control a band switch.
+PA0 and PA1 were used for an UART in some old firmware versions
+but the pins are currently unused.
+
+PA2 is connected on the board for battery voltage measurement
+and PA5 for battery charge detection. These features are currently
+unimplemented in firmware, so the pins have been brought to the
+header to allow using them for other purposes as well.
+If you want to use them for something else, remove jumpers
+R1 (for PA5) and R13 (for PA2) from the board.
 
 Free EFR32 pins could be even used to interface some external
 sensors or a computer, allowing some "IoT" or "modem" kind of
