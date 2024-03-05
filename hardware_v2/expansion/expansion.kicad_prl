@@ -16,8 +16,8 @@
     },
     "selection_filter": {
       "dimensions": false,
-      "footprints": true,
-      "graphics": false,
+      "footprints": false,
+      "graphics": true,
       "keepouts": false,
       "lockedItems": false,
       "otherItems": false,
@@ -37,7 +37,6 @@
       8,
       9,
       10,
-      11,
       12,
       13,
       15,
@@ -61,7 +60,6 @@
       34,
       35,
       36,
-      39,
       40
     ],
     "visible_layers": "800d0f0_ffffffff",
