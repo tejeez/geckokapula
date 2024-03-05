@@ -3,5 +3,3 @@ fp-info-cache
 gerber/
 pcba/
 ~*.lck
-kapula.csv
-kapula.xml
