@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "kapula")(type "KiCad")(uri "${KIPRJMOD}/../pcb/kapula.pretty")(options "")(descr ""))
+)
